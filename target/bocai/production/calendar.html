@@ -1,5 +1,5 @@
 <style>
-    .addRecordDlg {
+    .addRecordDlg,.resultDlg {
         background: #fff;
         z-index: 1001;
         position: absolute;
@@ -20,18 +20,41 @@
         text-align: center;
 
     }
+
     .addRecordDlg table tr td {
         margin-right: 1em;
         text-align: center;
     }
+
+    .maskLayer {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: #000000;
+        opacity: 0.5;
+        -moz-opacity: 0.5;
+        z-index: 1000;
+        filter: alpha(opacity=50);
+    }
 </style>
-<div>
-    <h3><a class="btn btn-primary startBtn">开始下注</a></h3>
+
+<div ng-controller="xiazhuCtrl">
+    <div class="btn-group">
+        <span><a class="btn btn-primary startBtn" ng-click="startTaskdlg()">开始下注</a></span>
+        <span><a class="btn btn-primary startBtn" ng-click="bossXiazhudlg()">庄家下注</a></span>
+        <span><a class="btn btn-primary startBtn" ng-click="startSendRedPackgetdlg()">开始发红包</a></span>
+
+    </div>
+
+
     <div>
         <div>
-            <span>第</span><span class="task_name"></span> <span>期</span>
             <div>
-                <table class="table">
+                <span>第<span class="task_name" ng-bind="task.name"></span> 期</span>
+                <span>状态:<span class="task_status_name" ng-bind="task.statusName"></span></span>
+            </div>
+            <div>
+                <table class="table table-bordered table-striped">
                     <tr>
                         <td>序号</td>
                         <td>买家</td>
@@ -39,11 +62,11 @@
                         <td>投注金额</td>
                         <td>操作</td>
                     </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>axin</td>
-                        <td>5</td>
-                        <td>20</td>
+                    <tr ng-repeat="item in taskUserList">
+                        <td ng-bind="$index+1"></td>
+                        <td ng-bind="item.userId"></td>
+                        <td ng-bind="item.num"></td>
+                        <td ng-bind="item.sum"></td>
                         <td><a>修改</a><a>删除</a></td>
                     </tr>
                 </table>
@@ -51,8 +74,10 @@
         </div>
     </div>
 
+    <div class="maskLayer"></div>
     <div class="addRecordDlg" style="display: none">
         <h3 style="padding-left: 1em;border-left: 2px solid deepskyblue">买方投注</h3>
+
         <div style="overflow: auto">
             <table>
                 <tr>
@@ -62,9 +87,9 @@
                     <td>操作</td>
                 </tr>
                 <tr>
-                    <td><input type="text"></td>
-                    <td><input type="text"></td>
-                    <td><input type="text"></td>
+                    <td><input type="text" class="username"></td>
+                    <td><input type="text" class="num"></td>
+                    <td><input type="text" class="sum"></td>
                     <td>
                         <a class="addRow">添加</a>
                         <a class="removeRow">删去</a>
@@ -72,20 +97,56 @@
                 </tr>
             </table>
         </div>
+        <div>
+            <span><button class="btn btn-primary saveTaskUser" ng-click="saveTaskUser()" style="margin-top:1em;float: right;">保存</button></span>
+        </div>
+    </div>
+
+    <!-- 红包开奖爱结果输入 -->
+    <div class="resultDlg" style="display: none">
+        <h3 style="padding-left: 1em;border-left: 2px solid deepskyblue">请输入开奖结果</h3>
+
+        <div style="overflow: auto">
+            <table>
+                <tr>
+                    <td>红包1</td>
+                    <td><input type="text" class="red1"></td>
+                </tr>
+                <tr>
+                    <td>红包2</td>
+                    <td><input type="text" class="red2"></td>
+                </tr>
+                <tr>
+                    <td>红包3</td>
+                    <td><input type="text" class="red3"></td>
+                </tr>
+                <tr>
+                    <td>红包4</td>
+                    <td><input type="text" class="red4"></td>
+                </tr>
+                <tr>
+                    <td>红包5</td>
+                    <td><input type="text" class="red5"></td>
+                </tr>
+                <tr>
+                    <td>红包6</td>
+                    <td><input type="text" class="red6"></td>
+                </tr>
+            </table>
+        </div>
+        <div>
+            <span><button class="btn btn-primary saveTaskUser" ng-click="getTaskResultInfo()" style="margin-top:1em;float: right;">保存</button></span>
+        </div>
     </div>
 </div>
 <script>
     $(document).ready(function () {
-        $('.startBtn').click(function () {
-            $('.addRecordDlg').css('display', "block");
-        });
-
-        $("table").delegate(".addRow", "click",  function(){
+        $("table").delegate(".addRow", "click", function () {
             $(".addRecordDlg table").append(
                     "<tr>" +
-                    "<td><input type='text'></td>" +
-                    "<td><input type='text'></td>" +
-                    "<td><input type='text'></td>" +
+                    "<td><input type='text' class='username'></td>" +
+                    "<td><input type='text' class='num'></td>" +
+                    "<td><input type='text' class='sum'></td>" +
                     "<td>" +
                     "<a class='addRow'>添加</a>" +
                     "<a class='removeRow'>删去</a>" +

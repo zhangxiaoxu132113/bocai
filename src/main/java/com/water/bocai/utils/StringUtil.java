@@ -16,7 +16,7 @@ public class StringUtil {
      * @param num
      * @return
      */
-    public static int getNiuNum(double num) {
+    public static int getNiuNum(float num) {
         String numStr = String.valueOf(num);
         numStr = numStr.substring(numStr.length()-1, numStr.length());
         return Integer.valueOf(numStr);
@@ -37,6 +37,10 @@ public class StringUtil {
     public static String uuid() {
         return UUID.randomUUID().toString();
     }
+
+//    public static Integer[] transformStrArr2IntegerArr(String[] strArr) {
+//
+//    }
 
     public static void main(String[] args) {
     }

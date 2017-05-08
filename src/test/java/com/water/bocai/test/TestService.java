@@ -8,8 +8,8 @@ import com.water.bocai.utils.StringUtil;
 public class TestService {
 
     public static void main(String[] args) {
-        double maifang = 1.29;
-        double zhangjia = 0.48;
+        float maifang = 1.29F;
+        float zhangjia = 0.48F;
 
         int maifangInt = StringUtil.getNiuNum(maifang);
         int zhangjiaInt = StringUtil.getNiuNum(zhangjia);

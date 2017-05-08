@@ -7,6 +7,8 @@
     <result column="user_id" property="userId" jdbcType="VARCHAR" />
     <result column="num" property="num" jdbcType="INTEGER" />
     <result column="sum" property="sum" jdbcType="REAL" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="bonus" property="bonus" jdbcType="REAL" />
     <result column="update_time" property="updateTime" jdbcType="BIGINT" />
     <result column="create_on" property="createOn" jdbcType="BIGINT" />
   </resultMap>
@@ -69,7 +71,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, task_id, user_id, num, sum, update_time, create_on
+    id, task_id, user_id, num, sum, status, bonus, update_time, create_on
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.water.bocai.db.model.TaskUserCriteria" >
     select
@@ -103,11 +105,11 @@
   </delete>
   <insert id="insert" parameterType="com.water.bocai.db.model.TaskUser" >
     insert into task_user (id, task_id, user_id, 
-      num, sum, update_time, create_on
-      )
+      num, sum, status, bonus, 
+      update_time, create_on)
     values (#{id,jdbcType=VARCHAR}, #{taskId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, 
-      #{num,jdbcType=INTEGER}, #{sum,jdbcType=REAL}, #{updateTime,jdbcType=BIGINT}, #{createOn,jdbcType=BIGINT}
-      )
+      #{num,jdbcType=INTEGER}, #{sum,jdbcType=REAL}, #{status,jdbcType=INTEGER}, #{bonus,jdbcType=REAL}, 
+      #{updateTime,jdbcType=BIGINT}, #{createOn,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.water.bocai.db.model.TaskUser" >
     insert into task_user
@@ -126,6 +128,12 @@
       </if>
       <if test="sum != null" >
         sum,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="bonus != null" >
+        bonus,
       </if>
       <if test="updateTime != null" >
         update_time,
@@ -149,6 +157,12 @@
       </if>
       <if test="sum != null" >
         #{sum,jdbcType=REAL},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="bonus != null" >
+        #{bonus,jdbcType=REAL},
       </if>
       <if test="updateTime != null" >
         #{updateTime,jdbcType=BIGINT},
@@ -182,6 +196,12 @@
       <if test="record.sum != null" >
         sum = #{record.sum,jdbcType=REAL},
       </if>
+      <if test="record.status != null" >
+        status = #{record.status,jdbcType=INTEGER},
+      </if>
+      <if test="record.bonus != null" >
+        bonus = #{record.bonus,jdbcType=REAL},
+      </if>
       <if test="record.updateTime != null" >
         update_time = #{record.updateTime,jdbcType=BIGINT},
       </if>
@@ -200,6 +220,8 @@
       user_id = #{record.userId,jdbcType=VARCHAR},
       num = #{record.num,jdbcType=INTEGER},
       sum = #{record.sum,jdbcType=REAL},
+      status = #{record.status,jdbcType=INTEGER},
+      bonus = #{record.bonus,jdbcType=REAL},
       update_time = #{record.updateTime,jdbcType=BIGINT},
       create_on = #{record.createOn,jdbcType=BIGINT}
     <if test="_parameter != null" >
@@ -221,6 +243,12 @@
       <if test="sum != null" >
         sum = #{sum,jdbcType=REAL},
       </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="bonus != null" >
+        bonus = #{bonus,jdbcType=REAL},
+      </if>
       <if test="updateTime != null" >
         update_time = #{updateTime,jdbcType=BIGINT},
       </if>
@@ -236,6 +264,8 @@
       user_id = #{userId,jdbcType=VARCHAR},
       num = #{num,jdbcType=INTEGER},
       sum = #{sum,jdbcType=REAL},
+      status = #{status,jdbcType=INTEGER},
+      bonus = #{bonus,jdbcType=REAL},
       update_time = #{updateTime,jdbcType=BIGINT},
       create_on = #{createOn,jdbcType=BIGINT}
     where id = #{id,jdbcType=VARCHAR}
@@ -255,11 +285,12 @@
     </if>
   </select>
   <insert id="insertBatch" >
-    insert into task_user (id, task_id, user_id, num, sum, update_time, create_on) values 
+    insert into task_user (id, task_id, user_id, num, sum, status, bonus, update_time, create_on) values 
     <foreach collection="list" item="item" index="index" separator="," >
       (#{item.id,jdbcType=VARCHAR}, #{item.taskId,jdbcType=VARCHAR}, #{item.userId,jdbcType=VARCHAR}, 
-        #{item.num,jdbcType=INTEGER}, #{item.sum,jdbcType=REAL}, #{item.updateTime,jdbcType=BIGINT}, 
-        #{item.createOn,jdbcType=BIGINT})
+        #{item.num,jdbcType=INTEGER}, #{item.sum,jdbcType=REAL}, #{item.status,jdbcType=INTEGER}, 
+        #{item.bonus,jdbcType=REAL}, #{item.updateTime,jdbcType=BIGINT}, #{item.createOn,jdbcType=BIGINT}
+        )
     </foreach>
   </insert>
 </mapper>

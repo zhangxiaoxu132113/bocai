@@ -13,6 +13,10 @@ public class TaskUser implements Serializable {
 
     private Float sum;
 
+    private Integer status;
+
+    private Float bonus;
+
     private Long updateTime;
 
     private Long createOn;
@@ -57,6 +61,22 @@ public class TaskUser implements Serializable {
 
     public void setSum(Float sum) {
         this.sum = sum;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Float getBonus() {
+        return bonus;
+    }
+
+    public void setBonus(Float bonus) {
+        this.bonus = bonus;
     }
 
     public Long getUpdateTime() {

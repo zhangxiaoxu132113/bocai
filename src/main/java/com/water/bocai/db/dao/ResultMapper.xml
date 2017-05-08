@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.water.bocai.db.dao.ResultMapper" >
+  <resultMap id="BaseResultMap" type="com.water.bocai.db.model.Result" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="task_id" property="taskId" jdbcType="VARCHAR" />
+    <result column="red1" property="red1" jdbcType="REAL" />
+    <result column="red2" property="red2" jdbcType="REAL" />
+    <result column="red3" property="red3" jdbcType="REAL" />
+    <result column="red4" property="red4" jdbcType="REAL" />
+    <result column="red5" property="red5" jdbcType="REAL" />
+    <result column="red6" property="red6" jdbcType="REAL" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, task_id, red1, red2, red3, red4, red5, red6
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.water.bocai.db.model.ResultCriteria" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from result
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from result
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from result
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.water.bocai.db.model.ResultCriteria" >
+    delete from result
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.water.bocai.db.model.Result" >
+    insert into result (id, task_id, red1, 
+      red2, red3, red4, red5, 
+      red6)
+    values (#{id,jdbcType=VARCHAR}, #{taskId,jdbcType=VARCHAR}, #{red1,jdbcType=REAL}, 
+      #{red2,jdbcType=REAL}, #{red3,jdbcType=REAL}, #{red4,jdbcType=REAL}, #{red5,jdbcType=REAL}, 
+      #{red6,jdbcType=REAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.water.bocai.db.model.Result" >
+    insert into result
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="taskId != null" >
+        task_id,
+      </if>
+      <if test="red1 != null" >
+        red1,
+      </if>
+      <if test="red2 != null" >
+        red2,
+      </if>
+      <if test="red3 != null" >
+        red3,
+      </if>
+      <if test="red4 != null" >
+        red4,
+      </if>
+      <if test="red5 != null" >
+        red5,
+      </if>
+      <if test="red6 != null" >
+        red6,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="taskId != null" >
+        #{taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="red1 != null" >
+        #{red1,jdbcType=REAL},
+      </if>
+      <if test="red2 != null" >
+        #{red2,jdbcType=REAL},
+      </if>
+      <if test="red3 != null" >
+        #{red3,jdbcType=REAL},
+      </if>
+      <if test="red4 != null" >
+        #{red4,jdbcType=REAL},
+      </if>
+      <if test="red5 != null" >
+        #{red5,jdbcType=REAL},
+      </if>
+      <if test="red6 != null" >
+        #{red6,jdbcType=REAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.water.bocai.db.model.ResultCriteria" resultType="java.lang.Integer" >
+    select count(*) from result
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update result
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taskId != null" >
+        task_id = #{record.taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.red1 != null" >
+        red1 = #{record.red1,jdbcType=REAL},
+      </if>
+      <if test="record.red2 != null" >
+        red2 = #{record.red2,jdbcType=REAL},
+      </if>
+      <if test="record.red3 != null" >
+        red3 = #{record.red3,jdbcType=REAL},
+      </if>
+      <if test="record.red4 != null" >
+        red4 = #{record.red4,jdbcType=REAL},
+      </if>
+      <if test="record.red5 != null" >
+        red5 = #{record.red5,jdbcType=REAL},
+      </if>
+      <if test="record.red6 != null" >
+        red6 = #{record.red6,jdbcType=REAL},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update result
+    set id = #{record.id,jdbcType=VARCHAR},
+      task_id = #{record.taskId,jdbcType=VARCHAR},
+      red1 = #{record.red1,jdbcType=REAL},
+      red2 = #{record.red2,jdbcType=REAL},
+      red3 = #{record.red3,jdbcType=REAL},
+      red4 = #{record.red4,jdbcType=REAL},
+      red5 = #{record.red5,jdbcType=REAL},
+      red6 = #{record.red6,jdbcType=REAL}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.water.bocai.db.model.Result" >
+    update result
+    <set >
+      <if test="taskId != null" >
+        task_id = #{taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="red1 != null" >
+        red1 = #{red1,jdbcType=REAL},
+      </if>
+      <if test="red2 != null" >
+        red2 = #{red2,jdbcType=REAL},
+      </if>
+      <if test="red3 != null" >
+        red3 = #{red3,jdbcType=REAL},
+      </if>
+      <if test="red4 != null" >
+        red4 = #{red4,jdbcType=REAL},
+      </if>
+      <if test="red5 != null" >
+        red5 = #{red5,jdbcType=REAL},
+      </if>
+      <if test="red6 != null" >
+        red6 = #{red6,jdbcType=REAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.water.bocai.db.model.Result" >
+    update result
+    set task_id = #{taskId,jdbcType=VARCHAR},
+      red1 = #{red1,jdbcType=REAL},
+      red2 = #{red2,jdbcType=REAL},
+      red3 = #{red3,jdbcType=REAL},
+      red4 = #{red4,jdbcType=REAL},
+      red5 = #{red5,jdbcType=REAL},
+      red6 = #{red6,jdbcType=REAL}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <select resultMap="BaseResultMap" parameterType="com.water.bocai.db.model.ResultCriteria" id="selectByExampleWithRowbounds" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from result
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <insert id="insertBatch" >
+    insert into result (id, task_id, red1, red2, red3, red4, red5, red6) values 
+    <foreach collection="list" item="item" index="index" separator="," >
+      (#{item.id,jdbcType=VARCHAR}, #{item.taskId,jdbcType=VARCHAR}, #{item.red1,jdbcType=REAL}, 
+        #{item.red2,jdbcType=REAL}, #{item.red3,jdbcType=REAL}, #{item.red4,jdbcType=REAL}, 
+        #{item.red5,jdbcType=REAL}, #{item.red6,jdbcType=REAL})
+    </foreach>
+  </insert>
+</mapper>

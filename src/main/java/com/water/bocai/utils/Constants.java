@@ -5,6 +5,34 @@ package com.water.bocai.utils;
  */
 public class Constants {
 
+    public static enum RESULT_STATUS {
+        LOSE(-1, "输"),
+        TIE(0, "平手"),
+        WIN(1, "赢");
+
+        public static String getName(int index) {
+            for (RESULT_STATUS item : RESULT_STATUS.values()) {
+                if (item.getIndex() == index) {
+                    return item.name;
+                }
+            }
+            return null;
+        }
+
+        private RESULT_STATUS(int num, String name) {
+            this.num = num;
+            this.name = name;
+        }
+        private int num;
+        private String name;
+        public int getIndex() {
+            return num;
+        }
+        public String getName() {
+            return name;
+        }
+    }
+
     public static enum TASK_STATUS {
         FAILD(-1, "无效"),
         RUNING(0, "正在投注"),
