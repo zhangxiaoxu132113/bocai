@@ -13,6 +13,7 @@ import com.water.bocai.utils.web.ResultView;
 import com.water.bocai.utils.web.dto.ResultDto;
 import com.water.bocai.utils.web.dto.TaskDto;
 import com.water.bocai.utils.web.dto.TaskUserDto;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -81,13 +82,17 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public ResultView handleLotteryResult(ResultDto model) {
         ResultView resultView = new ResultView();
+        if (StringUtils.isBlank(model.getTaskId())) {
+            resultView.setCode(OperationTips.TipsCode.TIPS_FAIL);
+            resultView.setMsg("参数不正确，没有传递taskid");
+            return resultView;
+        }
         resultMapper.insert(model);
         Map<String, Object> queryMap = new HashMap<>();
         TaskUser taskUser = new TaskUser();
         taskUser.setTaskId(model.getTaskId());
         queryMap.put("model", taskUser);
         List<TaskUserDto> taskUserList = taskUserMapper.getTaskUserList(queryMap);
-
         TaskUserDto bossTaskUser = null;
         if (taskUserList != null && taskUserList.size() > 0) {
             for (TaskUserDto taskUserDto : taskUserList) {
@@ -117,19 +122,23 @@ public class TaskServiceImpl implements TaskService {
         resultMap.put("red6", StringUtil.getNiuNum(model.getRed6()));
 
         for (TaskUserDto taskUserDto : taskUserList) {
-            matchAndHandleResult(bossTaskUser, taskUserDto,resultMap);
+            matchAndHandleResult(bossTaskUser, taskUserDto, resultMap);
             taskUserMapper.updateByPrimaryKeySelective(taskUserDto);
         }
-
-        return null;
+        resultView.setCode(OperationTips.TipsCode.TIPS_SUCCESS);
+        resultView.setMsg(OperationTips.TipsMsg.TIPS_SUCCESS);
+        return resultView;
     }
 
+    /**
+     * 计算庄家跟卖家哪个输赢
+     */
     private void matchAndHandleResult(TaskUserDto bossTaskUser, TaskUserDto taskUserDto, Map<String, Integer> resultMap) {
         String formatter = "red%s";
-        int bossResult = Constants.E_ODDS.getPer(resultMap.get(String.format(formatter,bossTaskUser.getNum())));
-        int userResult = Constants.E_ODDS.getPer(resultMap.get(String.format(formatter,taskUserDto.getNum())));
+        int bossResult = Constants.E_ODDS.getPer(resultMap.get(String.format(formatter, bossTaskUser.getNum())));
+        int userResult = Constants.E_ODDS.getPer(resultMap.get(String.format(formatter, taskUserDto.getNum())));
         if (bossResult == userResult) {
-            if (bossResult>0&&bossResult<=5) {
+            if (bossResult > 0 && bossResult <= 5) {
                 taskUserDto.setStatus(Constants.RESULT_STATUS.LOSE.getIndex());
                 taskUserDto.setSum(-taskUserDto.getSum());
                 System.out.println("莊家赢");
