@@ -38,9 +38,6 @@ public class StringUtil {
         return UUID.randomUUID().toString();
     }
 
-//    public static Integer[] transformStrArr2IntegerArr(String[] strArr) {
-//
-//    }
 
     public static void main(String[] args) {
     }

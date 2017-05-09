@@ -43,6 +43,7 @@ app.controller("personHomeCtrl",function($scope){
 app.controller("xiazhuCtrl",function($scope, $http) {
     $scope.task = {};
     $scope.taskUserList = [];
+    $scope.isFinished = false;
 
 
     //开始下注
@@ -178,14 +179,17 @@ app.controller("xiazhuCtrl",function($scope, $http) {
         })
             .success(function(data) {
                 if (data.code == 1) {
-
+                    $scope.taskUserList = data.rows;
+                    $scope.isFinished = true;
                 } else {
                     alert("服务器异常，请联系管理员!");
                 }
+                $('.resultDlg').css("display","none");
             })
             .error(function(data) {
                 console.log(data);
                 alert("服务器异常，请联系管理员!");
+                $('.resultDlg').css("display","none");
             });
     }
 });

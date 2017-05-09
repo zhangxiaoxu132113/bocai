@@ -91,7 +91,7 @@ public class TaskController {
     }
 
     @RequestMapping(value = "/getLotteryResults", method = RequestMethod.POST)
-    public void getLotteryResults(HttpServletRequest request, HttpServletResponse response, ResultDto model) {
+    public void getLotteryResults(HttpServletRequest request, HttpServletResponse response,@RequestBody ResultDto model) {
         WebUtils.sendResult(response,taskService.handleLotteryResult(model));
     }
 

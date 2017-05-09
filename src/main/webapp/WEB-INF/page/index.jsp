@@ -74,8 +74,7 @@
                         <ul class="nav side-menu">
                             <li><a><i class="fa fa-home"></i> 下注 <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a href="#calendar">Dashboard</a></li>
-                                    <li><a href="index2.html">Dashboard2</a></li>
+                                    <li><a href="#calendar">开奖</a></li>
                                     <li><a href="index3.html">开奖历史记录查询</a></li>
                                 </ul>
                             </li>

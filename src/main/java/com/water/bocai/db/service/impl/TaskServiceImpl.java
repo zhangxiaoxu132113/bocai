@@ -59,7 +59,6 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public ResultView saveTaskUser(List<TaskUser> taskUserList) {
-        ResultView resultView = null;
         if (taskUserList == null || taskUserList.size() == 0) {
             return new ResultView(OperationTips.TipsCode.TIPS_FAIL, OperationTips.TipsMsg.TIPS_FAIL);
         }
@@ -87,6 +86,7 @@ public class TaskServiceImpl implements TaskService {
             resultView.setMsg("参数不正确，没有传递taskid");
             return resultView;
         }
+        model.setId(StringUtil.uuid());
         resultMapper.insert(model);
         Map<String, Object> queryMap = new HashMap<>();
         TaskUser taskUser = new TaskUser();
@@ -104,16 +104,16 @@ public class TaskServiceImpl implements TaskService {
             }
             if (bossTaskUser == null) {
                 resultView.setCode(OperationTips.TipsCode.TIPS_FAIL);
-                resultView.setMsg("莊家沒有選擇紅包序號！");
+                resultView.setMsg("庄家没有选择红包序号！");
                 return resultView;
             }
         } else {
             resultView.setCode(OperationTips.TipsCode.TIPS_FAIL);
-            resultView.setMsg("此次開獎結果沒有人參與！");
+            resultView.setMsg("此次开奖没有卖家参与！");
             return resultView;
         }
 
-        Map<String, Integer> resultMap = new HashMap<>();
+            Map<String, Integer> resultMap = new HashMap<>();
         resultMap.put("red1", StringUtil.getNiuNum(model.getRed1()));
         resultMap.put("red2", StringUtil.getNiuNum(model.getRed2()));
         resultMap.put("red3", StringUtil.getNiuNum(model.getRed3()));
@@ -125,6 +125,7 @@ public class TaskServiceImpl implements TaskService {
             matchAndHandleResult(bossTaskUser, taskUserDto, resultMap);
             taskUserMapper.updateByPrimaryKeySelective(taskUserDto);
         }
+        resultView.setRows(taskUserList);
         resultView.setCode(OperationTips.TipsCode.TIPS_SUCCESS);
         resultView.setMsg(OperationTips.TipsMsg.TIPS_SUCCESS);
         return resultView;
@@ -140,21 +141,18 @@ public class TaskServiceImpl implements TaskService {
         if (bossResult == userResult) {
             if (bossResult > 0 && bossResult <= 5) {
                 taskUserDto.setStatus(Constants.RESULT_STATUS.LOSE.getIndex());
-                taskUserDto.setSum(-taskUserDto.getSum());
-                System.out.println("莊家赢");
+                taskUserDto.setBonus(-taskUserDto.getSum());
             } else {
                 taskUserDto.setStatus(Constants.RESULT_STATUS.TIE.getIndex());
-                taskUserDto.setSum(0f);
-                System.out.println("平手");
+                taskUserDto.setBonus(0f);
             }
         } else if (bossResult < userResult) {
             float indemnity = taskUserDto.getSum() * userResult;
             taskUserDto.setStatus(Constants.RESULT_STATUS.WIN.getIndex());
-            taskUserDto.setSum(indemnity);
+            taskUserDto.setBonus(indemnity);
         } else {
             taskUserDto.setStatus(Constants.RESULT_STATUS.LOSE.getIndex());
-            taskUserDto.setSum(-taskUserDto.getSum());
-            System.out.println("莊家赢");
+            taskUserDto.setBonus(-taskUserDto.getSum());
         }
     }
 }
