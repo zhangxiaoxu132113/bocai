@@ -84,22 +84,25 @@ public class FetchWXMessage {
         url = String.format(url, uuid, System.currentTimeMillis());
         String result = (String) HttpRequestTool.getRequest(url);
         System.out.println(result);
+        return result;
     }
 
     public static void main(String[] args) throws Exception {
         System.setProperty("jsse.enableSNIExtension", "false");
-        String uuid = getuuid();
-        loginWX(uuid);
-        int retryCount = 0;
-        while (true) {
-            Thread.sleep(1000);
-            checkIsLogin(uuid);
-            retryCount++;
-            if (retryCount == 100) {
-                break;
-            }
-        }
-        System.out.println("over!");
-
+//        String uuid = getuuid();
+//        loginWX(uuid);
+//        int retryCount = 0;
+//        while (true) {
+//            Thread.sleep(1000);
+//            checkIsLogin(uuid);
+//            retryCount++;
+//            if (retryCount == 100) {
+//                break;
+//            }
+//        }
+//        System.out.println("over!");
+        String url = "https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxnewloginpage?ticket=A_3FaHeJzkK2UeI1339DCK1D@qrticket_0&uuid=QfvHcGNZfQ==&lang=zh_CN&scan=1494324828";
+        String result = (String) HttpRequestTool.getRequest(url,true);
+        System.out.println(result);
     }
 }
