@@ -1,6 +1,7 @@
 package com.water.bocai.utils;
 
 import com.alibaba.fastjson.JSON;
+import com.water.bocai.utils.entry.ResponseData;
 import org.apache.http.*;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpRequestRetryHandler;
@@ -12,7 +13,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
@@ -43,16 +46,20 @@ public class HttpRequestTool {
      * @param isOutInfo  是否打印输出信息
      * @return Object    如果cls参数为null，则返回请求内容字符串
      */
-    public static Object postRequest(String requestUrl, Map<String, String> paramMap, Map<String, String> headerMap, CookieConfig cookieConfig, Class cls, boolean isOutInfo) {
-        CloseableHttpClient client;
+    public static ResponseData postRequest(String requestUrl, Map<String, String> paramMap, Map<String, String> headerMap, CookieStore cookieStore, Class cls, boolean isOutInfo) {
+        DefaultHttpClient client;
+        ResponseData responseData = new ResponseData();
         HttpPost post = null;
         Object obj = null;
         try {
             post = new HttpPost(requestUrl);
-            client = HttpClients.custom()
-                    .setRetryHandler(setRequestRetryCount(post, requestUrl, 3))
-                    .setDefaultCookieStore(setCookies(cookieConfig))
-                    .build();
+            client = new DefaultHttpClient(new PoolingClientConnectionManager());
+            client.setHttpRequestRetryHandler(setRequestRetryCount(post, requestUrl, 3));
+            client.setCookieStore(cookieStore);
+//            client = (DefaultHttpClient) HttpClients.custom()
+//                    .setRetryHandler(setRequestRetryCount(post, requestUrl, 3))
+//                    .setDefaultCookieStore(cookieStore)
+//                    .build();
             RequestConfig requestConfig = RequestConfig.custom() // 设置请求超时时间
                     .setConnectionRequestTimeout(10000)
                     .setConnectTimeout(10000)
@@ -60,14 +67,16 @@ public class HttpRequestTool {
                     .build();
             post.setConfig(requestConfig);
 
+            //设置请求参数
             if (paramMap != null && paramMap.entrySet().size() > 0) {
                 List params = new ArrayList();
                 for (Map.Entry<String, String> param : paramMap.entrySet()) {
                     params.add(new BasicNameValuePair(param.getKey(), param.getValue()));
                 }
-                post.setEntity(new UrlEncodedFormEntity(params, "UTF-8")); //设置请求参数
+                post.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
             }
 
+            //设置请求头信息
             if (headerMap != null && headerMap.entrySet().size() > 0) {
                 Header[] headers = new Header[headerMap.entrySet().size()];
                 int i = 0;
@@ -75,7 +84,7 @@ public class HttpRequestTool {
                     headers[i] = new BasicHeader(header.getKey(), header.getValue());
                     i++;
                 }
-                post.setHeaders(headers); //设置请求头信息
+                post.setHeaders(headers);
             } else {
                 Header header = new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36");
                 post.setHeader(header);
@@ -83,43 +92,49 @@ public class HttpRequestTool {
             HttpContext localContext = new BasicHttpContext();
             CloseableHttpResponse response = client.execute(post, localContext);
             HttpEntity entity = response.getEntity();
+            CookieStore cookieStore1 = client.getCookieStore();
+            responseData.setCookieStore(cookieStore1);
             String result = EntityUtils.toString(entity, "UTF-8");
+
+            //是否打印输出
             if (isOutInfo) outHeaderInfo(response, localContext, result);
             if (cls != null) {
                 try {
                     obj = JSON.parseObject(result, cls);//解析json为pojo
+                    responseData.setObj(obj);
                 } catch (Exception e) {
                     System.out.println("json 解析失败!");
                     e.printStackTrace();
                 }
             } else {
                 obj = result;
+                responseData.setHtmlPage((String) obj);
             }
             EntityUtils.consume(entity);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return obj;
+        return responseData;
     }
 
-    public static Object postRequest(String requestUrl) {
+    public static ResponseData postRequest(String requestUrl) {
         return postRequest(requestUrl, null, null, null, null, false);
     }
 
-    public static String postRequest(String requestUrl, boolean isOutInfo) {
-        postRequest(requestUrl, null, null, null, null, isOutInfo);
-        return requestUrl;
+    public static ResponseData postRequest(String requestUrl, boolean isOutInfo) {
+        return postRequest(requestUrl, null, null, null, null, isOutInfo);
+
     }
 
-    public static Object postRequest(String requestUrl, Map<String, String> paramMap, boolean isOutInfo) {
+    public static ResponseData postRequest(String requestUrl, Map<String, String> paramMap, boolean isOutInfo) {
         return postRequest(requestUrl, paramMap, null, null, null, isOutInfo);
     }
 
-    public static Object postRequest(String requestUrl, Map<String, String> paramMap, Map<String, String> headerMap, boolean isOutInfo) {
+    public static ResponseData postRequest(String requestUrl, Map<String, String> paramMap, Map<String, String> headerMap, boolean isOutInfo) {
         return postRequest(requestUrl, paramMap, headerMap, null, null, isOutInfo);
     }
 
-    public static Object postRequest(String requestUrl, Map<String, String> paramMap, Class cls, boolean isOutInfo) {
+    public static ResponseData postRequest(String requestUrl, Map<String, String> paramMap, Class cls, boolean isOutInfo) {
         return postRequest(requestUrl, paramMap, null, null, cls, isOutInfo);
     }
 
@@ -132,15 +147,15 @@ public class HttpRequestTool {
      * @param isOutInfo  是否打印输出信息
      * @return Object     如果cls参数为null，则返回请求内容字符串
      */
-    public static Object getRequest(String requestUrl, Class cls, Map<String, String> headerMap, CookieConfig cookieConfig, boolean isOutInfo) {
-        CloseableHttpClient client = null;
+    public static ResponseData getRequest(String requestUrl, Class cls, Map<String, String> headerMap, CookieStore cookieStore, boolean isOutInfo) {
+        DefaultHttpClient client = null;
+        ResponseData responseData = new ResponseData();
         HttpGet get = null;
         Object obj = null;
         try {
-            client = HttpClients.custom()
-                    .setRetryHandler(setRequestRetryCount(get, requestUrl, 3))
-                    .setDefaultCookieStore(setCookies(cookieConfig))
-                    .build();
+            client = new DefaultHttpClient(new PoolingClientConnectionManager());
+            client.setHttpRequestRetryHandler(setRequestRetryCount(get, requestUrl, 3));
+            client.setCookieStore(cookieStore);
             get = new HttpGet(requestUrl);
             HttpContext localContext = new BasicHttpContext();
             RequestConfig config = RequestConfig.custom()
@@ -149,6 +164,8 @@ public class HttpRequestTool {
                     .setSocketTimeout(60000)
                     .build();
             get.setConfig(config);// 设置请求超时时间
+
+            //设置请求头信息
             if (headerMap != null && headerMap.entrySet().size() > 0) {
                 Header[] headers = new Header[headerMap.entrySet().size()];
                 int i = 0;
@@ -156,50 +173,53 @@ public class HttpRequestTool {
                     headers[i] = new BasicHeader(header.getKey(), header.getValue());
                     i++;
                 }
-                get.setHeaders(headers); //设置请求头信息
+                get.setHeaders(headers);
             } else {
                 Header header = new BasicHeader("User-Agent", UARandomUtil.getPCUA());
                 get.setHeader(header);
             }
             CloseableHttpResponse response = client.execute(get, localContext);
             HttpEntity entity = response.getEntity();
+            responseData.setCookieStore(client.getCookieStore());
             String result = EntityUtils.toString(entity, "UTF-8");
             if (isOutInfo) outHeaderInfo(response, localContext, result);
             if (cls != null) {
                 try {
                     obj = JSON.parseObject(result, cls);//解析json为pojo
+                    responseData.setObj(obj);
                 } catch (Exception e) {
                     System.out.println("json 解析失败!");
                     if (isOutInfo) e.printStackTrace();
                 }
             } else {
                 obj = result;
+                responseData.setHtmlPage((String) obj);
             }
             EntityUtils.consume(entity);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return obj;
+        return responseData;
     }
 
-    public static Object getRequest(String requestUrl) {
+    public static ResponseData getRequest(String requestUrl) {
         return getRequest(requestUrl, null, null, null, false);
     }
 
-    public static Object getRequest(String requestUrl, boolean isOutInfo) {
+    public static ResponseData getRequest(String requestUrl, boolean isOutInfo) {
         return getRequest(requestUrl, null, null, null, isOutInfo);
     }
 
-    public static Object getRequest(String requestUrl, Map<String, String> headers, boolean isOutInfo) {
+    public static ResponseData getRequest(String requestUrl, Map<String, String> headers, boolean isOutInfo) {
         return getRequest(requestUrl, null, headers, null, isOutInfo);
     }
 
-    public static Object getRequest(String requestUrl, Class cls, boolean isOutInfo) {
+    public static ResponseData getRequest(String requestUrl, Class cls, boolean isOutInfo) {
         return getRequest(requestUrl, cls, null, null, isOutInfo);
     }
 
-    public static Object getRequestByCookies(String requestUrl, CookieConfig cookieConfig, boolean isOutInfo) {
-        return getRequest(requestUrl, null, null, cookieConfig, isOutInfo);
+    public static ResponseData getRequestByCookies(String requestUrl, CookieStore cookieStore, boolean isOutInfo) {
+        return getRequest(requestUrl, null, null, cookieStore, isOutInfo);
     }
 
     /**

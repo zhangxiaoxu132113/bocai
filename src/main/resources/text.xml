@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<error>
+    <ret>0</ret>
+    <message></message>
+    <skey>@crypt_7780a5ae_8865ba3c284e97e9ae62baaece5db2fc</skey>
+    <wxsid>GR4yKa27n895yPIO</wxsid>
+    <wxuin>1754539534</wxuin>
+    <pass_ticket>3CewdAMbCVnecdOp1GfsncN5mBPhP88GKeF7hQW%2BrIpQS%2FhfNVOEUtq2ZL8BeL82</pass_ticket>
+    <isgrayscale>1</isgrayscale>
+</error>
+
+
+private String ret;
+private String message;
+private String skey;
+private String wxsid;
+private String wxuin;
+private String pass_ticket;
+private String isgrayscale;
