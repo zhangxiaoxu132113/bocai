@@ -252,7 +252,6 @@ public class FetchWXMessage {
         cookieStore.addCookie(new MyCookie("pgv_pvi",getWeixinCookie("")));
         cookieStore.addCookie(new MyCookie("pgv_si",getWeixinCookie("s")));
 
-
         String xmlData = responseData.getHtmlPage();
         RedirectResponseData redirectResponseData = getRedirectData(xmlData);
         System.out.println("hp = " + xmlData);
