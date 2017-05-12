@@ -12,6 +12,7 @@ public class ResponseData {
     private int statusCode;
     private Object obj;
     private CookieStore cookieStore;
+    private RedirectResponseData redirectResponseData;
 
     public String getJson() {
         return json;
@@ -51,5 +52,13 @@ public class ResponseData {
 
     public void setObj(Object obj) {
         this.obj = obj;
+    }
+
+    public RedirectResponseData getRedirectResponseData() {
+        return redirectResponseData;
+    }
+
+    public void setRedirectResponseData(RedirectResponseData redirectResponseData) {
+        this.redirectResponseData = redirectResponseData;
     }
 }

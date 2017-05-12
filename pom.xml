@@ -12,15 +12,16 @@
     <!--<spring.version>4.0.2.RELEASE</spring.version>-->
     <spring.version>4.0.2.RELEASE</spring.version>
     <jackson-core.version>2.5.4</jackson-core.version>
+    <aspectjweaver.version>1.8.2</aspectjweaver.version>
+    <fastjson.version>1.1.43</fastjson.version>
+    <aspectj.version>1.5.4</aspectj.version>
     <mybatis.version>3.2.7</mybatis.version>
     <mybatis.spring>1.1.1</mybatis.spring>
     <druid.versoin>1.0.9</druid.versoin>
     <quartz.version>1.8.6</quartz.version>
     <mysql.version>5.1.38</mysql.version>
     <common.lang3>3.3.2</common.lang3>
-    <aspectj.version>1.5.4</aspectj.version>
-    <aspectjweaver.version>1.8.2</aspectjweaver.version>
-    <fastjson.version>1.1.43</fastjson.version>
+    <gson.version>2.6.2</gson.version>
   </properties>
 
   <dependencies>
@@ -226,7 +227,11 @@
       <artifactId>httpclient</artifactId>
       <version>4.5.2</version>
     </dependency>
-
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>${gson.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.elasticsearch.client</groupId>
       <artifactId>transport</artifactId>

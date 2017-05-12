@@ -1,37 +1,44 @@
-package com.water.bocai.fetchWX;
+package com.water.bocai.utils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.water.bocai.utils.HttpRequestTool;
-import com.water.bocai.utils.StringUtil;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.water.bocai.utils.entry.MessageStatus;
 import com.water.bocai.utils.entry.RedirectResponseData;
+import com.water.bocai.utils.entry.ResponseData;
 import com.water.bocai.utils.entry.WXConstant;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import java.io.*;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * http://www.tanhao.me/talk/1466.html/
- * Created by zhangmiaojie on 2017/5/9.
+ * Created by zhangmiaojie on 2017/5/11.
  */
-public class FetchWXMessage {
-    private static String WINDOW_QRLOGIN_CODE = "window.QRLogin.code";
-    private static String WINDOW_QRLOGIN_UUID = "window.QRLogin.uuid";
-    private static String WINDOW_CODE = "window.code";
-    private static String WINDOW_REDIRECT_URI = "window.redirect_uri";
-    private static String UUID;
+public class WeixinHelper {
+    public static String WINDOW_QRLOGIN_CODE = "window.QRLogin.code";
+    public static String WINDOW_QRLOGIN_UUID = "window.QRLogin.uuid";
+    public static String WINDOW_CODE = "window.code";
+    public static String WINDOW_REDIRECT_URI = "window.redirect_uri";
+    public static String UUID;
 
     /**
      * 获取uuid
@@ -39,6 +46,7 @@ public class FetchWXMessage {
      * @return
      */
     public static String getuuid() {
+        System.setProperty("jsse.enableSNIExtension", "false");
         String url = "https://login.weixin.qq.com/jslogin?appid=wx782c26e4c19acffb&redirect_uri=https%3A%2F%2Fwx.qq.com%2Fcgi-bin%2Fmmwebwx-bin%2Fwebwxnewloginpage&fun=new&lang=zh_CN&_=";
         url = url + System.currentTimeMillis();
         String result = HttpRequestTool.getRequest(url).getHtmlPage();
@@ -60,9 +68,12 @@ public class FetchWXMessage {
     /**
      * 获取二维码图片和保存本地地址的路径
      */
-    public static String loginWX(String uuid) throws Exception {
+    public static String getLoginQRcodeImgPath(String uuid) throws Exception {
+        System.setProperty("jsse.enableSNIExtension", "false");
         String url = "https://login.weixin.qq.com/qrcode/%s?t=webwx";
-        String filePath = "D:\\" + uuid + ".jpeg";
+        String fileName = uuid + ".jpeg";
+        String webFilePath = "/upload/qrcode/";
+        String filePath = "E:\\personal\\github\\v1\\bocai\\src\\main\\webapp\\upload\\qrcode\\" + fileName;
         url = String.format(url, uuid);
         URL realurl = new URL(url);
 
@@ -85,14 +96,11 @@ public class FetchWXMessage {
         fos.flush();
         fos.close();
         is.close();
-        return filePath;
+        return webFilePath + fileName;
     }
 
-    /**
-     * 检查是否已经登录
-     * 返回是否登录状态码
-     */
     public static Map<String, String> checkIsLogin(String uuid) {
+        System.setProperty("jsse.enableSNIExtension", "false");
         String url = "https://login.weixin.qq.com/cgi-bin/mmwebwx-bin/login?loginicon=true&uuid=%s&_=%s";
         url = String.format(url, uuid, System.currentTimeMillis());
         String result = HttpRequestTool.getRequest(url).getHtmlPage();
@@ -117,11 +125,15 @@ public class FetchWXMessage {
         return resultMap;
     }
 
-    /**
-     * 轮询判断是否已经登录
-     * 如何登录，则返回重定向的地址
-     * 如果超过60秒，则二维码失效
-     */
+    public static ResponseData visitRedirectUri(String redirect_uri) {
+        System.setProperty("jsse.enableSNIExtension", "false");
+        ResponseData responseData = HttpRequestTool.getRequest(redirect_uri, false);
+        String xmlData = responseData.getHtmlPage();
+        RedirectResponseData redirectResponseData = getRedirectData(xmlData);
+        responseData.setRedirectResponseData(redirectResponseData);
+        return responseData;
+    }
+
     public static String loopCheckIsLogin(String uuid) {
         System.out.println("请扫一下微信登录二维码");
         String returnStr = null;
@@ -162,50 +174,46 @@ public class FetchWXMessage {
         return returnStr;
     }
 
-    public static void initWebWXInfo(CookieStore cookieStore, Map<String, String> cookieMap, RedirectResponseData redirectResponseData) throws IOException {
-        String url = "https://wx.qq.com/cgi-bin/mmwebwx-bin/webwxinit?r=%s&lang=zh_CN&pass_ticket=%s";
-        String r = "245987590";
-        url = String.format(url, r, redirectResponseData.getPass_ticket());
-        System.out.println("url1=" + url);
+
+    public static void initWebWXInfo(CookieStore cookieStore,
+                                     Map<String, String> cookieMap,
+                                     RedirectResponseData redirectResponseData,
+                                     String r,
+                                     String devicedId) throws IOException {
+        System.setProperty("jsse.enableSNIExtension", "false");
+//        String url = "https://wx.qq.com/cgi-bin/mmwebwx-bin/webwxinit?r=%s&lang=zh_CN&pass_ticket=%s";
+        String url = "https://wx.qq.com/cgi-bin/mmwebwx-bin/webwxinit?r=%s";
+        url = String.format(url, r);
+        System.out.println("url=" + url);
         JSONObject fuJsonParam = new JSONObject();
         JSONObject jsonParam = new JSONObject();
         jsonParam.put("Sid", cookieMap.get(WXConstant.WXSID));
         jsonParam.put("Uin", cookieMap.get(WXConstant.WXUIN));
         jsonParam.put("Skey", redirectResponseData.getSkey());
-        jsonParam.put("Deviceid", StringUtil.getDeviceId());
+        jsonParam.put("Deviceid", devicedId);
         fuJsonParam.put("BaseRequest", jsonParam);
         String fuJsonParamStr = fuJsonParam.toString();
         System.out.println(fuJsonParam);
         DefaultHttpClient httpClient = new DefaultHttpClient();
         httpClient.setCookieStore(cookieStore);
         HttpPost method = new HttpPost(url);
-        StringEntity entity = new StringEntity(fuJsonParamStr, "utf-8");//解决中文乱码问题
-        entity.setContentEncoding("UTF-8");
-        entity.setContentType("application/json");
+        Map<String, String> headerMap = StringUtil.getHeaderMap(cookieStore);
+        if (headerMap != null && headerMap.entrySet().size() > 0) {
+            Header[] headers = new Header[headerMap.entrySet().size()];
+            int i = 0;
+            for (Map.Entry<String, String> header : headerMap.entrySet()) {
+                headers[i] = new BasicHeader(header.getKey(), header.getValue());
+                i++;
+            }
+            method.setHeaders(headers);
+        }
+        StringEntity entity = new StringEntity(fuJsonParamStr);//解决中文乱码问题
+//        entity.setContentEncoding("UTF-8");
+//        entity.setContentType("application/json");
         method.setEntity(entity);
         HttpResponse result = httpClient.execute(method);
         String json = EntityUtils.toString(result.getEntity());
         System.out.println(json);
-    }
-
-    public static void getAllContactList(CookieStore cookieStore) {
-        String url = "https://wx.qq.com/cgi-bin/mmwebwx-bin/webwxgetcontact?r=" + System.currentTimeMillis();
-        String htmlPage = HttpRequestTool.postRequest(url, null, null, cookieStore, null, false).getHtmlPage();
-        System.out.println(htmlPage);
-    }
-
-    public static void synocheck(CookieStore cookieStore, Map<String, String> cookieMap) {
-        String url = "https://webpush.wx2.qq.com/cgi-bin/mmwebwx-bin/synccheck?r=%s&skey=%s&sid=%s&uin=%s&deviceid=%s&synckey=%s&_=%s";
-        String s = System.currentTimeMillis() + "";
-        String skey = "@crypt_7780a5ae_b607e488ad633df8724be9b3275f09b1";
-        String sid = cookieMap.get(WXConstant.WXSID);
-        String uin = cookieMap.get(WXConstant.WXUIN);
-        String deviceid = StringUtil.getDeviceId();
-        String synckey = "1_664368768|2_664369370|3_664369360|11_664369166|13_664330044|201_1494396758|1000_1494394202|1001_1494394232|1004_1494344568";
-        String _ = System.currentTimeMillis() + "";
-        url = String.format(url, s, skey, sid, uin, deviceid, synckey, _);
-        String result = HttpRequestTool.getRequest(url, null, null, cookieStore, false).getHtmlPage();
-        System.out.println(result);
     }
 
     private static RedirectResponseData getRedirectData(String hp1) {
@@ -214,7 +222,7 @@ public class FetchWXMessage {
             SAXReader sr = new SAXReader();
             Document doc = sr.read(new ByteArrayInputStream(hp1.getBytes("UTF-8")));
             Element rootEle = doc.getRootElement();
-            Element retEle  = rootEle.element("ret");
+            Element retEle = rootEle.element("ret");
             Element messageEle = rootEle.element("message");
             Element skeyEle = rootEle.element("skey");
             Element wxsidEle = rootEle.element("wxsid");
@@ -235,36 +243,49 @@ public class FetchWXMessage {
         return data;
     }
 
-    public static void main(String[] args) throws Exception {
-//        System.setProperty("jsse.enableSNIExtension", "false");
-//        String uuid = getuuid();
-//        loginWX(uuid);
-//        String redirectUri = loopCheckIsLogin(uuid)+"&fun=new&version=v2";
-//        ResponseData responseData = HttpRequestTool.getRequest(redirectUri, false);
-//        CookieStore cookieStore = responseData.getCookieStore();
-//
-//        cookieStore.addCookie(new MyCookie("pgv_pvi",getWeixinCookie("")));
-//        cookieStore.addCookie(new MyCookie("pgv_si",getWeixinCookie("s")));
-//
-//        String xmlData = responseData.getHtmlPage();
-//        RedirectResponseData redirectResponseData = getRedirectData(xmlData);
-//        System.out.println("hp = " + xmlData);
-//        Map<String, String> cookieMap = new HashMap<>();
-//        for (Cookie cookie : cookieStore.getCookies()) {
-//            System.out.println(cookie.getName() + " : " + cookie.getValue());
-//            cookieMap.put(cookie.getName(), cookie.getValue());
-//        }
-//        initWebWXInfo(cookieStore, cookieMap, redirectResponseData);
-//        getAllContactList(cookieStore);
-//        synocheck(cookieStore, cookieMap);
-
-        System.out.println(getWeixinCookie(""));
-        System.out.println(getWeixinCookie("s"));
+    public static MessageStatus sysccheck(ResponseData responseData, String deviceid) {
+        System.setProperty("jsse.enableSNIExtension", "false");
+        String url = "https://webpush.wx2.qq.com/cgi-bin/mmwebwx-bin/synccheck?r=%s&skey=%s&sid=%s&uin=%s&deviceid=%s&synckey=%s&_=%s";
+        CookieStore cookieStore = responseData.getCookieStore();
+        RedirectResponseData redirectResponseData = responseData.getRedirectResponseData();
+        Map<String, String> cookieMap = new HashMap<>();
+        for (Cookie cookie : cookieStore.getCookies()) {
+            System.out.println(cookie.getName() + " : " + cookie.getValue());
+            cookieMap.put(cookie.getName(), cookie.getValue());
+        }
+        Long r = System.currentTimeMillis();
+        String sid = URLEncoder.encode(cookieMap.get(WXConstant.WXSID));
+        String uin = cookieMap.get(WXConstant.WXUIN);
+        String skey = URLEncoder.encode(redirectResponseData.getSkey());
+        String synckey = URLEncoder.encode("1_664369862|2_664369928|3_664369913|11_664369823|13_664330044|201_1494493069|1000_1494492791|1001_1494480632|1004_1494344568");
+        Long _ = r - 3083037;
+        url = String.format(url, r, skey, sid, uin, deviceid, synckey, _);
+        Map<String, String> headerMap = StringUtil.getHeaderMap(cookieStore);
+        String htmlPage = HttpRequestTool.getRequest(url, null, headerMap, cookieStore, true).getHtmlPage();
+        MessageStatus msgStatus = getMessageStatus(htmlPage);
+        return msgStatus;
     }
 
-    //(c || "") + Math.round(2147483647 * (Math.random() || .5)) * +new Date % 1E10
-    public static String getWeixinCookie(String d) {
-//        return (d != null? d : "") + (Math.round(2147483647 * (Math.random() != 0 ? Math.random() : 0.5)) + (new Date().getTime() % 10000000000L));
-        return (d != null? d : "") + Math.round(2147483647 * (Math.random() != 0 ? Math.random() : 0.5));
+    /**
+     * 获取是否有未读信息
+     */
+    public static MessageStatus getMessageStatus(String msgStatusStr) {
+        // window.synccheck={retcode:"0",selector:"7"}
+        Gson gson = new Gson();
+        String json = msgStatusStr.split("=")[1];
+        Type type = new TypeToken<MessageStatus>() {
+        }.getType();
+        MessageStatus msgStatus = gson.fromJson(json, type);
+        return msgStatus;
+
+    }
+
+    public static void main(String[] args) {
+//        System.out.println(new Date(1494495848371L));
+//        System.out.println(new Date(1494492765334L));
+//        System.out.println(1494495848371L - 1494492765334L);
+        String result = "window.synccheck={retcode:\"0\",selector:\"7\"}";
+        MessageStatus msgStatus = getMessageStatus(result);
+        System.out.println(msgStatus.getRetcode()+":"+msgStatus.getSelector());
     }
 }

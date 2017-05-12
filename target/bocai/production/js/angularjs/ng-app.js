@@ -1,73 +1,167 @@
-var app = angular.module("homeApp",['ui.router']);
+var app = angular.module("homeApp", ['ui.router']);
 
-app.config(["$stateProvider", "$urlRouterProvider", "$httpProvider", function($stateProvider,$urlRouterProvider,$httpProvider){
+app.config(["$stateProvider", "$urlRouterProvider", "$httpProvider", function ($stateProvider, $urlRouterProvider, $httpProvider) {
 
     $urlRouterProvider.otherwise("/accountInfo");
     $stateProvider
-        .state('calendar',{
-            url:"/calendar",
-            templateUrl:"/production/calendar.html"
+        .state('calendar', {
+            url: "/calendar",
+            templateUrl: "/production/calendar.html"
         })
-        .state('redPacket',{
-            url:"/redPacket",
-            templateUrl:"/template/account/redpacket.html"
+        .state('wxlogin', {
+            url: "/wxlogin",
+            templateUrl: "/production/wxlogin.html"
         })
-        .state('tradLog',{
-            url:"/tradLog",
-            templateUrl:"/template/account/tradLog.html"
+        .state('tradLog', {
+            url: "/tradLog",
+            templateUrl: "/template/account/tradLog.html"
         })
-        .state('integral',{
-            url:"/integral",
-            templateUrl:"/template/account/integral.html"
+        .state('integral', {
+            url: "/integral",
+            templateUrl: "/template/account/integral.html"
         })
-        .state('member',{
-            url:"/member",
-            templateUrl:"/template/account/member.html"
+        .state('member', {
+            url: "/member",
+            templateUrl: "/template/account/member.html"
         })
-        .state('invite',{
-            url:"/invite",
-            templateUrl:"/template/account/invite.html"
+        .state('invite', {
+            url: "/invite",
+            templateUrl: "/template/account/invite.html"
         })
-        .state('safe',{
-            url:"/safe",
-            templateUrl:"/template/account/safe.jsp"
+        .state('safe', {
+            url: "/safe",
+            templateUrl: "/template/account/safe.jsp"
         });
 
 }]);
 
-app.controller("personHomeCtrl",function($scope){
-    $scope.username = "mrwater";
+app.controller("wxCtrl", function ($scope, $http) {
+    $scope.isLogin = false;
+    $scope.qrcodeImgPath;
+    $scope.uuid;
+    $scope.redirect_uri;
+    $scope.pgv_pvi;
+    $scope.pgv_si;
+    $scope.device_id;
 
+    function getDeviceid() {
+        return "e" + ("" + Math.random().toFixed(15)).substring(2, 17);
+    }
+
+    function r(c) {
+        return (c || "") + Math.round(2147483647 * (Math.random() || .5)) * +new Date % 1E10;
+    }
+
+    if (!$scope.isLogin) {
+        $http({
+            url: "/wx/qrcode",
+            method: "GET"
+        })
+            .success(function (data) {
+                if (data.code == 1) {
+                    console.log("获取二维码成功，请扫描二维码");
+                    $scope.qrcodeImgPath = data.qr_code_img_path;
+                    $scope.uuid = data.uuid;
+                    if ($scope.qrcodeImgPath != undefined && $scope.qrcodeImgPath != '') {
+                        $http({
+                            url: "/wx/checkIsLogin?uuid=" + $scope.uuid,
+                            method: "GET"
+                        })
+                            .success(function (data) {
+                                console.log("login success!");
+                                if (data.code == 1) {
+                                    $scope.redirect_uri = data.redirect_uri;
+                                    $scope.pgv_pvi = r();
+                                    $scope.pgv_si = r("s");
+                                    $http({
+                                        url: "/wx/initData",
+                                        method: "POST",
+                                        params: {
+                                            redirect_uri: $scope.redirect_uri,
+                                            pgv_pvi: $scope.pgv_pvi,
+                                            pgv_si: $scope.pgv_si,
+                                            r: ~new Date,
+                                            deviceid: getDeviceid()
+                                        }
+                                    })
+                                        .success(function (data) {
+                                            setInterval(function () {
+                                                $http({
+                                                    url: "/wx/synccheck",
+                                                    method: "POST",
+                                                    params:{
+                                                        pgv_pvi: $scope.pgv_pvi,
+                                                        pgv_si: $scope.pgv_si,
+                                                        deviceid: getDeviceid()
+                                                    }
+                                                })
+                                                    .success(function (data) {
+                                                        console.log(data);
+                                                        if(data.selector >= 2) {
+                                                            console.log("有未读消息");
+                                                        } else {
+                                                            console.log("没有未读消息");
+                                                        }
+                                                    })
+                                                    .error(function (data) {
+                                                        console.log(data);
+                                                        alert("服务器异常，请联系管理员!");
+                                                    });
+                                            }, 1000);
+                                        })
+                                        .error(function (data) {
+                                            console.log(data);
+                                            alert("服务器异常，请联系管理员!");
+                                        });
+                                } else {
+                                    alert("服务器异常，请联系管理员!");
+                                }
+                            })
+                            .error(function (data) {
+                                console.log(data);
+                                alert("服务器异常，请联系管理员!");
+                            });
+
+                    }
+                } else {
+                    alert("服务器异常，请联系管理员!");
+                }
+            })
+            .error(function (data) {
+                console.log(data);
+                alert("服务器异常，请联系管理员!");
+            });
+    }
 });
 
-app.controller("xiazhuCtrl",function($scope, $http) {
+app.controller("xiazhuCtrl", function ($scope, $http) {
     $scope.task = {};
     $scope.taskUserList = [];
     $scope.isFinished = false;
 
 
     //开始下注
-    $scope.startTaskdlg = function() {
+    $scope.startTaskdlg = function () {
         $('.addRecordDlg').css('display', "block");
         $http({
-            url:"/task/startTask",
-            method:"POST"
+            url: "/task/startTask",
+            method: "POST"
         })
-            .success(function(data) {
+            .success(function (data) {
                 if (data.code == 1) {
                     $scope.task = data.rows;
                 } else {
                     alert("服务器异常，请联系管理员!");
                 }
             })
-            .error(function(data) {
+            .error(function (data) {
                 console.log(data);
                 alert("服务器异常，请联系管理员!");
             });
     }
 
 
-    $scope.saveTaskUser = function() {
+    $scope.saveTaskUser = function () {
         var usernames = $('.username').val();
         var nums = $('.num').val();
         var sums = $('.sum').val();
@@ -85,7 +179,7 @@ app.controller("xiazhuCtrl",function($scope, $http) {
 
         var isOver = false;
         var usernames = new Array();
-        jQuery('.username').each(function(key,value){
+        jQuery('.username').each(function (key, value) {
             if ($(this).val() == '') {
                 isOver = true;
                 alert("输入的用户名不能为空！");
@@ -96,7 +190,7 @@ app.controller("xiazhuCtrl",function($scope, $http) {
         if (isOver) return;
 
         var nums = new Array();
-        jQuery('.num').each(function(key,value){
+        jQuery('.num').each(function (key, value) {
             if ($(this).val() == '') {
                 isOver = true;
                 alert("输入红包序号不能为空！");
@@ -107,7 +201,7 @@ app.controller("xiazhuCtrl",function($scope, $http) {
         if (isOver) return;
 
         var sums = new Array();
-        jQuery('.sum').each(function(key,value){
+        jQuery('.sum').each(function (key, value) {
             if ($(this).val() == '') {
                 isOver = true;
                 alert("输入的金额不能为空！");
@@ -117,25 +211,25 @@ app.controller("xiazhuCtrl",function($scope, $http) {
         });
         if (isOver) return;
         $http({
-            url:"/task/saveTaskUser",
-            method:"POST",
-            data:{
-                usernames:usernames,
-                nums:nums,
-                sums:sums,
-                taskId:$scope.task.id
+            url: "/task/saveTaskUser",
+            method: "POST",
+            data: {
+                usernames: usernames,
+                nums: nums,
+                sums: sums,
+                taskId: $scope.task.id
             }
         })
-            .success(function(data) {
+            .success(function (data) {
                 $('.addRecordDlg').css('display', "none");
                 $http({
-                    url:"/task/taskUserList",
-                    method:"POST",
-                    data:{
-                        taskId:$scope.task.id
+                    url: "/task/taskUserList",
+                    method: "POST",
+                    data: {
+                        taskId: $scope.task.id
                     }
                 })
-                    .success(function(data) {
+                    .success(function (data) {
                         if (data.code == 1) {
                             $scope.taskUserList = data.rows;
                             console.log($scope.taskUser);
@@ -143,21 +237,21 @@ app.controller("xiazhuCtrl",function($scope, $http) {
                             alert("服务器异常，请联系管理员!");
                         }
                     })
-                    .error(function(data) {
+                    .error(function (data) {
                         console.log(data);
                         alert("服务器异常，请联系管理员!");
                     });
             })
-            .error(function(data) {
+            .error(function (data) {
                 console.log(data);
                 alert("服务器异常，请联系管理员!");
             });
     }
 
-    $scope.startSendRedPackgetdlg = function() {
-        $('.resultDlg').css("display","block");
+    $scope.startSendRedPackgetdlg = function () {
+        $('.resultDlg').css("display", "block");
     }
-    $scope.getTaskResultInfo = function() {
+    $scope.getTaskResultInfo = function () {
         var red1 = $('.red1').val();
         var red2 = $('.red2').val();
         var red3 = $('.red3').val();
@@ -165,31 +259,31 @@ app.controller("xiazhuCtrl",function($scope, $http) {
         var red5 = $('.red5').val();
         var red6 = $('.red6').val();
         $http({
-            url:"/task/getLotteryResults",
-            method:"POST",
-            data:{
-                red1:red1,
-                red2:red2,
-                red3:red3,
-                red4:red4,
-                red5:red5,
-                red6:red6,
-                taskId:$scope.task.id
+            url: "/task/getLotteryResults",
+            method: "POST",
+            data: {
+                red1: red1,
+                red2: red2,
+                red3: red3,
+                red4: red4,
+                red5: red5,
+                red6: red6,
+                taskId: $scope.task.id
             }
         })
-            .success(function(data) {
+            .success(function (data) {
                 if (data.code == 1) {
                     $scope.taskUserList = data.rows;
                     $scope.isFinished = true;
                 } else {
                     alert("服务器异常，请联系管理员!");
                 }
-                $('.resultDlg').css("display","none");
+                $('.resultDlg').css("display", "none");
             })
-            .error(function(data) {
+            .error(function (data) {
                 console.log(data);
                 alert("服务器异常，请联系管理员!");
-                $('.resultDlg').css("display","none");
+                $('.resultDlg').css("display", "none");
             });
     }
 });
