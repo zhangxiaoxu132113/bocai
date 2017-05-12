@@ -69,8 +69,8 @@ public class StringUtil {
 //            cookieStr.append(cookie.getName()+"=");
 //            cookieStr.append(cookie.getValue()+";");
 //        }
-//        String cookie1 = cookieStr.substring(0,cookieStr.length()-1);
-//        headerMap.put("Cookie",cookie1);
+//        String cookie = cookieStr.substring(0,cookieStr.length()-1);
+//        headerMap.put("Cookie",cookie);
         return headerMap;
     }
 

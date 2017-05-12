@@ -60,9 +60,6 @@ public class WeixinHelper {
         return uuid;
     }
 
-    /**
-     * 获取二维码图片和保存本地地址的路径
-     */
     public static String getLoginQRcodeImgPath(String uuid) throws Exception {
         System.setProperty("jsse.enableSNIExtension", "false");
         String url = "https://login.weixin.qq.com/qrcode/%s?t=webwx";
@@ -169,7 +166,6 @@ public class WeixinHelper {
         return returnStr;
     }
 
-
     public static void initWebWXInfo(CookieStore cookieStore,
                                      RedirectResponseData redirectResponseData,
                                      String r,
@@ -180,7 +176,7 @@ public class WeixinHelper {
 //        String url = "https://wx.qq.com/cgi-bin/mmwebwx-bin/webwxinit?r=%s";
         url = String.format(url, r, redirectResponseData.getPass_ticket());
         System.out.println("url=" + url);
-        String fuJsonParamStr = "{BaseRequest:{DeviceID:\"%s\",Sid:\"%s\",Skey:\"\",Uin:\"%s\"}}";
+        String fuJsonParamStr = "{BaseRequest:{DeviceID:\"%s\",Sid:\"%s\",Skey:\"%s\",Uin:\"%s\"}}";
 //        String fuJsonParamStr = "{BaseRequest:{DeviceID:\"%s\",Sid:\"%s\",Skey:\"%s\",Uin:\"%s\"}}";
         fuJsonParamStr = String.format(fuJsonParamStr,
                 devicedId,
@@ -189,11 +185,10 @@ public class WeixinHelper {
                 cookieMap.get(WXConstant.WXUIN));
         System.out.println(fuJsonParamStr);
         DefaultHttpClient httpClient = new DefaultHttpClient();
-        cookieStore.addCookie(new MyCookie("login_frequency", "2"));
-        cookieStore.addCookie(new MyCookie("last_wxuin", cookieMap.get(WXConstant.WXUIN)));
-        cookieStore.addCookie(new MyCookie("MM_WX_NOTIFY_STATE", "1"));
-        cookieStore.addCookie(new MyCookie("MM_WX_SOUND_STATE", "1"));
-        cookieStore.addCookie(new MyCookie("refreshTimes", "1"));
+//        cookieStore.addCookie(new MyCookie("login_frequency", "2"));
+//        cookieStore.addCookie(new MyCookie("last_wxuin", cookieMap.get(WXConstant.WXUIN)));
+//        cookieStore.addCookie(new MyCookie("MM_WX_NOTIFY_STATE", "1"));
+//        cookieStore.addCookie(new MyCookie("MM_WX_SOUND_STATE", "1"));
         httpClient.setCookieStore(cookieStore);
         HttpPost method = new HttpPost(url);
         Map<String, String> headerMap = StringUtil.getHeaderMap(cookieStore);
@@ -211,7 +206,11 @@ public class WeixinHelper {
         entity.setContentType("application/json");
         method.setEntity(entity);
         HttpResponse response = httpClient.execute(method);
+
         String json = EntityUtils.toString(response.getEntity());
+        for (Header header : method.getAllHeaders()) {
+            System.out.println(header.getName() + ":" + header.getValue());
+        }
         for (Header header : response.getAllHeaders()) {
             System.out.println(header.getName() + ":" + header.getValue());
         }
@@ -256,7 +255,7 @@ public class WeixinHelper {
         String uin = cookieMap.get(WXConstant.WXUIN);
         String skey = URLEncoder.encode(redirectResponseData.getSkey());
         String synckey = URLEncoder.encode("1_664369862|2_664369928|3_664369913|11_664369823|13_664330044|201_1494493069|1000_1494492791|1001_1494480632|1004_1494344568");
-        Long _ = r - 3083037;
+        Long _ = r - 342929;
         url = String.format(url, r, skey, sid, uin, deviceid, synckey, _);
         Map<String, String> headerMap = StringUtil.getHeaderMap(cookieStore);
         String htmlPage = HttpRequestTool.getRequest(url, null, headerMap, cookieStore, true).getHtmlPage();
