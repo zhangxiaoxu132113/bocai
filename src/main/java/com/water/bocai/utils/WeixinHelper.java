@@ -1,12 +1,8 @@
 package com.water.bocai.utils;
 
-import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.water.bocai.utils.entry.MessageStatus;
-import com.water.bocai.utils.entry.RedirectResponseData;
-import com.water.bocai.utils.entry.ResponseData;
-import com.water.bocai.utils.entry.WXConstant;
+import com.water.bocai.utils.entry.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -26,7 +22,6 @@ import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -176,43 +171,50 @@ public class WeixinHelper {
 
 
     public static void initWebWXInfo(CookieStore cookieStore,
-                                     Map<String, String> cookieMap,
                                      RedirectResponseData redirectResponseData,
                                      String r,
                                      String devicedId) throws IOException {
         System.setProperty("jsse.enableSNIExtension", "false");
-//        String url = "https://wx.qq.com/cgi-bin/mmwebwx-bin/webwxinit?r=%s&lang=zh_CN&pass_ticket=%s";
-        String url = "https://wx.qq.com/cgi-bin/mmwebwx-bin/webwxinit?r=%s";
-        url = String.format(url, r);
+        Map<String, String> cookieMap = tramsformCookieStore2Map(cookieStore);
+        String url = "https://wx.qq.com/cgi-bin/mmwebwx-bin/webwxinit?r=%s&lang=zh_CN&pass_ticket=%s";
+//        String url = "https://wx.qq.com/cgi-bin/mmwebwx-bin/webwxinit?r=%s";
+        url = String.format(url, r, redirectResponseData.getPass_ticket());
         System.out.println("url=" + url);
-        JSONObject fuJsonParam = new JSONObject();
-        JSONObject jsonParam = new JSONObject();
-        jsonParam.put("Sid", cookieMap.get(WXConstant.WXSID));
-        jsonParam.put("Uin", cookieMap.get(WXConstant.WXUIN));
-        jsonParam.put("Skey", redirectResponseData.getSkey());
-        jsonParam.put("Deviceid", devicedId);
-        fuJsonParam.put("BaseRequest", jsonParam);
-        String fuJsonParamStr = fuJsonParam.toString();
-        System.out.println(fuJsonParam);
+        String fuJsonParamStr = "{BaseRequest:{DeviceID:\"%s\",Sid:\"%s\",Skey:\"\",Uin:\"%s\"}}";
+//        String fuJsonParamStr = "{BaseRequest:{DeviceID:\"%s\",Sid:\"%s\",Skey:\"%s\",Uin:\"%s\"}}";
+        fuJsonParamStr = String.format(fuJsonParamStr,
+                devicedId,
+                cookieMap.get(WXConstant.WXSID),
+                redirectResponseData.getSkey(),
+                cookieMap.get(WXConstant.WXUIN));
+        System.out.println(fuJsonParamStr);
         DefaultHttpClient httpClient = new DefaultHttpClient();
+        cookieStore.addCookie(new MyCookie("login_frequency", "2"));
+        cookieStore.addCookie(new MyCookie("last_wxuin", cookieMap.get(WXConstant.WXUIN)));
+        cookieStore.addCookie(new MyCookie("MM_WX_NOTIFY_STATE", "1"));
+        cookieStore.addCookie(new MyCookie("MM_WX_SOUND_STATE", "1"));
+        cookieStore.addCookie(new MyCookie("refreshTimes", "1"));
         httpClient.setCookieStore(cookieStore);
         HttpPost method = new HttpPost(url);
         Map<String, String> headerMap = StringUtil.getHeaderMap(cookieStore);
         if (headerMap != null && headerMap.entrySet().size() > 0) {
-            Header[] headers = new Header[headerMap.entrySet().size()];
             int i = 0;
+            Header[] headers = new Header[headerMap.entrySet().size()];
             for (Map.Entry<String, String> header : headerMap.entrySet()) {
                 headers[i] = new BasicHeader(header.getKey(), header.getValue());
                 i++;
             }
             method.setHeaders(headers);
         }
-        StringEntity entity = new StringEntity(fuJsonParamStr);//解决中文乱码问题
-//        entity.setContentEncoding("UTF-8");
-//        entity.setContentType("application/json");
+        StringEntity entity = new StringEntity(fuJsonParamStr, "utf-8");//解决中文乱码问题
+        entity.setContentEncoding("UTF-8");
+        entity.setContentType("application/json");
         method.setEntity(entity);
-        HttpResponse result = httpClient.execute(method);
-        String json = EntityUtils.toString(result.getEntity());
+        HttpResponse response = httpClient.execute(method);
+        String json = EntityUtils.toString(response.getEntity());
+        for (Header header : response.getAllHeaders()) {
+            System.out.println(header.getName() + ":" + header.getValue());
+        }
         System.out.println(json);
     }
 
@@ -248,11 +250,7 @@ public class WeixinHelper {
         String url = "https://webpush.wx2.qq.com/cgi-bin/mmwebwx-bin/synccheck?r=%s&skey=%s&sid=%s&uin=%s&deviceid=%s&synckey=%s&_=%s";
         CookieStore cookieStore = responseData.getCookieStore();
         RedirectResponseData redirectResponseData = responseData.getRedirectResponseData();
-        Map<String, String> cookieMap = new HashMap<>();
-        for (Cookie cookie : cookieStore.getCookies()) {
-            System.out.println(cookie.getName() + " : " + cookie.getValue());
-            cookieMap.put(cookie.getName(), cookie.getValue());
-        }
+        Map<String, String> cookieMap = tramsformCookieStore2Map(cookieStore);
         Long r = System.currentTimeMillis();
         String sid = URLEncoder.encode(cookieMap.get(WXConstant.WXSID));
         String uin = cookieMap.get(WXConstant.WXUIN);
@@ -266,11 +264,19 @@ public class WeixinHelper {
         return msgStatus;
     }
 
+    private static Map<String, String> tramsformCookieStore2Map(CookieStore cookieStore) {
+        Map<String, String> cookieMap = new HashMap<>();
+        for (Cookie cookie : cookieStore.getCookies()) {
+            cookieMap.put(cookie.getName(), cookie.getValue());
+        }
+        return cookieMap;
+    }
+
     /**
      * 获取是否有未读信息
+     * window.synccheck={retcode:"0",selector:"7"}
      */
     public static MessageStatus getMessageStatus(String msgStatusStr) {
-        // window.synccheck={retcode:"0",selector:"7"}
         Gson gson = new Gson();
         String json = msgStatusStr.split("=")[1];
         Type type = new TypeToken<MessageStatus>() {
@@ -286,6 +292,6 @@ public class WeixinHelper {
 //        System.out.println(1494495848371L - 1494492765334L);
         String result = "window.synccheck={retcode:\"0\",selector:\"7\"}";
         MessageStatus msgStatus = getMessageStatus(result);
-        System.out.println(msgStatus.getRetcode()+":"+msgStatus.getSelector());
+        System.out.println(msgStatus.getRetcode() + ":" + msgStatus.getSelector());
     }
 }

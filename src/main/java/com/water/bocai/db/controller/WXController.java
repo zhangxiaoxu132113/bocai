@@ -70,12 +70,7 @@ public class WXController {
         cookieStore.addCookie(new MyCookie("pgv_pvi",pgv_pvi));
         cookieStore.addCookie(new MyCookie("pgv_si",pgv_si));
 
-        Map<String, String> cookieMap = new HashMap<>();
-        for (Cookie cookie : cookieStore.getCookies()) {
-            System.out.println(cookie.getName() + " : " + cookie.getValue());
-            cookieMap.put(cookie.getName(), cookie.getValue());
-        }
-        WeixinHelper.initWebWXInfo(cookieStore, cookieMap, redirectResponseData, r, deviceid);
+        WeixinHelper.initWebWXInfo(cookieStore, redirectResponseData, r, deviceid);
         HttpSession session = request.getSession();
         session.setAttribute("responseData", responseData);
     }
