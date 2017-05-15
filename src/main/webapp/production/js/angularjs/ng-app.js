@@ -68,55 +68,112 @@ app.controller("wxCtrl", function ($scope, $http) {
                             method: "GET"
                         })
                             .success(function (data) {
-                                console.log("login success!");
-                                if (data.code == 1) {
-                                    $scope.redirect_uri = data.redirect_uri;
-                                    $scope.pgv_pvi = r();
-                                    $scope.pgv_si = r("s");
-                                    $http({
-                                        url: "/wx/initData",
-                                        method: "POST",
-                                        params: {
-                                            redirect_uri: $scope.redirect_uri,
-                                            pgv_pvi: $scope.pgv_pvi,
-                                            pgv_si: $scope.pgv_si,
-                                            r: ~new Date,
-                                            deviceid: getDeviceid()
+                                //console.log("login success!");
+                                //if (data.code == 1) {
+                                //    $scope.redirect_uri = data.redirect_uri;
+                                //    $scope.pgv_pvi = r();
+                                //    $scope.pgv_si = r("s");
+                                //    $http({
+                                //        url: "/wx/initData",
+                                //        method: "POST",
+                                //        params: {
+                                //            redirect_uri: $scope.redirect_uri,
+                                //            pgv_pvi: $scope.pgv_pvi,
+                                //            pgv_si: $scope.pgv_si,
+                                //            r: ~new Date,
+                                //            deviceid: getDeviceid()
+                                //        }
+                                //    })
+                                //        .success(function (data) {
+                                //            setInterval(function () {
+                                //                $http({
+                                //                    url: "/wx/synccheck",
+                                //                    method: "POST",
+                                //                    params:{
+                                //                        pgv_pvi: $scope.pgv_pvi,
+                                //                        pgv_si: $scope.pgv_si,
+                                //                        deviceid: getDeviceid()
+                                //                    }
+                                //                })
+                                //                    .success(function (data) {
+                                //                        console.log(data);
+                                //                        if(data.selector >= 2) {
+                                //                            console.log("有未读消息");
+                                //                        } else {
+                                //                            console.log("没有未读消息");
+                                //                        }
+                                //                    })
+                                //                    .error(function (data) {
+                                //                        console.log(data);
+                                //                        alert("服务器异常，请联系管理员!");
+                                //                    });
+                                //            }, 1000);
+                                //        })
+                                //        .error(function (data) {
+                                //            console.log(data);
+                                //            alert("服务器异常，请联系管理员!");
+                                //        });
+                                //} else {
+                                //    alert("服务器异常，请联系管理员!");
+                                //}
+                                var redirectResponseData = data.redirectResponseData;
+                                var cookieStore = data.cookieStore;
+                                sessionStorage.pass_ticket = redirectResponseData.pass_ticket;
+                                var init_url = "https://wx.qq.com/cgi-bin/mmwebwx-bin/webwxinit?r=" + ~new Date + "&lang=en_US&pass_ticket=" + redirectResponseData.pass_ticket;
+                                $http({
+                                    url: init_url,
+                                    method: "JSONP",
+                                    contentType: 'application/json; charset=utf-8', // 很重要
+                                    traditional: true,
+                                    header: {
+                                        "access-control-allow-origin": "*",
+                                        "Referer": "https://wx2.qq.com/?&lang=zh_CN",
+                                        "Originn": "https://wx2.qq.com/?&lang=zh_CN"
+                                    },
+                                    dataType: 'JSONP',
+                                    data: {
+                                        BaseRequest: {
+                                            DeviceID: getDeviceid(),
+                                            Sid: redirectResponseData.wxsid,
+                                            Skey: redirectResponseData.skey,
+                                            Uin: redirectResponseData.wxuin
                                         }
+                                    }
+
+                                })
+                                    .success(function (data) {
+                                        console.log(data);
                                     })
-                                        .success(function (data) {
-                                            setInterval(function () {
-                                                $http({
-                                                    url: "/wx/synccheck",
-                                                    method: "POST",
-                                                    params:{
-                                                        pgv_pvi: $scope.pgv_pvi,
-                                                        pgv_si: $scope.pgv_si,
-                                                        deviceid: getDeviceid()
-                                                    }
-                                                })
-                                                    .success(function (data) {
-                                                        console.log(data);
-                                                        if(data.selector >= 2) {
-                                                            console.log("有未读消息");
-                                                        } else {
-                                                            console.log("没有未读消息");
-                                                        }
-                                                    })
-                                                    .error(function (data) {
-                                                        console.log(data);
-                                                        alert("服务器异常，请联系管理员!");
-                                                    });
-                                            }, 1000);
-                                        })
-                                        .error(function (data) {
-                                            console.log(data);
-                                            alert("服务器异常，请联系管理员!");
-                                        });
-                                } else {
-                                    alert("服务器异常，请联系管理员!");
-                                }
+                                    .error(function (data) {
+                                        console.log(data);
+                                        alert("服务器异常，请联系管理员!");
+                                    });
+
+                                    //$.ajax({
+                                    //    url: init_url,
+                                    //    type: "POST",
+                                    //    contentType: 'application/json; charset=utf-8', // 很重要
+                                    //    traditional: true,
+                                    //    dataType: 'JSONP',// 解决跨域问题
+                                    //    //header: {
+                                    //    //    "access-control-allow-origin": "*",
+                                    //    //    "Referer": "https://wx2.qq.com/?&lang=zh_CN",
+                                    //    //    "Originn": "https://wx2.qq.com/?&lang=zh_CN"
+                                    //    //},
+                                    //    data: {
+                                    //        BaseRequest: {
+                                    //            Uin: redirectResponseData.wxuin,
+                                    //            Sid: redirectResponseData.wxsid,
+                                    //            Skey: redirectResponseData.skey,
+                                    //            DeviceID: getDeviceid()
+                                    //        }
+                                    //    },
+                                    //    success: function (data) {
+                                    //        console.log(data);
+                                    //    }
+                                    //});
                             })
+
                             .error(function (data) {
                                 console.log(data);
                                 alert("服务器异常，请联系管理员!");

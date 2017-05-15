@@ -2,7 +2,10 @@ package com.water.bocai.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.water.bocai.utils.entry.*;
+import com.water.bocai.utils.entry.MessageStatus;
+import com.water.bocai.utils.entry.RedirectResponseData;
+import com.water.bocai.utils.entry.ResponseData;
+import com.water.bocai.utils.entry.WXConstant;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -117,15 +120,6 @@ public class WeixinHelper {
         return resultMap;
     }
 
-    public static ResponseData visitRedirectUri(String redirect_uri) {
-        System.setProperty("jsse.enableSNIExtension", "false");
-        ResponseData responseData = HttpRequestTool.getRequest(redirect_uri, false);
-        String xmlData = responseData.getHtmlPage();
-        RedirectResponseData redirectResponseData = getRedirectData(xmlData);
-        responseData.setRedirectResponseData(redirectResponseData);
-        return responseData;
-    }
-
     public static String loopCheckIsLogin(String uuid) {
         System.out.println("请扫一下微信登录二维码");
         String returnStr = null;
@@ -166,15 +160,28 @@ public class WeixinHelper {
         return returnStr;
     }
 
+    public static ResponseData visitRedirectUri(String redirect_uri) {
+        System.setProperty("jsse.enableSNIExtension", "false");
+        ResponseData responseData = HttpRequestTool.getRequest(redirect_uri, false);
+        String xmlData = responseData.getHtmlPage();
+        RedirectResponseData redirectResponseData = getRedirectData(xmlData);
+        responseData.setRedirectResponseData(redirectResponseData);
+        return responseData;
+    }
+
     public static void initWebWXInfo(CookieStore cookieStore,
                                      RedirectResponseData redirectResponseData,
                                      String r,
                                      String devicedId) throws IOException {
         System.setProperty("jsse.enableSNIExtension", "false");
         Map<String, String> cookieMap = tramsformCookieStore2Map(cookieStore);
-        String url = "https://wx.qq.com/cgi-bin/mmwebwx-bin/webwxinit?r=%s&lang=zh_CN&pass_ticket=%s";
+        String url = "https://wx.qq.com/cgi-bin/mmwebwx-bin/webwxinit?pass_ticket=%s&skey=%s&r=%s";
+//        String url = "https://wx.qq.com/cgi-bin/mmwebwx-bin/webwxinit?r=%s&lang=zh_CN&pass_ticket=%s";
 //        String url = "https://wx.qq.com/cgi-bin/mmwebwx-bin/webwxinit?r=%s";
-        url = String.format(url, r, redirectResponseData.getPass_ticket());
+        url = String.format(url,
+                URLEncoder.encode(redirectResponseData.getPass_ticket()),
+                URLEncoder.encode(redirectResponseData.getSkey()),
+                r);
         System.out.println("url=" + url);
         String fuJsonParamStr = "{BaseRequest:{DeviceID:\"%s\",Sid:\"%s\",Skey:\"%s\",Uin:\"%s\"}}";
 //        String fuJsonParamStr = "{BaseRequest:{DeviceID:\"%s\",Sid:\"%s\",Skey:\"%s\",Uin:\"%s\"}}";
@@ -189,24 +196,28 @@ public class WeixinHelper {
 //        cookieStore.addCookie(new MyCookie("last_wxuin", cookieMap.get(WXConstant.WXUIN)));
 //        cookieStore.addCookie(new MyCookie("MM_WX_NOTIFY_STATE", "1"));
 //        cookieStore.addCookie(new MyCookie("MM_WX_SOUND_STATE", "1"));
-        httpClient.setCookieStore(cookieStore);
+//        httpClient.setCookieStore(cookieStore);
         HttpPost method = new HttpPost(url);
-        Map<String, String> headerMap = StringUtil.getHeaderMap(cookieStore);
-        if (headerMap != null && headerMap.entrySet().size() > 0) {
-            int i = 0;
-            Header[] headers = new Header[headerMap.entrySet().size()];
-            for (Map.Entry<String, String> header : headerMap.entrySet()) {
-                headers[i] = new BasicHeader(header.getKey(), header.getValue());
-                i++;
-            }
-            method.setHeaders(headers);
-        }
+//        Map<String, String> headerMap = StringUtil.getHeaderMap(cookieStore);
+//        if (headerMap != null && headerMap.entrySet().size() > 0) {
+//            int i = 0;
+//            Header[] headers = new Header[headerMap.entrySet().size()];
+//            for (Map.Entry<String, String> header : headerMap.entrySet()) {
+//                headers[i] = new BasicHeader(header.getKey(), header.getValue());
+//                i++;
+//            }
+//            method.setHeaders(headers);
+//        }
+        Header[] headers = {
+//                new BasicHeader("ContentType", "application/x-www-form-urlencoded"),
+                new BasicHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36")
+        };
+        method.setHeaders(headers);
         StringEntity entity = new StringEntity(fuJsonParamStr, "utf-8");//解决中文乱码问题
         entity.setContentEncoding("UTF-8");
         entity.setContentType("application/json");
         method.setEntity(entity);
         HttpResponse response = httpClient.execute(method);
-
         String json = EntityUtils.toString(response.getEntity());
         for (Header header : method.getAllHeaders()) {
             System.out.println(header.getName() + ":" + header.getValue());

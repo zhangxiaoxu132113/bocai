@@ -11,17 +11,15 @@ import com.water.bocai.utils.entry.ResponseData;
 import com.water.bocai.utils.web.MapView;
 import com.water.bocai.utils.web.OperationTips;
 import org.apache.http.client.CookieStore;
-import org.apache.http.cookie.Cookie;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by zhangmiaojie on 2017/5/11.
@@ -50,9 +48,14 @@ public class WXController {
         MapView mapView = new MapView();
         String  uuid = request.getParameter("uuid");
         String  redirect_uri = WeixinHelper.loopCheckIsLogin(uuid);
+        redirect_uri +=  "&fun=new&version=v2";
         mapView.setMsg(OperationTips.TipsMsg.TIPS_SUCCESS);
         mapView.setCode(OperationTips.TipsCode.TIPS_SUCCESS);
-        mapView.putParams("redirect_uri", redirect_uri + "&fun=new&version=v2");
+        ResponseData responseData = WeixinHelper.visitRedirectUri(redirect_uri);
+        RedirectResponseData redirectResponseData = responseData.getRedirectResponseData();
+        CookieStore cookieStore = responseData.getCookieStore();
+        mapView.putParams("redirectResponseData", redirectResponseData);
+        mapView.putParams("cookieStore", cookieStore);
         WebUtils.sendJson(response, mapView.getResultMap());
     }
 
