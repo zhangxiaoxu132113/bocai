@@ -118,15 +118,14 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-
     @Override
     public ResultView getTaskList(Map<String, Object> queryMap) {
         ResultView resultView = new ResultView();
         resultView.setCode(OperationTips.TipsCode.TIPS_SUCCESS);
         resultView.setMsg(OperationTips.TipsMsg.TIPS_SUCCESS);
-        List<TaskDto> taskDtoList = taskMapper.getTaskList(queryMap);
+        List<ResultDto> taskResultList = taskMapper.getTaskList(queryMap);
         Integer total = taskMapper.countTaskList(queryMap);
-        resultView.setRows(taskDtoList);
+        resultView.setRows(taskResultList);
         resultView.setTotal(total);
         return resultView;
     }

@@ -3,20 +3,6 @@
 <mapper namespace="com.water.bocai.db.dao.extend.TaskMapperExtend">
     <!--扩展方法-->
     <select id="getTaskList" parameterType="java.util.Map" resultType="com.water.bocai.utils.web.dto.ResultDto">
-        <!--SELECT * FROM task WHERE-->
-        <!--1=1-->
-        <!--<if test="model != null">-->
-        <!--<if test="model.id != ''">-->
-        <!--AND id = #{model.id}-->
-        <!--</if>-->
-
-        <!--</if>-->
-        <!--ORDER BY create_on-->
-        <!--<if test="page != null">-->
-        <!--<if test="page.beginIndex != null and page.pageSize != null and page.pageSize > 0">-->
-        <!--LIMIT #{page.beginIndex},#{page.pageSize}-->
-        <!--</if>-->
-        <!--</if>-->
         SELECT
         t1.id,
         t1.`name`,
