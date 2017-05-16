@@ -6,6 +6,7 @@ import com.water.bocai.utils.StringUtil;
 import com.water.bocai.utils.WebUtils;
 import com.water.bocai.utils.web.OperationTips;
 import com.water.bocai.utils.web.ResultView;
+import com.water.bocai.utils.web.dto.Page;
 import com.water.bocai.utils.web.dto.ResultDto;
 import com.water.bocai.utils.web.dto.TaskDto;
 import com.water.bocai.utils.web.dto.TaskUserDto;
@@ -71,8 +72,17 @@ public class TaskController {
      * 获取开奖列表信息
      */
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public void list() {
+    public void taskList(HttpServletRequest request, HttpServletResponse response,
+                         @RequestBody TaskDto model,
+                         @RequestParam(defaultValue = "1") int currentPage,
+                         @RequestParam(defaultValue = "10") int pageSize) {
+        Map<String, Object> queryMap = new HashMap<>();
+        int begin = (currentPage - 1) * pageSize;
+        Page page = new Page(begin, pageSize, currentPage);
+        queryMap.put("page", page);
+        queryMap.put("model", model);
 
+        WebUtils.sendResult(response, taskService.getTaskList(queryMap));
     }
 
     @RequestMapping(value = "/taskUserList", method = RequestMethod.POST)
@@ -82,17 +92,16 @@ public class TaskController {
                              @RequestParam(defaultValue = "10") int pageSize) {
         Map<String, Object> queryMap = new HashMap<>();
         int begin = (currentPage - 1) * pageSize;
+        Page page = new Page(begin, pageSize, currentPage);
+        queryMap.put("page", page);
         queryMap.put("model", model);
-        queryMap.put("beginIndex", begin);
-        queryMap.put("pageSize", pageSize);
-        queryMap.put("currentPage", currentPage);
-        WebUtils.sendResult(response, taskService.getTaskUserList(queryMap));
 
+        WebUtils.sendResult(response, taskService.getTaskUserList(queryMap));
     }
 
     @RequestMapping(value = "/getLotteryResults", method = RequestMethod.POST)
-    public void getLotteryResults(HttpServletRequest request, HttpServletResponse response,@RequestBody ResultDto model) {
-        WebUtils.sendResult(response,taskService.handleLotteryResult(model));
+    public void getLotteryResults(HttpServletRequest request, HttpServletResponse response, @RequestBody ResultDto model) {
+        WebUtils.sendResult(response, taskService.handleLotteryResult(model));
     }
 
 

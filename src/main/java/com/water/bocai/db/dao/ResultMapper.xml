@@ -4,12 +4,19 @@
   <resultMap id="BaseResultMap" type="com.water.bocai.db.model.Result" >
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="task_id" property="taskId" jdbcType="VARCHAR" />
-    <result column="red1" property="red1" jdbcType="REAL" />
-    <result column="red2" property="red2" jdbcType="REAL" />
-    <result column="red3" property="red3" jdbcType="REAL" />
-    <result column="red4" property="red4" jdbcType="REAL" />
-    <result column="red5" property="red5" jdbcType="REAL" />
-    <result column="red6" property="red6" jdbcType="REAL" />
+    <result column="package_num" property="packageNum" jdbcType="INTEGER" />
+    <result column="red1" property="red1" jdbcType="INTEGER" />
+    <result column="red2" property="red2" jdbcType="INTEGER" />
+    <result column="red3" property="red3" jdbcType="INTEGER" />
+    <result column="red4" property="red4" jdbcType="INTEGER" />
+    <result column="red5" property="red5" jdbcType="INTEGER" />
+    <result column="red6" property="red6" jdbcType="INTEGER" />
+    <result column="sum" property="sum" jdbcType="INTEGER" />
+    <result column="total" property="total" jdbcType="REAL" />
+    <result column="money_out" property="moneyOut" jdbcType="REAL" />
+    <result column="money_in" property="moneyIn" jdbcType="REAL" />
+    <result column="agency_fee" property="agencyFee" jdbcType="REAL" />
+    <result column="profit" property="profit" jdbcType="REAL" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -70,7 +77,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, task_id, red1, red2, red3, red4, red5, red6
+    id, task_id, package_num, red1, red2, red3, red4, red5, red6, sum, total, money_out, 
+    money_in, agency_fee, profit
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.water.bocai.db.model.ResultCriteria" >
     select
@@ -103,12 +111,16 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.water.bocai.db.model.Result" >
-    insert into result (id, task_id, red1, 
-      red2, red3, red4, red5, 
-      red6)
-    values (#{id,jdbcType=VARCHAR}, #{taskId,jdbcType=VARCHAR}, #{red1,jdbcType=REAL}, 
-      #{red2,jdbcType=REAL}, #{red3,jdbcType=REAL}, #{red4,jdbcType=REAL}, #{red5,jdbcType=REAL}, 
-      #{red6,jdbcType=REAL})
+    insert into result (id, task_id, package_num, 
+      red1, red2, red3, red4, 
+      red5, red6, sum, total, 
+      money_out, money_in, agency_fee, 
+      profit)
+    values (#{id,jdbcType=VARCHAR}, #{taskId,jdbcType=VARCHAR}, #{packageNum,jdbcType=INTEGER}, 
+      #{red1,jdbcType=INTEGER}, #{red2,jdbcType=INTEGER}, #{red3,jdbcType=INTEGER}, #{red4,jdbcType=INTEGER}, 
+      #{red5,jdbcType=INTEGER}, #{red6,jdbcType=INTEGER}, #{sum,jdbcType=INTEGER}, #{total,jdbcType=REAL}, 
+      #{moneyOut,jdbcType=REAL}, #{moneyIn,jdbcType=REAL}, #{agencyFee,jdbcType=REAL}, 
+      #{profit,jdbcType=REAL})
   </insert>
   <insert id="insertSelective" parameterType="com.water.bocai.db.model.Result" >
     insert into result
@@ -118,6 +130,9 @@
       </if>
       <if test="taskId != null" >
         task_id,
+      </if>
+      <if test="packageNum != null" >
+        package_num,
       </if>
       <if test="red1 != null" >
         red1,
@@ -137,6 +152,24 @@
       <if test="red6 != null" >
         red6,
       </if>
+      <if test="sum != null" >
+        sum,
+      </if>
+      <if test="total != null" >
+        total,
+      </if>
+      <if test="moneyOut != null" >
+        money_out,
+      </if>
+      <if test="moneyIn != null" >
+        money_in,
+      </if>
+      <if test="agencyFee != null" >
+        agency_fee,
+      </if>
+      <if test="profit != null" >
+        profit,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -145,23 +178,44 @@
       <if test="taskId != null" >
         #{taskId,jdbcType=VARCHAR},
       </if>
+      <if test="packageNum != null" >
+        #{packageNum,jdbcType=INTEGER},
+      </if>
       <if test="red1 != null" >
-        #{red1,jdbcType=REAL},
+        #{red1,jdbcType=INTEGER},
       </if>
       <if test="red2 != null" >
-        #{red2,jdbcType=REAL},
+        #{red2,jdbcType=INTEGER},
       </if>
       <if test="red3 != null" >
-        #{red3,jdbcType=REAL},
+        #{red3,jdbcType=INTEGER},
       </if>
       <if test="red4 != null" >
-        #{red4,jdbcType=REAL},
+        #{red4,jdbcType=INTEGER},
       </if>
       <if test="red5 != null" >
-        #{red5,jdbcType=REAL},
+        #{red5,jdbcType=INTEGER},
       </if>
       <if test="red6 != null" >
-        #{red6,jdbcType=REAL},
+        #{red6,jdbcType=INTEGER},
+      </if>
+      <if test="sum != null" >
+        #{sum,jdbcType=INTEGER},
+      </if>
+      <if test="total != null" >
+        #{total,jdbcType=REAL},
+      </if>
+      <if test="moneyOut != null" >
+        #{moneyOut,jdbcType=REAL},
+      </if>
+      <if test="moneyIn != null" >
+        #{moneyIn,jdbcType=REAL},
+      </if>
+      <if test="agencyFee != null" >
+        #{agencyFee,jdbcType=REAL},
+      </if>
+      <if test="profit != null" >
+        #{profit,jdbcType=REAL},
       </if>
     </trim>
   </insert>
@@ -180,23 +234,44 @@
       <if test="record.taskId != null" >
         task_id = #{record.taskId,jdbcType=VARCHAR},
       </if>
+      <if test="record.packageNum != null" >
+        package_num = #{record.packageNum,jdbcType=INTEGER},
+      </if>
       <if test="record.red1 != null" >
-        red1 = #{record.red1,jdbcType=REAL},
+        red1 = #{record.red1,jdbcType=INTEGER},
       </if>
       <if test="record.red2 != null" >
-        red2 = #{record.red2,jdbcType=REAL},
+        red2 = #{record.red2,jdbcType=INTEGER},
       </if>
       <if test="record.red3 != null" >
-        red3 = #{record.red3,jdbcType=REAL},
+        red3 = #{record.red3,jdbcType=INTEGER},
       </if>
       <if test="record.red4 != null" >
-        red4 = #{record.red4,jdbcType=REAL},
+        red4 = #{record.red4,jdbcType=INTEGER},
       </if>
       <if test="record.red5 != null" >
-        red5 = #{record.red5,jdbcType=REAL},
+        red5 = #{record.red5,jdbcType=INTEGER},
       </if>
       <if test="record.red6 != null" >
-        red6 = #{record.red6,jdbcType=REAL},
+        red6 = #{record.red6,jdbcType=INTEGER},
+      </if>
+      <if test="record.sum != null" >
+        sum = #{record.sum,jdbcType=INTEGER},
+      </if>
+      <if test="record.total != null" >
+        total = #{record.total,jdbcType=REAL},
+      </if>
+      <if test="record.moneyOut != null" >
+        money_out = #{record.moneyOut,jdbcType=REAL},
+      </if>
+      <if test="record.moneyIn != null" >
+        money_in = #{record.moneyIn,jdbcType=REAL},
+      </if>
+      <if test="record.agencyFee != null" >
+        agency_fee = #{record.agencyFee,jdbcType=REAL},
+      </if>
+      <if test="record.profit != null" >
+        profit = #{record.profit,jdbcType=REAL},
       </if>
     </set>
     <if test="_parameter != null" >
@@ -207,12 +282,19 @@
     update result
     set id = #{record.id,jdbcType=VARCHAR},
       task_id = #{record.taskId,jdbcType=VARCHAR},
-      red1 = #{record.red1,jdbcType=REAL},
-      red2 = #{record.red2,jdbcType=REAL},
-      red3 = #{record.red3,jdbcType=REAL},
-      red4 = #{record.red4,jdbcType=REAL},
-      red5 = #{record.red5,jdbcType=REAL},
-      red6 = #{record.red6,jdbcType=REAL}
+      package_num = #{record.packageNum,jdbcType=INTEGER},
+      red1 = #{record.red1,jdbcType=INTEGER},
+      red2 = #{record.red2,jdbcType=INTEGER},
+      red3 = #{record.red3,jdbcType=INTEGER},
+      red4 = #{record.red4,jdbcType=INTEGER},
+      red5 = #{record.red5,jdbcType=INTEGER},
+      red6 = #{record.red6,jdbcType=INTEGER},
+      sum = #{record.sum,jdbcType=INTEGER},
+      total = #{record.total,jdbcType=REAL},
+      money_out = #{record.moneyOut,jdbcType=REAL},
+      money_in = #{record.moneyIn,jdbcType=REAL},
+      agency_fee = #{record.agencyFee,jdbcType=REAL},
+      profit = #{record.profit,jdbcType=REAL}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -223,23 +305,44 @@
       <if test="taskId != null" >
         task_id = #{taskId,jdbcType=VARCHAR},
       </if>
+      <if test="packageNum != null" >
+        package_num = #{packageNum,jdbcType=INTEGER},
+      </if>
       <if test="red1 != null" >
-        red1 = #{red1,jdbcType=REAL},
+        red1 = #{red1,jdbcType=INTEGER},
       </if>
       <if test="red2 != null" >
-        red2 = #{red2,jdbcType=REAL},
+        red2 = #{red2,jdbcType=INTEGER},
       </if>
       <if test="red3 != null" >
-        red3 = #{red3,jdbcType=REAL},
+        red3 = #{red3,jdbcType=INTEGER},
       </if>
       <if test="red4 != null" >
-        red4 = #{red4,jdbcType=REAL},
+        red4 = #{red4,jdbcType=INTEGER},
       </if>
       <if test="red5 != null" >
-        red5 = #{red5,jdbcType=REAL},
+        red5 = #{red5,jdbcType=INTEGER},
       </if>
       <if test="red6 != null" >
-        red6 = #{red6,jdbcType=REAL},
+        red6 = #{red6,jdbcType=INTEGER},
+      </if>
+      <if test="sum != null" >
+        sum = #{sum,jdbcType=INTEGER},
+      </if>
+      <if test="total != null" >
+        total = #{total,jdbcType=REAL},
+      </if>
+      <if test="moneyOut != null" >
+        money_out = #{moneyOut,jdbcType=REAL},
+      </if>
+      <if test="moneyIn != null" >
+        money_in = #{moneyIn,jdbcType=REAL},
+      </if>
+      <if test="agencyFee != null" >
+        agency_fee = #{agencyFee,jdbcType=REAL},
+      </if>
+      <if test="profit != null" >
+        profit = #{profit,jdbcType=REAL},
       </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
@@ -247,12 +350,19 @@
   <update id="updateByPrimaryKey" parameterType="com.water.bocai.db.model.Result" >
     update result
     set task_id = #{taskId,jdbcType=VARCHAR},
-      red1 = #{red1,jdbcType=REAL},
-      red2 = #{red2,jdbcType=REAL},
-      red3 = #{red3,jdbcType=REAL},
-      red4 = #{red4,jdbcType=REAL},
-      red5 = #{red5,jdbcType=REAL},
-      red6 = #{red6,jdbcType=REAL}
+      package_num = #{packageNum,jdbcType=INTEGER},
+      red1 = #{red1,jdbcType=INTEGER},
+      red2 = #{red2,jdbcType=INTEGER},
+      red3 = #{red3,jdbcType=INTEGER},
+      red4 = #{red4,jdbcType=INTEGER},
+      red5 = #{red5,jdbcType=INTEGER},
+      red6 = #{red6,jdbcType=INTEGER},
+      sum = #{sum,jdbcType=INTEGER},
+      total = #{total,jdbcType=REAL},
+      money_out = #{moneyOut,jdbcType=REAL},
+      money_in = #{moneyIn,jdbcType=REAL},
+      agency_fee = #{agencyFee,jdbcType=REAL},
+      profit = #{profit,jdbcType=REAL}
     where id = #{id,jdbcType=VARCHAR}
   </update>
   <select resultMap="BaseResultMap" parameterType="com.water.bocai.db.model.ResultCriteria" id="selectByExampleWithRowbounds" >
@@ -270,11 +380,14 @@
     </if>
   </select>
   <insert id="insertBatch" >
-    insert into result (id, task_id, red1, red2, red3, red4, red5, red6) values 
+    insert into result (id, task_id, package_num, red1, red2, red3, red4, red5, red6, sum, total, money_out, money_in, agency_fee, profit) values 
     <foreach collection="list" item="item" index="index" separator="," >
-      (#{item.id,jdbcType=VARCHAR}, #{item.taskId,jdbcType=VARCHAR}, #{item.red1,jdbcType=REAL}, 
-        #{item.red2,jdbcType=REAL}, #{item.red3,jdbcType=REAL}, #{item.red4,jdbcType=REAL}, 
-        #{item.red5,jdbcType=REAL}, #{item.red6,jdbcType=REAL})
+      (#{item.id,jdbcType=VARCHAR}, #{item.taskId,jdbcType=VARCHAR}, #{item.packageNum,jdbcType=INTEGER}, 
+        #{item.red1,jdbcType=INTEGER}, #{item.red2,jdbcType=INTEGER}, #{item.red3,jdbcType=INTEGER}, 
+        #{item.red4,jdbcType=INTEGER}, #{item.red5,jdbcType=INTEGER}, #{item.red6,jdbcType=INTEGER}, 
+        #{item.sum,jdbcType=INTEGER}, #{item.total,jdbcType=REAL}, #{item.moneyOut,jdbcType=REAL}, 
+        #{item.moneyIn,jdbcType=REAL}, #{item.agencyFee,jdbcType=REAL}, #{item.profit,jdbcType=REAL}
+        )
     </foreach>
   </insert>
 </mapper>

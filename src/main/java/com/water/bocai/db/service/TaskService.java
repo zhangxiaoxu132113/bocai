@@ -15,4 +15,6 @@ public interface TaskService {
     ResultView getTaskUserList(Map<String, Object> queryMap);
 
     ResultView handleLotteryResult(ResultDto model);
+
+    ResultView getTaskList(Map<String, Object> queryMap);
 }
