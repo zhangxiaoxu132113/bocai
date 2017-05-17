@@ -1,0 +1,85 @@
+<script src="/production/js/echart/echarts.min.js"></script>
+<script src="/production/js/echart/theme/infographic.js"></script>
+<script src="/production/js/echart/theme/macarons.js"></script>
+<script src="/production/js/echart/theme/roma.js"></script>
+<script src="/production/js/echart/theme/shine.js"></script>
+<script src="/production/js/echart/theme/vintage.js"></script>
+<script>
+
+</script>
+<style>
+
+    .chart-table-container-inner table tr:first-child {
+        background:#ebeced;
+    }
+    .chart-table-container-inner table tr td:first-child {
+        background:#ebeced;
+    }
+    .chart-table-container-inner table tr td {
+        border: #ccc;
+        color: #5a5a5b;
+    }
+
+</style>
+<div ng-controller="chartCtrl">
+    <div class="search-conditional">
+        <table>
+            <tr>
+                <td><lable>时间单位</lable></td>
+                <td>
+                    <select name="" id="">
+                        <option value="">天</option>
+                        <option value="">周</option>
+                        <option value="">月</option>
+                        <option value="">年</option>
+                    </select>
+                </td>
+                <td><lable>时间范围</lable></td>
+                <td>开始时间</td>
+                <td></td>
+                <td>结束时间</td>
+                <td></td>
+            </tr>
+        </table>
+        <div id="chart-container">
+            <div class="chart-container-inner" style="width:100%;height:400px;">
+                <div id="chart" style="width: 100%;height: 100%" ></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="chart-table-container">
+        <div class="chart-table-container-inner">
+            <table class="table" style="margin-top: 3em;">
+                <tr>
+                    <td>编号</td>
+                    <td>单位</td>
+                    <td>时间</td>
+                    <td>纯收益</td>
+                    <td>佣金收入</td>
+                    <td>赢包位收入</td>
+                    <td>赔包位收入</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>周</td>
+                    <td>星期一</td>
+                    <td>18000</td>
+                    <td>2000</td>
+                    <td>18000</td>
+                    <td>2000</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>周</td>
+                    <td>星期一</td>
+                    <td>18000</td>
+                    <td>2000</td>
+                    <td>18000</td>
+                    <td>2000</td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+</div>

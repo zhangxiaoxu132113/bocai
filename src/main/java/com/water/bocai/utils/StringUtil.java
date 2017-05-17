@@ -73,16 +73,22 @@ public class StringUtil {
 //        headerMap.put("Cookie",cookie);
         return headerMap;
     }
-//2000 50
-//3000 100
-//4000 150
+    private static float getAgencyFee(float total) {
+        int flag = 2000;
+        float agencyFee = 50F;
+        if (total > flag) {
+            agencyFee = 50 + ((total - flag) / 1000) * 50;
+        }
+        return agencyFee;
+    }
 
 
     public static void main(String[] args) {
-        int total = 2100;
-        int flag = 2000;
-        if (total < 2000) return;
-        float agencyFee = 50 + ((total - flag) / 1000)* 50;
-        System.out.println(agencyFee);
+//        int total = 2100;
+//        int flag = 2000;
+//        if (total < 2000) return;
+//        float agencyFee = 50 + ((total - flag) / 1000)* 50;
+//        System.out.println(agencyFee);
+        System.out.println(getAgencyFee(56));
     }
 }

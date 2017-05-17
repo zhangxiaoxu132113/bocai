@@ -88,12 +88,17 @@ public class TaskServiceImpl implements TaskService {
         resultView.setCode(OperationTips.TipsCode.TIPS_FAIL);
         String taskId = model.getTaskId();
         Integer packageNum = model.getPackageNum();
+        Task task = taskMapper.selectByPrimaryKey(taskId);
+        if (packageNum == null || packageNum <= 0) {
+            resultView.setMsg("请输入庄家压的包位");
+            return resultView;
+        }
         if (StringUtils.isBlank(taskId)) {
             resultView.setMsg("参数不正确，没有传递taskid");
             return resultView;
         }
-        if (packageNum == null || packageNum <= 0) {
-            resultView.setMsg("请输入庄家压的包位");
+        if (task.getStatus().equals(Constants.TASK_STATUS.FINISHED)) {
+            resultView.setMsg("任务已经结束，请走查询结果的通道");
             return resultView;
         }
         Map<String, Object> queryMap = new HashMap<>();
@@ -106,7 +111,9 @@ public class TaskServiceImpl implements TaskService {
             Map<String, Integer> resultMap = getResultMap(model);
             ResultDto resultDto = handleResult(model,taskUserList, packageNum, resultMap);
             BeanUtils.copyProperties(resultDto, origin_result);
+            task.setStatus(Constants.TASK_STATUS.FINISHED.getIndex());
             resultMapper.insert(origin_result);
+            taskMapper.updateByPrimaryKeySelective(task);
             resultView.setCode(OperationTips.TipsCode.TIPS_SUCCESS);
             resultView.setMsg(OperationTips.TipsMsg.TIPS_SUCCESS);
             resultView.setRows(model);
@@ -253,11 +260,10 @@ public class TaskServiceImpl implements TaskService {
      */
     private float getAgencyFee(float total) {
         int flag = 2000;
-        float agencyFee = 0F;
-        if (total < 2000) {
+        float agencyFee = 50F;
+        if (total > flag) {
             agencyFee = 50 + ((total - flag) / 1000) * 50;
-            return agencyFee;
         }
-        return 0F;
+        return agencyFee;
     }
 }
