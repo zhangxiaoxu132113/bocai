@@ -12,9 +12,9 @@ app.config(["$stateProvider", "$urlRouterProvider", "$httpProvider", function ($
             url: "/wxlogin",
             templateUrl: "/production/wxlogin.html"
         })
-        .state('tradLog', {
-            url: "/tradLog",
-            templateUrl: "/template/account/tradLog.html"
+        .state('chart_report', {
+            url: "/chart_report",
+            templateUrl: "/production/chart_report.html"
         })
         .state('integral', {
             url: "/integral",
@@ -343,4 +343,101 @@ app.controller("xiazhuCtrl", function ($scope, $http) {
                 $('.resultDlg').css("display", "none");
             });
     }
+});
+
+app.controller("chartCtrl", function($scope, $http) {
+    var myChart = echarts.init(document.getElementById('chart'), 'macarons');
+    var options = {
+        title : {
+            text: '可视化报表',
+            subtext: '一周的数据'
+        },
+        grid: {
+            left: '1%',
+            right: '3%',
+            bottom: '4%',
+            containLabel: true
+        },
+        tooltip : {
+            trigger: 'axis'
+        },
+        legend: {
+            data:['纯收益','共进金额', "赔出金额"]
+        },
+        toolbox: {
+            show : true,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                magicType : {show: true, type: ['line', 'bar']},
+                restore : {show: true},
+                saveAsImage : {show: true}
+            }
+        },
+        calculable : true,
+        xAxis : [
+            {
+                type : 'category',
+                boundaryGap : false,
+                data : ['周一','周二','周三','周四','周五','周六','周日']
+            }
+        ],
+        yAxis : [
+            {
+                type : 'value',
+                axisLabel : {
+                    formatter: '{value} ￥'
+                }
+            }
+        ],
+        series : [
+            {
+                name:'纯收益',
+                type:'line',
+                data:[12000, 8000, 20000, -2000, 7000, 8000, 10000],
+                markPoint : {
+                    data : [
+                        {type : 'max', name: '最大值'},
+                        {type : 'min', name: '最小值'}
+                    ]
+                },
+                markLine : {
+                    data : [
+                        {type : 'average', name: '平均值'}
+                    ]
+                }
+            },
+            {
+                name:'共进金额',
+                type:'line',
+                data:[2000,4500, 8000, 14000, 3000, 2100, 1560],
+                markPoint : {
+                    data : [
+                        {name : '最低', value : -2, xAxis: 1, yAxis: -1.5}
+                    ]
+                },
+                markLine : {
+                    data : [
+                        {type : 'average', name : '平均值'}
+                    ]
+                }
+            },
+            {
+                name:'赔出金额',
+                type:'line',
+                data:[400, 800, 7000, 500, 300, 200, 1000],
+                markPoint : {
+                    data : [
+                        {name : '最低', value : -2, xAxis: 1, yAxis: -1.5}
+                    ]
+                },
+                markLine : {
+                    data : [
+                        {type : 'average', name : '平均值'}
+                    ]
+                }
+            }
+        ]
+    };
+    myChart.setOption(options);
 });
