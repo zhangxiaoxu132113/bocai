@@ -16,9 +16,11 @@
             result result
         ON task.id = result.task_id
         WHERE 1=1
+        <if test="startTime != null and endTime != null">
             <if test="startTime != '' and endTime != ''">
-                task.create_on BETWEEN #{startTime}
+                AND task.create_on BETWEEN #{startTime}
                 AND date_add(#{endTime}, INTERVAL 1 DAY)
+            </if>
         </if>
         GROUP BY time
         <if test="startTime == '' and endTime == ''">

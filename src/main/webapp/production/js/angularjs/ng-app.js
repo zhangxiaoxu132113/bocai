@@ -149,29 +149,29 @@ app.controller("wxCtrl", function ($scope, $http) {
                                         alert("服务器异常，请联系管理员!");
                                     });
 
-                                    //$.ajax({
-                                    //    url: init_url,
-                                    //    type: "POST",
-                                    //    contentType: 'application/json; charset=utf-8', // 很重要
-                                    //    traditional: true,
-                                    //    dataType: 'JSONP',// 解决跨域问题
-                                    //    //header: {
-                                    //    //    "access-control-allow-origin": "*",
-                                    //    //    "Referer": "https://wx2.qq.com/?&lang=zh_CN",
-                                    //    //    "Originn": "https://wx2.qq.com/?&lang=zh_CN"
-                                    //    //},
-                                    //    data: {
-                                    //        BaseRequest: {
-                                    //            Uin: redirectResponseData.wxuin,
-                                    //            Sid: redirectResponseData.wxsid,
-                                    //            Skey: redirectResponseData.skey,
-                                    //            DeviceID: getDeviceid()
-                                    //        }
-                                    //    },
-                                    //    success: function (data) {
-                                    //        console.log(data);
-                                    //    }
-                                    //});
+                                //$.ajax({
+                                //    url: init_url,
+                                //    type: "POST",
+                                //    contentType: 'application/json; charset=utf-8', // 很重要
+                                //    traditional: true,
+                                //    dataType: 'JSONP',// 解决跨域问题
+                                //    //header: {
+                                //    //    "access-control-allow-origin": "*",
+                                //    //    "Referer": "https://wx2.qq.com/?&lang=zh_CN",
+                                //    //    "Originn": "https://wx2.qq.com/?&lang=zh_CN"
+                                //    //},
+                                //    data: {
+                                //        BaseRequest: {
+                                //            Uin: redirectResponseData.wxuin,
+                                //            Sid: redirectResponseData.wxsid,
+                                //            Skey: redirectResponseData.skey,
+                                //            DeviceID: getDeviceid()
+                                //        }
+                                //    },
+                                //    success: function (data) {
+                                //        console.log(data);
+                                //    }
+                                //});
                             })
 
                             .error(function (data) {
@@ -345,113 +345,139 @@ app.controller("xiazhuCtrl", function ($scope, $http) {
     }
 });
 
-app.controller("chartCtrl", function($scope, $http) {
+app.controller("chartCtrl", function ($scope, $http) {
     var myChart = echarts.init(document.getElementById('chart'), 'macarons');
-
     var options = {
-        title : {
-            text: '可视化报表',
-            subtext: '一周的数据'
-        },
+        //title: {
+        //    text: '可视化报表',
+        //    subtext: '一周的数据'
+        //},
         grid: {
             left: '1%',
             right: '3%',
             bottom: '4%',
             containLabel: true
         },
-        tooltip : {
+        tooltip: {
             trigger: 'axis'
         },
         legend: {
-            data:['纯收益','共进金额', "赔出金额"]
+            data: ['纯收益', '共进金额', "赔出金额"]
         },
         toolbox: {
-            show : true,
-            feature : {
-                mark : {show: true},
-                dataView : {show: true, readOnly: false},
-                magicType : {show: true, type: ['line', 'bar']},
-                restore : {show: true},
-                saveAsImage : {show: true}
+            show: true,
+            feature: {
+                mark: {show: true},
+                dataView: {show: true, readOnly: false},
+                magicType: {show: true, type: ['line', 'bar']},
+                restore: {show: true},
+                saveAsImage: {show: true}
             }
         },
-        calculable : true,
-        xAxis : [
-            {
-                type : 'category',
-                boundaryGap : false,
-                data : ['周一','周二','周三','周四','周五','周六','周日']
-            }
-        ],
-        yAxis : [
-            {
-                type : 'value',
-                axisLabel : {
-                    formatter: '{value} ￥'
-                }
-            }
-        ],
-        series : [
-            {
-                name:'纯收益',
-                type:'line',
-                data:[12000, 8000, 20000, -2000, 7000, 8000, 10000],
-                markPoint : {
-                    data : [
-                        {type : 'max', name: '最大值'},
-                        {type : 'min', name: '最小值'}
-                    ]
-                },
-                markLine : {
-                    data : [
-                        {type : 'average', name: '平均值'}
-                    ]
-                }
-            },
-            {
-                name:'共进金额',
-                type:'line',
-                data:[2000,4500, 8000, 14000, 3000, 2100, 1560],
-                markPoint : {
-                    data : [
-                        {name : '最低', value : -2, xAxis: 1, yAxis: -1.5}
-                    ]
-                },
-                markLine : {
-                    data : [
-                        {type : 'average', name : '平均值'}
-                    ]
-                }
-            },
-            {
-                name:'赔出金额',
-                type:'line',
-                data:[400, 800, 7000, 500, 300, 200, 1000],
-                markPoint : {
-                    data : [
-                        {name : '最低', value : -2, xAxis: 1, yAxis: -1.5}
-                    ]
-                },
-                markLine : {
-                    data : [
-                        {type : 'average', name : '平均值'}
-                    ]
-                }
-            }
-        ]
+        calculable: true
+        //xAxis: [
+        //    {
+        //        type: 'category',
+        //        boundaryGap: false,
+        //        data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+        //    }
+        //],
+        //yAxis: [
+        //    {
+        //        type: 'value',
+        //        axisLabel: {
+        //            formatter: '{value} ￥'
+        //        }
+        //    }
+        //]
+        //series : [
+        //    {
+        //        name:'纯收益',
+        //        type:'line',
+        //        data:[12000, 8000, 20000, -2000, 7000, 8000, 10000],
+        //        markPoint : {
+        //            data : [
+        //                {type : 'max', name: '最大值'},
+        //                {type : 'min', name: '最小值'}
+        //            ]
+        //        },
+        //        markLine : {
+        //            data : [
+        //                {type : 'average', name: '平均值'}
+        //            ]
+        //        }
+        //    },
+        //    {
+        //        name:'共进金额',
+        //        type:'line',
+        //        data:[2000,4500, 8000, 14000, 3000, 2100, 1560],
+        //        markPoint : {
+        //            data : [
+        //                {name : '最低', value : -2, xAxis: 1, yAxis: -1.5}
+        //            ]
+        //        },
+        //        markLine : {
+        //            data : [
+        //                {type : 'average', name : '平均值'}
+        //            ]
+        //        }
+        //    },
+        //    {
+        //        name:'赔出金额',
+        //        type:'line',
+        //        data:[400, 800, 7000, 500, 300, 200, 1000],
+        //        markPoint : {
+        //            data : [
+        //                {name : '最低', value : -2, xAxis: 1, yAxis: -1.5}
+        //            ]
+        //        },
+        //        markLine : {
+        //            data : [
+        //                {type : 'average', name : '平均值'}
+        //            ]
+        //        }
+        //    }
+        //]
     };
+    $http({
+        url: "/task/getChartData",
+        method: "POST",
+        data: {
+            queryStartTime: '2017-5-01',
+            queryEndTime: '2017-5-19'
+        }
+    })
+        .success(function (data) {
+            if (data.code == 1) {
+                myChart.setOption({
+                    title: {
+                        text: data.title_text,
+                        subtext:  data.title_subtext
+                    },
+                    legend: {
+                        data: data.legend_data
+                    },
+                    xAxis: {
+                        data: data.xAxis
+                    },
+                    yAxis: [
+                            {
+                                type: 'value',
+                                axisLabel: {
+                                    formatter: '{value} ￥'
+                                }
+                            }
+                        ],
+                    series: data.series
+                });
+            } else {
+                alert("服务器异常，请联系管理员!");
+            }
+        })
+        .error(function (data) {
+            console.log(data);
+            alert("服务器异常，请联系管理员!");
+        });
     myChart.setOption(options);
-    myChart.setOption({
-        title: {
-            text: data.rows.text
-        },
-        legend: {
-            data: data.rows.legendArr
-        },
-        xAxis: {
-            data: data.rows.dateArr
-        },
-        yAxis: data.rows.yAxisArr,
-        series: data.rows.dataArr
-    });
+
 });
