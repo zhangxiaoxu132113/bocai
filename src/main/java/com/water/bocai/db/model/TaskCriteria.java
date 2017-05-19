@@ -1,6 +1,7 @@
 package com.water.bocai.db.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TaskCriteria {
@@ -554,52 +555,52 @@ public class TaskCriteria {
             return (Criteria) this;
         }
 
-        public Criteria andCreateOnEqualTo(Long value) {
+        public Criteria andCreateOnEqualTo(Date value) {
             addCriterion("create_on =", value, "createOn");
             return (Criteria) this;
         }
 
-        public Criteria andCreateOnNotEqualTo(Long value) {
+        public Criteria andCreateOnNotEqualTo(Date value) {
             addCriterion("create_on <>", value, "createOn");
             return (Criteria) this;
         }
 
-        public Criteria andCreateOnGreaterThan(Long value) {
+        public Criteria andCreateOnGreaterThan(Date value) {
             addCriterion("create_on >", value, "createOn");
             return (Criteria) this;
         }
 
-        public Criteria andCreateOnGreaterThanOrEqualTo(Long value) {
+        public Criteria andCreateOnGreaterThanOrEqualTo(Date value) {
             addCriterion("create_on >=", value, "createOn");
             return (Criteria) this;
         }
 
-        public Criteria andCreateOnLessThan(Long value) {
+        public Criteria andCreateOnLessThan(Date value) {
             addCriterion("create_on <", value, "createOn");
             return (Criteria) this;
         }
 
-        public Criteria andCreateOnLessThanOrEqualTo(Long value) {
+        public Criteria andCreateOnLessThanOrEqualTo(Date value) {
             addCriterion("create_on <=", value, "createOn");
             return (Criteria) this;
         }
 
-        public Criteria andCreateOnIn(List<Long> values) {
+        public Criteria andCreateOnIn(List<Date> values) {
             addCriterion("create_on in", values, "createOn");
             return (Criteria) this;
         }
 
-        public Criteria andCreateOnNotIn(List<Long> values) {
+        public Criteria andCreateOnNotIn(List<Date> values) {
             addCriterion("create_on not in", values, "createOn");
             return (Criteria) this;
         }
 
-        public Criteria andCreateOnBetween(Long value1, Long value2) {
+        public Criteria andCreateOnBetween(Date value1, Date value2) {
             addCriterion("create_on between", value1, value2, "createOn");
             return (Criteria) this;
         }
 
-        public Criteria andCreateOnNotBetween(Long value1, Long value2) {
+        public Criteria andCreateOnNotBetween(Date value1, Date value2) {
             addCriterion("create_on not between", value1, value2, "createOn");
             return (Criteria) this;
         }

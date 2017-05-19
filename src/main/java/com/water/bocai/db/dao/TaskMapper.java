@@ -3,9 +3,10 @@ package com.water.bocai.db.dao;
 import com.water.bocai.db.dao.extend.TaskMapperExtend;
 import com.water.bocai.db.model.Task;
 import com.water.bocai.db.model.TaskCriteria;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
+
+import java.util.List;
 
 public interface TaskMapper extends TaskMapperExtend {
     int countByExample(TaskCriteria example);

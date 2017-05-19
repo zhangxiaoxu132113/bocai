@@ -20,7 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +45,7 @@ public class TaskServiceImpl implements TaskService {
         task.setId(StringUtil.uuid());
         task.setName(StringUtil.getTaskName());
         task.setStatus(Constants.TASK_STATUS.RUNING.getIndex());
-        task.setCreateOn(System.currentTimeMillis());
+        task.setCreateOn(new Date());
         task.setStartTime(System.currentTimeMillis());
         if (taskMapper.insert(task) != -1) {
             resultView.setCode(OperationTips.TipsCode.TIPS_SUCCESS);
@@ -63,11 +63,19 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public ResultView saveTaskUser(List<TaskUser> taskUserList) {
+        ResultView resultView = new ResultView();
         if (taskUserList == null || taskUserList.size() == 0) {
-            return new ResultView(OperationTips.TipsCode.TIPS_FAIL, OperationTips.TipsMsg.TIPS_FAIL);
+            resultView.setCode(OperationTips.TipsCode.TIPS_FAIL);
+            resultView.setMsg(OperationTips.TipsMsg.TIPS_FAIL);
+            return resultView;
+        } else {
+            taskUserMapper.insertBatch(taskUserList);
+            resultView.setRows(taskUserList);
+            resultView.setCode(OperationTips.TipsCode.TIPS_SUCCESS);
+            resultView.setMsg(OperationTips.TipsMsg.TIPS_SUCCESS);
         }
-        taskUserMapper.insertBatch(taskUserList);
-        return new ResultView(OperationTips.TipsCode.TIPS_SUCCESS, OperationTips.TipsMsg.TIPS_SUCCESS);
+
+        return resultView;
     }
 
     @Override
@@ -109,16 +117,18 @@ public class TaskServiceImpl implements TaskService {
         if (taskUserList != null && !taskUserList.isEmpty()) {
             Result origin_result = new Result();
             Map<String, Integer> resultMap = getResultMap(model);
-            ResultDto resultDto = handleResult(model,taskUserList, packageNum, resultMap);
+            ResultDto resultDto = handleResult(model, taskUserList, packageNum, resultMap);
             BeanUtils.copyProperties(resultDto, origin_result);
             task.setStatus(Constants.TASK_STATUS.FINISHED.getIndex());
             resultMapper.insert(origin_result);
             taskMapper.updateByPrimaryKeySelective(task);
+
             resultView.setCode(OperationTips.TipsCode.TIPS_SUCCESS);
             resultView.setMsg(OperationTips.TipsMsg.TIPS_SUCCESS);
             resultView.setRows(model);
             return resultView;
         } else {
+
             resultView.setCode(OperationTips.TipsCode.TIPS_FAIL);
             resultView.setMsg("这一期没有用户参与！");
             return resultView;
@@ -142,28 +152,29 @@ public class TaskServiceImpl implements TaskService {
      */
     private Map<String, Integer[]> getPackageNumsResult(Integer packageNum, Map<String, Integer> resultMap) {
         Map<String, Integer[]> dataMap = new HashMap<>();
-        Integer value = resultMap.get(String.valueOf(packageNum));
+        Integer value = resultMap.get(String.format("red%s", packageNum));
         Integer packageNumName;
-        List<Integer> inPackageNums = new ArrayList<>();
-        List<Integer> outPackageNums = new ArrayList<>();
-        List<Integer> tiePackageNums = new ArrayList<>();
+        Integer[] inPackageNums = new Integer[0];
+        Integer[] outPackageNums = new Integer[0];
+        Integer[] tiePackageNums = new Integer[0];
         for (Map.Entry<String, Integer> entry : resultMap.entrySet()) {
-            packageNumName = Integer.valueOf(entry.getKey());
+            packageNumName = Integer.valueOf(entry.getKey().substring(entry.getKey().length() - 1, entry.getKey().length()));
             if (value > entry.getValue()) {
-                inPackageNums.add(packageNumName);
+                inPackageNums = addPackageCountResult(inPackageNums, packageNumName);
             } else if (value < entry.getValue()) {
-                outPackageNums.add(packageNumName);
+                outPackageNums = addPackageCountResult(outPackageNums, packageNumName);
             } else {
-                if (value > 5) {
-                    inPackageNums.add(packageNumName);
+                if (value <= 5) {
+                    inPackageNums = addPackageCountResult(inPackageNums, packageNumName);
                 } else {
-                    tiePackageNums.add(packageNumName);
+                    tiePackageNums = addPackageCountResult(tiePackageNums, packageNumName);
                 }
             }
         }
-        dataMap.put("inPackageNums", (Integer[]) inPackageNums.toArray());
-        dataMap.put("outPackageNums", (Integer[]) outPackageNums.toArray());
-        dataMap.put("tiePackageNums", (Integer[]) tiePackageNums.toArray());
+
+        dataMap.put("inPackageNums", inPackageNums);
+        dataMap.put("outPackageNums", outPackageNums);
+        dataMap.put("tiePackageNums", tiePackageNums);
         return dataMap;
     }
 
@@ -196,7 +207,7 @@ public class TaskServiceImpl implements TaskService {
         }
         float agencyFee = getAgencyFee(total);
         float profit = (moneyIn + agencyFee) - moneyOut;
-        Map<String, Integer[]> dataMap = getPackageNumsResult(packageNum,resultMap);
+        Map<String, Integer[]> dataMap = getPackageNumsResult(packageNum, resultMap);
         model.setSum(sum);
         model.setInCount(inCount);
         model.setOutCount(outCount);
@@ -265,5 +276,14 @@ public class TaskServiceImpl implements TaskService {
             agencyFee = 50 + ((total - flag) / 1000) * 50;
         }
         return agencyFee;
+    }
+
+    private Integer[] addPackageCountResult(Integer[] oldArr, Integer value) {
+        Integer[] newArr = new Integer[oldArr.length + 1];
+        for (int i = 0; i < oldArr.length; i++) {
+            newArr[i] = oldArr[i];
+        }
+        newArr[newArr.length - 1] = value;
+        return newArr;
     }
 }

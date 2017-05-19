@@ -1,2 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"><mapper namespace="com.water.bocai.db.dao.extend.ResultMapperExtend"><!--扩展方法--></mapper>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.water.bocai.db.dao.extend.ResultMapperExtend">
+    <!--扩展方法-->
+    <select id="getHistoryStatisticsData" parameterType="java.util.Map" resultType="com.water.bocai.utils.web.dto.StatisticsData">
+        SELECT
+            DATE_FORMAT(create_on, '%Y-%m-%d') AS time,
+            SUM(result.agency_fee) as 'agencyFeeTotal',
+            SUM(result.total) as 'touZhuTotal',
+            SUM(result.profit) as 'profitTotal',
+            SUM(result.money_in) as 'moneyInTotal',
+            SUM(result.money_out) as 'moneyOutTotal'
+        FROM
+            task AS task
+        LEFT JOIN
+            result result
+        ON task.id = result.task_id
+        WHERE 1=1
+            <if test="startTime != '' and endTime != ''">
+                task.create_on BETWEEN #{startTime}
+                AND date_add(#{endTime}, INTERVAL 1 DAY)
+        </if>
+        GROUP BY time
+        <if test="startTime == '' and endTime == ''">
+            LIMIT #{page.beginIndex},#{page.pageSize}
+        </if>
+    </select>
+</mapper>

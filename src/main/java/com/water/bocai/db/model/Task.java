@@ -1,6 +1,7 @@
 package com.water.bocai.db.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class Task implements Serializable {
     private String id;
@@ -17,7 +18,7 @@ public class Task implements Serializable {
 
     private Long endTime;
 
-    private Long createOn;
+    private Date createOn;
 
     private static final long serialVersionUID = 1L;
 
@@ -77,11 +78,11 @@ public class Task implements Serializable {
         this.endTime = endTime;
     }
 
-    public Long getCreateOn() {
+    public Date getCreateOn() {
         return createOn;
     }
 
-    public void setCreateOn(Long createOn) {
+    public void setCreateOn(Date createOn) {
         this.createOn = createOn;
     }
 }

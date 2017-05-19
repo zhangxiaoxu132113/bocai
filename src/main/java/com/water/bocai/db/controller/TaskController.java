@@ -1,6 +1,7 @@
 package com.water.bocai.db.controller;
 
 import com.water.bocai.db.model.TaskUser;
+import com.water.bocai.db.service.ResultService;
 import com.water.bocai.db.service.TaskService;
 import com.water.bocai.utils.StringUtil;
 import com.water.bocai.utils.WebUtils;
@@ -34,6 +35,9 @@ public class TaskController {
     @Resource
     private TaskService taskService;
 
+    @Resource
+    private ResultService resultService;
+
     /**
      * 开始下注
      */
@@ -65,7 +69,6 @@ public class TaskController {
             taskUserList.add(taskUser);
         }
         taskService.saveTaskUser(taskUserList);
-        System.out.println("saveTaskUser");
     }
 
     /**
@@ -85,6 +88,9 @@ public class TaskController {
         WebUtils.sendResult(response, taskService.getTaskList(queryMap));
     }
 
+    /**
+     * 获取投注人的投注信息
+     */
     @RequestMapping(value = "/taskUserList", method = RequestMethod.POST)
     public void taskUserList(HttpServletRequest request, HttpServletResponse response,
                              @RequestBody TaskUserDto model,
@@ -99,10 +105,32 @@ public class TaskController {
         WebUtils.sendResult(response, taskService.getTaskUserList(queryMap));
     }
 
+    /**
+     * 计算并获取开奖结果
+     */
     @RequestMapping(value = "/getLotteryResults", method = RequestMethod.POST)
-    public void getLotteryResults(HttpServletRequest request, HttpServletResponse response, @RequestBody ResultDto model) {
+    public void getLotteryResults(HttpServletRequest request, HttpServletResponse response,
+                                  @RequestBody ResultDto model) {
         WebUtils.sendResult(response, taskService.handleLotteryResult(model));
     }
 
-
+    /**
+     * 获取图标需要展示的数据
+     */
+    @RequestMapping(value = "/getChartData", method = RequestMethod.POST)
+    public void getChartData(HttpServletRequest request, HttpServletResponse response,
+                             @RequestBody TaskDto model,
+                             @RequestParam(defaultValue = "1") int currentPage,
+                             @RequestParam(defaultValue = "10") int pageSize) {
+        Map<String, Object> queryMap = new HashMap<>();
+        int begin = (currentPage - 1) * pageSize;
+        Page page = new Page(begin, pageSize, currentPage);
+        String endTime = request.getParameter("endTime");
+        String startTime = request.getParameter("startTime");
+        queryMap.put("page", page);
+        queryMap.put("model", model);
+        queryMap.put("endTime", endTime);
+        queryMap.put("startTime", startTime);
+        WebUtils.sendJson(response, resultService.getHistoryStatisticsData(queryMap));
+    }
 }

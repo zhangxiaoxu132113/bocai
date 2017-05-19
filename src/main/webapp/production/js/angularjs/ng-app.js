@@ -347,6 +347,7 @@ app.controller("xiazhuCtrl", function ($scope, $http) {
 
 app.controller("chartCtrl", function($scope, $http) {
     var myChart = echarts.init(document.getElementById('chart'), 'macarons');
+
     var options = {
         title : {
             text: '可视化报表',
@@ -440,4 +441,17 @@ app.controller("chartCtrl", function($scope, $http) {
         ]
     };
     myChart.setOption(options);
+    myChart.setOption({
+        title: {
+            text: data.rows.text
+        },
+        legend: {
+            data: data.rows.legendArr
+        },
+        xAxis: {
+            data: data.rows.dateArr
+        },
+        yAxis: data.rows.yAxisArr,
+        series: data.rows.dataArr
+    });
 });
