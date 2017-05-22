@@ -3,9 +3,10 @@ package com.water.bocai.db.dao;
 import com.water.bocai.db.dao.extend.UserMapperExtend;
 import com.water.bocai.db.model.User;
 import com.water.bocai.db.model.UserCriteria;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
+
+import java.util.List;
 
 public interface UserMapper extends UserMapperExtend {
     int countByExample(UserCriteria example);

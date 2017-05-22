@@ -74,32 +74,22 @@
                         <ul class="nav side-menu">
                             <li><a><i class="fa fa-home"></i> 下注 <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a href="#calendar">开奖</a></li>
+                                    <li><a href="#lottery">开奖</a></li>
                                     <li><a href="#wxlogin">微信登陆</a></li>
-                                    <li><a href="index3.html">开奖历史记录查询</a></li>
+                                    <li><a href="#history_query">历史记录查询</a></li>
                                 </ul>
                             </li>
                             <li><a><i class="fa fa-edit"></i> 数据报表 <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a href="#chart_report">报表视图</a></li>
-                                    <li><a href="form_advanced.html">Advanced Components</a></li>
-                                    <li><a href="form_validation.html">Form Validation</a></li>
-                                    <li><a href="form_wizards.html">Form Wizard</a></li>
-                                    <li><a href="form_upload.html">Form Upload</a></li>
-                                    <li><a href="form_buttons.html">Form Buttons</a></li>
+                                    <li><a href="#financial_chart">财务报表</a></li>
+                                    <li><a href="#user_chart">用户分析</a></li>
                                 </ul>
                             </li>
-                            <li><a><i class="fa fa-desktop"></i>设置<span class="fa fa-chevron-down"></span></a>
+                            <li><a><i class="fa fa-desktop"></i>配置管理<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a href="general_elements.html">日志</a></li>
-                                    <li><a href="media_gallery.html">系统设置</a></li>
-                                    <li><a href="typography.html">Typography</a></li>
-                                    <li><a href="icons.html">Icons</a></li>
-                                    <li><a href="glyphicons.html">Glyphicons</a></li>
-                                    <li><a href="widgets.html">Widgets</a></li>
-                                    <li><a href="invoice.html">Invoice</a></li>
-                                    <li><a href="inbox.html">Inbox</a></li>
-                                    <li><a href="calendar.html">Calendar</a></li>
+                                    <li><a href="#admin_manage">账户管理</a></li>
+                                    <li><a href="#player_manage">玩家管理</a></li>
+                                    <li><a href="#log">日志</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -224,7 +214,8 @@
         <!-- /top navigation -->
 
         <!-- page content angularjs route -->
-        <div class="right_col" role="main" ui-view >
+        <div class="right_col" role="main" ui-view>
+
         </div>
         <!-- /page content -->
 

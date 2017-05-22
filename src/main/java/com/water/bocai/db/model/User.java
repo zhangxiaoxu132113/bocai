@@ -5,9 +5,13 @@ import java.io.Serializable;
 public class User implements Serializable {
     private String id;
 
-    private String count;
+    private String account;
+
+    private String password;
 
     private String nickname;
+
+    private Integer role;
 
     private Integer isVip;
 
@@ -23,12 +27,20 @@ public class User implements Serializable {
         this.id = id == null ? null : id.trim();
     }
 
-    public String getCount() {
-        return count;
+    public String getAccount() {
+        return account;
     }
 
-    public void setCount(String count) {
-        this.count = count == null ? null : count.trim();
+    public void setAccount(String account) {
+        this.account = account == null ? null : account.trim();
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password == null ? null : password.trim();
     }
 
     public String getNickname() {
@@ -37,6 +49,14 @@ public class User implements Serializable {
 
     public void setNickname(String nickname) {
         this.nickname = nickname == null ? null : nickname.trim();
+    }
+
+    public Integer getRole() {
+        return role;
+    }
+
+    public void setRole(Integer role) {
+        this.role = role;
     }
 
     public Integer getIsVip() {

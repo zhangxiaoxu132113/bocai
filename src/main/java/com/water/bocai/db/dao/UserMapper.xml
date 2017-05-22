@@ -3,8 +3,10 @@
 <mapper namespace="com.water.bocai.db.dao.UserMapper" >
   <resultMap id="BaseResultMap" type="com.water.bocai.db.model.User" >
     <id column="id" property="id" jdbcType="VARCHAR" />
-    <result column="count" property="count" jdbcType="VARCHAR" />
+    <result column="account" property="account" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
     <result column="nickName" property="nickname" jdbcType="VARCHAR" />
+    <result column="role" property="role" jdbcType="INTEGER" />
     <result column="is_vip" property="isVip" jdbcType="INTEGER" />
     <result column="create_on" property="createOn" jdbcType="VARCHAR" />
   </resultMap>
@@ -67,7 +69,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, count, nickName, is_vip, create_on
+    id, account, password, nickName, role, is_vip, create_on
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.water.bocai.db.model.UserCriteria" >
     select
@@ -100,10 +102,12 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.water.bocai.db.model.User" >
-    insert into user (id, count, nickName, 
-      is_vip, create_on)
-    values (#{id,jdbcType=VARCHAR}, #{count,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, 
-      #{isVip,jdbcType=INTEGER}, #{createOn,jdbcType=VARCHAR})
+    insert into user (id, account, password, 
+      nickName, role, is_vip, 
+      create_on)
+    values (#{id,jdbcType=VARCHAR}, #{account,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{nickname,jdbcType=VARCHAR}, #{role,jdbcType=INTEGER}, #{isVip,jdbcType=INTEGER}, 
+      #{createOn,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.water.bocai.db.model.User" >
     insert into user
@@ -111,11 +115,17 @@
       <if test="id != null" >
         id,
       </if>
-      <if test="count != null" >
-        count,
+      <if test="account != null" >
+        account,
+      </if>
+      <if test="password != null" >
+        password,
       </if>
       <if test="nickname != null" >
         nickName,
+      </if>
+      <if test="role != null" >
+        role,
       </if>
       <if test="isVip != null" >
         is_vip,
@@ -128,11 +138,17 @@
       <if test="id != null" >
         #{id,jdbcType=VARCHAR},
       </if>
-      <if test="count != null" >
-        #{count,jdbcType=VARCHAR},
+      <if test="account != null" >
+        #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
       </if>
       <if test="nickname != null" >
         #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="role != null" >
+        #{role,jdbcType=INTEGER},
       </if>
       <if test="isVip != null" >
         #{isVip,jdbcType=INTEGER},
@@ -154,11 +170,17 @@
       <if test="record.id != null" >
         id = #{record.id,jdbcType=VARCHAR},
       </if>
-      <if test="record.count != null" >
-        count = #{record.count,jdbcType=VARCHAR},
+      <if test="record.account != null" >
+        account = #{record.account,jdbcType=VARCHAR},
+      </if>
+      <if test="record.password != null" >
+        password = #{record.password,jdbcType=VARCHAR},
       </if>
       <if test="record.nickname != null" >
         nickName = #{record.nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.role != null" >
+        role = #{record.role,jdbcType=INTEGER},
       </if>
       <if test="record.isVip != null" >
         is_vip = #{record.isVip,jdbcType=INTEGER},
@@ -174,8 +196,10 @@
   <update id="updateByExample" parameterType="map" >
     update user
     set id = #{record.id,jdbcType=VARCHAR},
-      count = #{record.count,jdbcType=VARCHAR},
+      account = #{record.account,jdbcType=VARCHAR},
+      password = #{record.password,jdbcType=VARCHAR},
       nickName = #{record.nickname,jdbcType=VARCHAR},
+      role = #{record.role,jdbcType=INTEGER},
       is_vip = #{record.isVip,jdbcType=INTEGER},
       create_on = #{record.createOn,jdbcType=VARCHAR}
     <if test="_parameter != null" >
@@ -185,11 +209,17 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.water.bocai.db.model.User" >
     update user
     <set >
-      <if test="count != null" >
-        count = #{count,jdbcType=VARCHAR},
+      <if test="account != null" >
+        account = #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
       </if>
       <if test="nickname != null" >
         nickName = #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="role != null" >
+        role = #{role,jdbcType=INTEGER},
       </if>
       <if test="isVip != null" >
         is_vip = #{isVip,jdbcType=INTEGER},
@@ -202,8 +232,10 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.water.bocai.db.model.User" >
     update user
-    set count = #{count,jdbcType=VARCHAR},
+    set account = #{account,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
       nickName = #{nickname,jdbcType=VARCHAR},
+      role = #{role,jdbcType=INTEGER},
       is_vip = #{isVip,jdbcType=INTEGER},
       create_on = #{createOn,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
@@ -223,10 +255,11 @@
     </if>
   </select>
   <insert id="insertBatch" >
-    insert into user (id, count, nickName, is_vip, create_on) values 
+    insert into user (id, account, password, nickName, role, is_vip, create_on) values 
     <foreach collection="list" item="item" index="index" separator="," >
-      (#{item.id,jdbcType=VARCHAR}, #{item.count,jdbcType=VARCHAR}, #{item.nickname,jdbcType=VARCHAR}, 
-        #{item.isVip,jdbcType=INTEGER}, #{item.createOn,jdbcType=VARCHAR})
+      (#{item.id,jdbcType=VARCHAR}, #{item.account,jdbcType=VARCHAR}, #{item.password,jdbcType=VARCHAR}, 
+        #{item.nickname,jdbcType=VARCHAR}, #{item.role,jdbcType=INTEGER}, #{item.isVip,jdbcType=INTEGER}, 
+        #{item.createOn,jdbcType=VARCHAR})
     </foreach>
   </insert>
 </mapper>

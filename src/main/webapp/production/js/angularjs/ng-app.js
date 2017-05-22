@@ -2,11 +2,11 @@ var app = angular.module("homeApp", ['ui.router']);
 
 app.config(["$stateProvider", "$urlRouterProvider", "$httpProvider", function ($stateProvider, $urlRouterProvider, $httpProvider) {
 
-    $urlRouterProvider.otherwise("/accountInfo");
+    $urlRouterProvider.otherwise("/home");
     $stateProvider
-        .state('calendar', {
-            url: "/calendar",
-            templateUrl: "/production/calendar.html"
+        .state('lottery', {
+            url: "/lottery",
+            templateUrl: "/production/lottery.html"
         })
         .state('wxlogin', {
             url: "/wxlogin",
@@ -16,9 +16,9 @@ app.config(["$stateProvider", "$urlRouterProvider", "$httpProvider", function ($
             url: "/chart_report",
             templateUrl: "/production/chart_report.html"
         })
-        .state('integral', {
-            url: "/integral",
-            templateUrl: "/template/account/integral.html"
+        .state('player_manage', {
+            url: "/player_manage",
+            templateUrl: "/production/player_manage.html"
         })
         .state('member', {
             url: "/member",
@@ -28,9 +28,9 @@ app.config(["$stateProvider", "$urlRouterProvider", "$httpProvider", function ($
             url: "/invite",
             templateUrl: "/template/account/invite.html"
         })
-        .state('safe', {
-            url: "/safe",
-            templateUrl: "/template/account/safe.jsp"
+        .state('home', {
+            url: "/home",
+            templateUrl: "/production/home.html"
         });
 
 }]);
@@ -479,5 +479,10 @@ app.controller("chartCtrl", function ($scope, $http) {
             alert("服务器异常，请联系管理员!");
         });
     myChart.setOption(options);
+
+});
+
+app.controller("homeCtrl", function($scope, $http){
+
 
 });
