@@ -1,0 +1,48 @@
+.image-directory{
+    background:url('images/file.png') no-repeat center center;
+}
+.image-import {
+    background:url('images/import.png') no-repeat center center;
+}
+.image-download {
+    background:url('images/download.png') no-repeat center center;
+}
+.image-excel{
+    background:url('images/excel.png') no-repeat center center;
+}
+.image-zip{
+    background:url('images/rar.png') no-repeat center center;
+}
+.image-queue{
+    background:url('images/queue.png') no-repeat center center;
+}
+.image-chart{
+    background:url('images/chart.png') no-repeat center center;
+}
+.image-cancel{
+    background:url('images/cancel.png') no-repeat center center;
+}
+.image-repair{
+    background:url('images/repair.png') no-repeat center center;
+}
+.image-redo{
+    background:url('images/redo.png') no-repeat center center;
+}
+.image-remove{
+    background:url('images/remove.png') no-repeat center center;
+}
+.image-add{
+    background:url('images/add.png') no-repeat center center;
+}
+.image-custom{
+    background:url('images/custom.png') no-repeat center center;
+}
+.image-intro{
+    background:url('images/intro.png') no-repeat center center;
+}
+.image-online{
+    background:url('images/online.png') no-repeat center center;
+}
+.image-offline{
+    background:url('images/offline.png') no-repeat center center;
+}

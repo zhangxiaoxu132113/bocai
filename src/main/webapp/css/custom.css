@@ -1,0 +1,28 @@
+@CHARSET "UTF-8";
+*{font-family:Tahoma,Verdana,微软雅黑}
+html, body {
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+	width: 100%;
+}
+
+/* custom */
+.easyui-dialog { padding: 10px 20px; left: 150px; top: 50px; }
+
+/* 数据表格工具栏样式 */
+.tb { padding: 5px; }
+.tb form input { line-height: 18px; border: 1px solid #ccc; width: 65px; }
+
+/* 添加对话框样式 */
+.fm { margin: 0; padding: 10px 30px; }
+.ftitle {
+	font-size: 14px;
+	font-weight: bold;
+	padding: 5px 0;
+	margin-bottom: 10px;
+	border-bottom: 1px solid #ccc;
+}
+.fitem { margin-bottom: 5px; }
+.fitem label { display: inline-block; width: 80px; }
+.fitem input { width: 160px; }
