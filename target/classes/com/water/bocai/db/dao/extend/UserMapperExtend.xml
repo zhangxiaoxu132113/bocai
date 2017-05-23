@@ -1,2 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"><mapper namespace="com.water.bocai.db.dao.extend.UserMapperExtend"><!--扩展方法--></mapper>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.water.bocai.db.dao.extend.UserMapperExtend">
+    <!--扩展方法-->
+    <select id="getUserList" parameterType="java.util.Map" resultType="com.water.bocai.utils.web.dto.UserDto">
+        SELECT * FROM user WHERE 1=1
+        <if test="model != null">
+            <if test="model.nickName != null and model.nickName != ''">
+                AND nickName LIKE '%#{model.nickName}%'
+            </if>
+        </if>
+        <if test="page != null">
+            <if test="page.beginIndex != null and page.pageSize != null and page.pageSize > 0">
+                LIMIT #{page.beginIndex},#{page.pageSize}
+            </if>
+        </if>
+    </select>
+
+    <select id="countTaskList" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM user
+        WHERE 1=1
+        <if test="model != null">
+            <if test="model.nickName != null and model.nickName != ''">
+                AND nickName LIKE '%#{model.nickName}%'
+            </if>
+        </if>
+    </select>
+</mapper>

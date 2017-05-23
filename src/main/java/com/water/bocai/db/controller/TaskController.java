@@ -1,12 +1,9 @@
 package com.water.bocai.db.controller;
 
-import com.water.bocai.db.model.TaskUser;
 import com.water.bocai.db.service.ResultService;
 import com.water.bocai.db.service.TaskService;
 import com.water.bocai.utils.StringUtil;
 import com.water.bocai.utils.WebUtils;
-import com.water.bocai.utils.web.OperationTips;
-import com.water.bocai.utils.web.ResultView;
 import com.water.bocai.utils.web.dto.Page;
 import com.water.bocai.utils.web.dto.ResultDto;
 import com.water.bocai.utils.web.dto.TaskDto;
@@ -16,13 +13,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,6 +36,12 @@ public class TaskController {
     @Resource
     private ResultService resultService;
 
+    @RequestMapping(value = "xiazhu", method = RequestMethod.GET)
+    public ModelAndView amounts() {
+        ModelAndView mav = new ModelAndView("kaijiang/xiazhu/home");
+        return mav;
+    }
+
     /**
      * 开始下注
      */
@@ -51,24 +55,28 @@ public class TaskController {
      */
     @RequestMapping(value = "/saveTaskUser", method = RequestMethod.POST)
     public void saveTaskUser(HttpServletRequest request, HttpServletResponse response,
-                             @RequestBody(required = false) TaskUserDto model) {
-        if ((model.getUsernames().length != model.getNums().length) || (model.getUsernames().length != model.getSums().length)) {
-            WebUtils.sendResult(response, new ResultView(OperationTips.TipsCode.TIPS_FAIL, OperationTips.TipsMsg.TIPS_FAIL));
-            return;
-        }
-        List<TaskUser> taskUserList = new ArrayList<TaskUser>();
-        for (int i = 0; i < model.getUsernames().length; i++) {
-            TaskUser taskUser = new TaskUser();
-            taskUser.setId(StringUtil.uuid());
-            taskUser.setUserId(model.getUsernames()[i] + "");
-            taskUser.setTaskId(model.getTaskId());
-            taskUser.setNum(model.getNums()[i]);
-            taskUser.setSum((float) model.getSums()[i]);
-            taskUser.setCreateOn(System.currentTimeMillis());
-            taskUser.setUpdateTime(System.currentTimeMillis());
-            taskUserList.add(taskUser);
-        }
-        taskService.saveTaskUser(taskUserList);
+                             @RequestParam("excelFile") MultipartFile excelFile,
+                             @RequestParam("taskId") String taskId) throws IOException {
+//        if ((model.getUsernames().length != model.getNums().length) || (model.getUsernames().length != model.getSums().length)) {
+//            WebUtils.sendResult(response, new ResultView(OperationTips.TipsCode.TIPS_FAIL, OperationTips.TipsMsg.TIPS_FAIL));
+//            return;
+//        }
+//        List<TaskUser> taskUserList = new ArrayList<TaskUser>();
+//        for (int i = 0; i < model.getUsernames().length; i++) {
+//            TaskUser taskUser = new TaskUser();
+//            taskUser.setId(StringUtil.uuid());
+//            taskUser.setUserId(model.getUsernames()[i] + "");
+//            taskUser.setTaskId(model.getTaskId());
+//            taskUser.setNum(model.getNums()[i]);
+//            taskUser.setSum((float) model.getSums()[i]);
+//            taskUser.setCreateOn(System.currentTimeMillis());
+//            taskUser.setUpdateTime(System.currentTimeMillis());
+//            taskUserList.add(taskUser);
+//        }
+//        taskService.saveTaskUser(taskUserList);
+        TaskUserDto model = new TaskUserDto();
+        model.setTaskId(taskId);
+        WebUtils.sendResult(response, taskService.saveTaskUser(model, excelFile));
     }
 
     /**
@@ -91,15 +99,14 @@ public class TaskController {
     /**
      * 获取投注人的投注信息
      */
-    @RequestMapping(value = "/taskUserList", method = RequestMethod.POST)
-    public void taskUserList(HttpServletRequest request, HttpServletResponse response,
-                             @RequestBody TaskUserDto model,
-                             @RequestParam(defaultValue = "1") int currentPage,
-                             @RequestParam(defaultValue = "10") int pageSize) {
-        Map<String, Object> queryMap = new HashMap<>();
-        int begin = (currentPage - 1) * pageSize;
-        Page page = new Page(begin, pageSize, currentPage);
-        queryMap.put("page", page);
+    @RequestMapping("/taskUserList")
+    public void taskUserList(HttpServletRequest request, HttpServletResponse response, TaskUserDto model, Integer page, Integer rows) {
+        page = StringUtil.getDefaultCurrentPage(page);
+        rows = StringUtil.getDefaultPageSize(rows);
+
+        Map<String, Object> queryMap = new HashMap<String, Object>();
+        queryMap.put("beginIndex", (page - 1) * rows);
+        queryMap.put("pageSize", rows);
         queryMap.put("model", model);
 
         WebUtils.sendResult(response, taskService.getTaskUserList(queryMap));

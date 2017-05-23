@@ -8,7 +8,20 @@
             <if test="model.taskId != ''">
                 AND task_id = #{model.taskId}
             </if>
-
+            <if test="model.searchType != -1">
+                <choose>
+                    <when test="model.searchType == 0">
+                        <if test="model.searchValue != '' and model.searchValue != null">
+                            AND user_id ${model.userId}
+                        </if>
+                    </when>
+                    <when test="model.searchType == 1">
+                        <if test="model.searchValue != '' and model.searchValue != null">
+                            AND num=#{model.num}
+                        </if>
+                    </when>
+                </choose>
+            </if>
         </if>
         ORDER BY create_on
         <if test="beginIndex != null and pageSize != null and pageSize > 0">
@@ -22,6 +35,20 @@
         <if test="model != null">
             <if test="model.taskId != ''">
                 AND task_id = #{model.taskId}
+            </if>
+            <if test="model.searchType != -1">
+                <choose>
+                    <when test="model.searchType == 0">
+                        <if test="model.searchValue != '' and model.searchValue != null">
+                            AND user_id ${model.userId}
+                        </if>
+                    </when>
+                    <when test="model.searchType == 1">
+                        <if test="model.searchValue != '' and model.searchValue != null">
+                            AND num=#{model.num}
+                        </if>
+                    </when>
+                </choose>
             </if>
         </if>
     </select>

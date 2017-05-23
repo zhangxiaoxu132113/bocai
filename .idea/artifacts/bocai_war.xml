@@ -3,6 +3,13 @@
     <output-path>$PROJECT_DIR$/target</output-path>
     <root id="archive" name="bocai.war">
       <element id="artifact" artifact-name="bocai:war exploded" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="base-util" />
+          <element id="library" level="module" name="Maven: com.alibaba:jconsole:1.8.0" module-name="bocai" />
+          <element id="library" level="module" name="Maven: com.alibaba:tools:1.8.0" module-name="bocai" />
+        </element>
+      </element>
     </root>
   </artifact>
 </component>

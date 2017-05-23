@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="base-util">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/ext-lib/base-util.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

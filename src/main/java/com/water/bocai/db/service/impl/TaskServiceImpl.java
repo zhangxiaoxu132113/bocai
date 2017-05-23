@@ -1,32 +1,34 @@
 package com.water.bocai.db.service.impl;
 
+import com.alibaba.fastjson.serializer.SerializeFilter;
 import com.water.bocai.db.dao.ResultMapper;
 import com.water.bocai.db.dao.TaskMapper;
 import com.water.bocai.db.dao.TaskUserMapper;
 import com.water.bocai.db.model.Result;
 import com.water.bocai.db.model.Task;
 import com.water.bocai.db.model.TaskUser;
+import com.water.bocai.db.model.TaskUserCriteria;
 import com.water.bocai.db.service.ResultService;
 import com.water.bocai.db.service.TaskService;
-import com.water.bocai.utils.Constants;
-import com.water.bocai.utils.StringUtil;
+import com.water.bocai.utils.*;
 import com.water.bocai.utils.web.OperationTips;
 import com.water.bocai.utils.web.ResultView;
 import com.water.bocai.utils.web.dto.ResultDto;
 import com.water.bocai.utils.web.dto.TaskDto;
 import com.water.bocai.utils.web.dto.TaskUserDto;
+import com.water.bocai.utils.web.filter.TimeFieldsFormatter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 
 @Service("taskService")
 public class TaskServiceImpl implements TaskService {
+
     @Resource
     private TaskMapper taskMapper;
 
@@ -38,6 +40,18 @@ public class TaskServiceImpl implements TaskService {
 
     @Resource
     private ResultService resultService;
+
+    public static final Set<String> GETURLTASKLIST_TIME_FORMATTER_FIELDS;
+
+    static {
+        GETURLTASKLIST_TIME_FORMATTER_FIELDS = new HashSet<String>();
+        GETURLTASKLIST_TIME_FORMATTER_FIELDS.add("startTime");
+        GETURLTASKLIST_TIME_FORMATTER_FIELDS.add("endTime");
+        GETURLTASKLIST_TIME_FORMATTER_FIELDS.add("updateTime");
+        GETURLTASKLIST_TIME_FORMATTER_FIELDS.add("finishTime");
+        GETURLTASKLIST_TIME_FORMATTER_FIELDS.add("lastFinishTime");
+        GETURLTASKLIST_TIME_FORMATTER_FIELDS.add("createOn");
+    }
 
     public ResultView addTask() {
         ResultView resultView = new ResultView();
@@ -62,32 +76,105 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public ResultView saveTaskUser(List<TaskUser> taskUserList) {
+    public ResultView saveTaskUser(TaskUserDto model, MultipartFile excelFile) throws IOException {
         ResultView resultView = new ResultView();
-        if (taskUserList == null || taskUserList.size() == 0) {
-            resultView.setCode(OperationTips.TipsCode.TIPS_FAIL);
-            resultView.setMsg(OperationTips.TipsMsg.TIPS_FAIL);
-            return resultView;
-        } else {
-            taskUserMapper.insertBatch(taskUserList);
-            resultView.setRows(taskUserList);
-            resultView.setCode(OperationTips.TipsCode.TIPS_SUCCESS);
-            resultView.setMsg(OperationTips.TipsMsg.TIPS_SUCCESS);
+        String taskId = model.getTaskId();
+        if (StringUtils.isBlank(taskId) && excelFile == null && excelFile.getSize() <= 0) {
+            return new ResultView(OperationTips.TipsCode.TIPS_FAIL, OperationTips.TipsMsg.TIPS_FAIL);
         }
+        //解析excel文件
+        String fileName = excelFile.getOriginalFilename();
+        if (!fileName.endsWith(Constant.FileType.TYPE_FILE_EXCEL_XLSX)
+                && !fileName.endsWith(Constant.FileType.TYPE_FILE_EXCEL_XLSX)) {
+            return new ResultView(OperationTips.TipsCode.TIPS_FAIL, OperationTips.TipsMsg.TIPS_ERROR_FILE_UPLOAD);
+        }
+        FileUtil.fileUpload(excelFile, Constant.webroot + Constant.UPLOAD_PATH_Zhishu, fileName);
+        List<List<String>> excelData = ExcelUtil.readExcelDataToList2(Constant.webroot + Constant.UPLOAD_PATH_Zhishu, fileName);
 
+        int insertEffectRows = 0;
+        int updateEffectRows = 0;
+        List<TaskUser> taskUserLlist = new ArrayList<>();
+        Map<String, Object> queryMap = new HashMap<>();
+        queryMap.put("taskId", taskId);
+        for (List<String> list : excelData) {
+            if (list != null && !list.isEmpty()) {
+                boolean isExist = false;
+                queryMap.put("userId", list.get(0));
+                TaskUser taskUser = findTaskUser(queryMap);
+                if (taskUser != null) isExist = true;
+                taskUser = new TaskUser();
+                taskUser.setId(StringUtil.uuid());
+                taskUser.setTaskId(taskId);
+                taskUser.setUserId(list.get(0));
+                taskUser.setNum(Integer.valueOf((int) Float.valueOf(list.get(1)).longValue()));
+                taskUser.setSum(Float.valueOf(list.get(2)));
+                taskUser.setCreateOn(System.currentTimeMillis());
+                taskUser.setUpdateTime(System.currentTimeMillis());
+
+                if (isExist) {
+                    taskUserMapper.updateByPrimaryKeySelective(taskUser);
+                    updateEffectRows++;
+                } else {
+                    taskUserLlist.add(taskUser);
+                }
+            }
+        }
+        insertEffectRows = taskUserMapper.insertBatch(taskUserLlist);
+        resultView.setCode(OperationTips.TipsCode.TIPS_SUCCESS);
+        resultView.setMsg("保存成功，本次共添加：" + insertEffectRows + "条记录,，更新" + updateEffectRows + "条记录");
         return resultView;
+    }
+
+    public TaskUser findTaskUser(Map<String, Object> queryMap) {
+        TaskUserCriteria taskUserCriteria = new TaskUserCriteria();
+        TaskUserCriteria.Criteria criteria = taskUserCriteria.createCriteria();
+        if (queryMap != null) {
+            if (queryMap.containsKey("taskId")) {
+                criteria.andTaskIdEqualTo((String) queryMap.get("taskId"));
+            }
+            if (queryMap.containsKey("userId")) {
+                criteria.andUserIdEqualTo((String) queryMap.get("userId"));
+            }
+        }
+        List<TaskUser> taskUserList = taskUserMapper.selectByExample(taskUserCriteria);
+        if (taskUserList != null && !taskUserList.isEmpty()) {
+            return taskUserList.get(0);
+        }
+        return null;
     }
 
     @Override
     public ResultView getTaskUserList(Map<String, Object> queryMap) {
-        ResultView resultView = new ResultView();
-        resultView.setCode(OperationTips.TipsCode.TIPS_SUCCESS);
-        resultView.setMsg(OperationTips.TipsMsg.TIPS_SUCCESS);
-        List<TaskUserDto> taskUserList = taskUserMapper.getTaskUserList(queryMap);
+        TaskUserDto model = (TaskUserDto) queryMap.get("model");
+        List<TaskUserDto> taskUserList = new ArrayList<>();
+        if (model == null || StringUtils.isBlank(model.getTaskId())) {
+            return new ResultView(OperationTips.TipsCode.TIPS_SUCCESS, OperationTips.TipsMsg.TIPS_SUCCESS, taskUserList);
+        }
+        if (model.getSearchType() != null && model.getSearchType() == 0 && StringUtils.isNotBlank(model.getSearchValue())) {
+            model.setUserId(StringUtil.getSearchWordToSql(model.getSearchValue()));
+            queryMap.put("model", model);
+        } else {
+            model.setNum(model.getSearchType());
+            queryMap.put("model", model);
+        }
+
+        taskUserList = taskUserMapper.getTaskUserList(queryMap);
         int total = taskUserMapper.countTaskUserList(queryMap);
-        resultView.setRows(taskUserList);
-        resultView.setTotal(total);
-        return resultView;
+        if (taskUserList != null && !taskUserList.isEmpty()) {
+            ResultView resultView = new ResultView();
+            List<SerializeFilter> filters = new ArrayList<SerializeFilter>();
+            TimeFieldsFormatter timeFieldsFormatter1 = new TimeFieldsFormatter(GETURLTASKLIST_TIME_FORMATTER_FIELDS, DateUtils.DATE_FORMAT_YMDHMS);
+            filters.add(timeFieldsFormatter1);
+
+            resultView.setTotal(total);
+            resultView.setFilters(filters);
+            resultView.setRows(taskUserList);
+            resultView.setCode(OperationTips.TipsCode.TIPS_SUCCESS);
+            resultView.setMsg(OperationTips.TipsMsg.TIPS_SUCCESS);
+            return resultView;
+        }
+
+        return new ResultView(OperationTips.TipsCode.TIPS_SUCCESS, OperationTips.TipsMsg.TIPS_SUCCESS, taskUserList);
     }
 
     @Override

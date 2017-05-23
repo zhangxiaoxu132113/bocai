@@ -60,8 +60,12 @@
         <mvc:default-servlet-handler />
 
         <!-- 对转向页面的路径解析。prefix：前缀， suffix：后缀 -->
-        <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:prefix="/WEB-INF/page" p:suffix=".jsp" />
-
+        <!--<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:prefix="/WEB-INF/jsp/" p:suffix=".jsp" />-->
+        <!-- jsp文件的前缀和后缀 -->
+        <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+            <property name="prefix" value="/WEB-INF/jsp/" />
+            <property name="suffix" value=".jsp" />
+        </bean>
         <!-- 上传文件拦截，设置最大上传文件大小   10M=10*1024*1024(B)=10485760 bytes -->
         <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
             <property name="defaultEncoding" value="utf-8"/>

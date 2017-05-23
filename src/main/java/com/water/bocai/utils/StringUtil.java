@@ -2,6 +2,7 @@ package com.water.bocai.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.water.bocai.utils.entry.MessageStatus;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.CookieStore;
 import org.apache.http.cookie.Cookie;
 import sun.net.www.content.text.plain;
@@ -82,6 +83,59 @@ public class StringUtil {
         return agencyFee;
     }
 
+    /**
+     * 获取默认的当前页
+     *
+     * @param page
+     * @return
+     */
+    public static Integer getDefaultCurrentPage(Integer page) {
+        Integer currentPage = 1;
+        if (page == null || page <= 0) {
+            return currentPage;
+        }
+        return page;
+    }
+
+    /**
+     * 获取默认的每页大小
+     *
+     * @param rows
+     * @return
+     */
+    public static Integer getDefaultPageSize(Integer rows) {
+        Integer pageSize = 20;
+        if (rows == null || rows > 50) {
+            return pageSize;
+        }
+        return rows;
+    }
+
+    /**
+     * 估计关键词获取sql用的关键词值
+     *
+     * @param word
+     * @return
+     */
+    public static String getSearchWordToSql(String word) {
+        if (StringUtils.isNotBlank(word)) {
+            String keyword = word.trim().toLowerCase();
+            if (keyword.startsWith("*") && keyword.endsWith("*")) {
+                keyword = keyword.replaceFirst("\\*", "");
+                keyword = keyword.substring(0, keyword.lastIndexOf("*"));
+                word = "LIKE \"%" + keyword + "%\"";
+            } else if (keyword.startsWith("*")) {
+                keyword = keyword.replaceFirst("\\*", "");
+                word = "LIKE \"%" + keyword + "\"";
+            } else if (keyword.endsWith("*")) {
+                keyword = keyword.substring(0, keyword.lastIndexOf("*"));
+                word = "LIKE \"" + keyword + "%\"";
+            } else {
+                word = "=\"" + keyword + "\"";
+            }
+        }
+        return word;
+    }
 
     public static void main(String[] args) {
 //        int total = 2100;
