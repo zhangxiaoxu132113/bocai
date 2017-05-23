@@ -11,16 +11,19 @@
             <if test="model.searchType != -1">
                 <choose>
                     <when test="model.searchType == 0">
-                        <if test="model.searchValue != '' and model.searchValue != null">
+                        <if test="model.searchValue != null and model.searchValue != ''">
                             AND user_id ${model.userId}
                         </if>
                     </when>
                     <when test="model.searchType == 1">
-                        <if test="model.searchValue != '' and model.searchValue != null">
+                        <if test="model.searchValue != null and model.searchValue != ''">
                             AND num=#{model.num}
                         </if>
                     </when>
                 </choose>
+            </if>
+            <if test="model.moneyBegin != null and model.moneyEnd != null">
+                AND sum BETWEEN #{model.moneyBegin} AND #{model.moneyEnd}
             </if>
         </if>
         ORDER BY create_on
@@ -39,12 +42,12 @@
             <if test="model.searchType != -1">
                 <choose>
                     <when test="model.searchType == 0">
-                        <if test="model.searchValue != '' and model.searchValue != null">
+                        <if test="model.searchValue != null and model.searchValue != ''">
                             AND user_id ${model.userId}
                         </if>
                     </when>
                     <when test="model.searchType == 1">
-                        <if test="model.searchValue != '' and model.searchValue != null">
+                        <if test="model.searchValue != null and model.searchValue != ''">
                             AND num=#{model.num}
                         </if>
                     </when>

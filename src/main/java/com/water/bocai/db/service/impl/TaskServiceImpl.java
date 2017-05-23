@@ -150,14 +150,15 @@ public class TaskServiceImpl implements TaskService {
         if (model == null || StringUtils.isBlank(model.getTaskId())) {
             return new ResultView(OperationTips.TipsCode.TIPS_SUCCESS, OperationTips.TipsMsg.TIPS_SUCCESS, taskUserList);
         }
-        if (model.getSearchType() != null && model.getSearchType() == 0 && StringUtils.isNotBlank(model.getSearchValue())) {
-            model.setUserId(StringUtil.getSearchWordToSql(model.getSearchValue()));
-            queryMap.put("model", model);
-        } else {
-            model.setNum(model.getSearchType());
-            queryMap.put("model", model);
+        if (StringUtils.isNotBlank(model.getSearchValue())) {
+            if (model.getSearchType() != null && model.getSearchType() == 0 && StringUtils.isNotBlank(model.getSearchValue())) {
+                model.setUserId(StringUtil.getSearchWordToSql(model.getSearchValue()));
+                queryMap.put("model", model);
+            } else {
+                model.setNum(Integer.valueOf(model.getSearchValue()));
+                queryMap.put("model", model);
+            }
         }
-
         taskUserList = taskUserMapper.getTaskUserList(queryMap);
         int total = taskUserMapper.countTaskUserList(queryMap);
         if (taskUserList != null && !taskUserList.isEmpty()) {
@@ -232,6 +233,19 @@ public class TaskServiceImpl implements TaskService {
         resultView.setRows(taskResultList);
         resultView.setTotal(total);
         return resultView;
+    }
+
+    @Override
+    public ResultView deleteTaskUserRecord(String taskUserId) {
+        if (StringUtils.isBlank(taskUserId)) {
+            return new ResultView(OperationTips.TipsCode.TIPS_FAIL, OperationTips.TipsMsg.TIPS_FAIL);
+        }
+
+        int effectRows = taskUserMapper.deleteByPrimaryKey(taskUserId);
+        if (effectRows != -1) {
+            return new ResultView(OperationTips.TipsCode.TIPS_SUCCESS, OperationTips.TipsMsg.TIPS_SUCCESS);
+        }
+        return new ResultView(OperationTips.TipsCode.TIPS_FAIL, OperationTips.TipsMsg.TIPS_FAIL);
     }
 
     /**

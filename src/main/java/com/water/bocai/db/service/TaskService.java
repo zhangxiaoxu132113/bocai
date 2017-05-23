@@ -20,4 +20,6 @@ public interface TaskService {
     ResultView handleLotteryResult(ResultDto model);
 
     ResultView getTaskList(Map<String, Object> queryMap);
+
+    ResultView deleteTaskUserRecord(String taskUserId);
 }

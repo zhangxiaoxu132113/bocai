@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 public class TaskUserDto extends TaskUser {
     private Integer searchType;
+    private Float moneyBegin;
+    private Float moneyEnd;
     private String searchValue;
     private String[] usernames;
     private Integer[] nums;
@@ -51,5 +53,21 @@ public class TaskUserDto extends TaskUser {
 
     public void setSearchValue(String searchValue) {
         this.searchValue = searchValue;
+    }
+
+    public Float getMoneyBegin() {
+        return moneyBegin;
+    }
+
+    public void setMoneyBegin(Float moneyBegin) {
+        this.moneyBegin = moneyBegin;
+    }
+
+    public Float getMoneyEnd() {
+        return moneyEnd;
+    }
+
+    public void setMoneyEnd(Float moneyEnd) {
+        this.moneyEnd = moneyEnd;
     }
 }

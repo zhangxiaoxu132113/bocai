@@ -138,4 +138,9 @@ public class TaskController {
         queryMap.put("startTime", model.getQueryStartTime());
         WebUtils.sendJson(response, resultService.getHistoryStatisticsData(queryMap));
     }
+
+    @RequestMapping("/deleteTaskUserRecord")
+    public void deleteTaskUserRecord(HttpServletRequest request, HttpServletResponse response, String id) {
+        WebUtils.sendResult(response, taskService.deleteTaskUserRecord(id));
+    }
 }
