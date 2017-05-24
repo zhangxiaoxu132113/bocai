@@ -123,14 +123,15 @@ public class TaskController {
     /**
      * 获取图标需要展示的数据
      */
-    @RequestMapping(value = "/getChartData", method = RequestMethod.POST)
-    public void getChartData(HttpServletRequest request, HttpServletResponse response,
-                             @RequestBody(required = false) TaskDto model,
+    @RequestMapping(value = "/getChartData")
+    public void getChartData(HttpServletRequest request, HttpServletResponse response, TaskDto model,
                              @RequestParam(defaultValue = "1") int currentPage,
                              @RequestParam(defaultValue = "10") int pageSize) {
         Map<String, Object> queryMap = new HashMap<>();
         int begin = (currentPage - 1) * pageSize;
         Page page = new Page(begin, pageSize, currentPage);
+        String queryStartTime = request.getParameter("queryStartTime");
+        String queryEndTime = request.getParameter("queryEndTime");
         queryMap.put("page", page);
         queryMap.put("model", model);
         queryMap.put("endTime", model.getQueryEndTime());

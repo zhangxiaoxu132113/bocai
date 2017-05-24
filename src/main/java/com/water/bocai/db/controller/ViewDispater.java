@@ -48,7 +48,7 @@ public class ViewDispater {
                 "[" +
                         "{menus:[" +
                         "{'menuname':'报表导入','url':'task/xiazhu.do','menuid':'1','icon':'sys'}," +
-                        "{'menuname':'长尾词挖掘','url':'seo/excavate.do','menuid':'7','icon':'sys'}," +
+                        "{'menuname':'长尾词挖掘','url':'chart/financial.do','menuid':'7','icon':'sys'}," +
                         "{'menuname':'搜索词多维查询','url':'seo/search.do','menuid':'7','icon':'sys'}," +
                         "{'menuname':'词库维护','url':'seo/maintenance.do','menuid':'7','icon':'sys'}," +
                         "{'menuname':'多级词根','url':'seo/root.do','menuid':'2','icon':'sys'}]," +

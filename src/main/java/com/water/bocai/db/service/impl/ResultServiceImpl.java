@@ -111,8 +111,8 @@ public class ResultServiceImpl implements ResultService {
         mapView.putParams("xAxis", dateArr);
 //        mapView.putParams("yAxis", dateArr);
         mapView.putParams("series", seriesDatas);
-
         mapView.setTotal(count);
+        mapView.setRows(statisticsDataList);
         mapView.setMsg(OperationTips.TipsMsg.TIPS_SUCCESS);
         mapView.setCode(OperationTips.TipsCode.TIPS_SUCCESS);
         return mapView.getResultMap();

@@ -1,37 +1,15 @@
 var vs_ = [{id: '-1', name: '全部'}];
-
+var columns = [
+    //{field: 'id', title: 'id', align: 'center', width: '100', hidden: true},
+    {field: 'touZhuTotal', title: '投注金额', align: 'center', width: '100'},
+    {field: 'moneyInTotal', title: '共进', align: 'center', width: '150'},
+    {field: 'moneyOutTotal', title: '共处', align: 'center', width: '150'},
+    {field: 'profitTotal', title: '纯收益', align: 'center', width: '150'},
+    {field: 'time', title: '时间', align: 'center', width: '150'}
+];
 $(document).ready(function () {
     initIndexTime();
-
-    $.ajax({//表头
-        url: "../header/getCheckHeaderIdJson.do?face=1&needAll=0",
-        type: "post",
-        cache: false,
-        async: false,
-        data: {"businessId": businessId},
-        success: function (data, status) {
-            if (data == null) {
-                $("#compare").combobox('loadData', vs_);
-                $("#compare").combobox('setValue', "-1");
-                $("#origin").combobox('loadData', vs_);
-                $("#origin").combobox('setValue', "-1");
-                return;
-            };
-            $("#origin").combobox('loadData', data);
-            var allData = vs_;
-            $.each(data, function (index, value) {
-                allData.push(value);
-            });
-            $("#compare").combobox('loadData', allData);
-            $("#compare").combobox('setValue', "-1");
-        },
-        error: function () {
-            return false;
-        },
-        dataType: "json"
-    });
-
-    s.datagrid('keyword_data_table', [], {
+    s.datagrid('keyword_data_table', columns, {
         url: '',
         toolbar: "#top"
     });
@@ -43,19 +21,10 @@ var subtext;
 var dColumns;
 var dColumnData;
 function searchKeywordRecord() {
-    var validator = $('#searchForm').form('validate');
-    if (!validator) {
-        return false;
-    }
-
-    var origin = $("#origin").combobox('getValue');
-    var compare = $("#compare").combobox('getValue');
-
-    if(origin == compare){
-        s.alert('请选择不同的对比维度');
-        return false;
-    }
-
+    //var validator = $('#searchForm').form('validate');
+    //if (!validator) {
+    //    return false;
+    //}
     var startDate = $("#startDate").datebox('getValue');
     var endDate = $("#endDate").datebox('getValue');
     if (new Date(endDate).getTime() > (new Date().getTime())) {
@@ -110,83 +79,66 @@ function searchKeywordRecord() {
 
     myChart.showLoading();// 显示遮罩层
 
-    $('#searchForm').form('submit', {
-        url: '../keyword/getKeywordDataForChat.do',
-        onSubmit: function () {
-            return $(this).form('validate');
+    $.ajax({
+        url: "/task/getChartData",
+        method: "POST",
+        data: {
+            queryStartTime: startDate,
+            queryEndTime: endDate
         },
-        success: function (result) {
-            var data = $.parseJSON(result);
-            myChart.hideLoading();
-            if (data == null) return;
+        dataType: 'json'
+    })
+        .success(function (data) {
+            //console.log(data.code);
+            var resultList = data.rows;
+            if (data.code == 1) {
+                myChart.setOption({
+                    title: {
+                        text: data.title_text,
+                        subtext:  data.title_subtext
+                    },
+                    legend: {
+                        data: data.legend_data
+                    },
+                    xAxis: {
+                        data: data.xAxis
+                    },
+                    yAxis: [
+                        {
+                            type: 'value',
+                            axisLabel: {
+                                formatter: '{value} ￥'
+                            }
+                        }
+                    ],
+                    series: data.series
+                });
 
-            myChart.setOption({
-                title: {
-                    text: data.rows.text
-                },
-                legend: {
-                    data: data.rows.legendArr
-                },
-                xAxis: {
-                    data: data.rows.dateArr
-                },
-                yAxis: data.rows.yAxisArr,
-                series: data.rows.dataArr
-            });
 
-            subtext = data.rows.subtext;
-            dColumns = data.rows.dColumns;
-            dColumnData = data.rows.dColumnData;
-
-            if(dColumns == undefined){
-                $('#keyword_data_table').datagrid('loadData', { total: 0, rows: [] });
-                return false;
+                $('#keyword_data_table').datagrid({
+                    columns:[columns],
+                    toolbar: "#top",
+                    dataType: 'json',
+                    data: resultList.slice(0, 10),
+                    loadMsg: "正在处理，请稍待...",
+                    pagination: true,
+                    rownumbers: true,
+                    singleSelect: true,
+                    nowrap: true,
+                    pageSize: 10
+                });
+                myChart.hideLoading();
+            } else {
+                alert("服务器异常，请联系管理员!");
+                myChart.hideLoading();
             }
-            var array = [];
-            var columns = [];
-            // table数据
-            $(dColumns).each(function () {
-                array.push({field: '', title: '', width: '', align: ''});
-            });
-            columns.push(array);
-            $(dColumns).each(function (index, col) {
-                columns[0][index]['field'] = col['field'];
-                columns[0][index]['title'] = col['title'];
-                columns[0][index]['width'] = col['width'];
-                columns[0][index]['align'] = col['align'];
-            });
-
-            $('#keyword_data_table').datagrid({
-                columns:columns,
-                dataType: 'json',
-                data: dColumnData.slice(0, 10),
-                loadMsg: "正在处理，请稍待...",
-                pagination: true,
-                rownumbers: true,
-                singleSelect: true,
-                nowrap: true,
-                pageSize: 10
-            });
-
-            var pager = $("#keyword_data_table").datagrid("getPager");
-            pager.pagination({
-                total: dColumnData.length,
-                onSelectPage: function (pageNo, pageSize) {
-                    var start = (pageNo - 1) * pageSize;
-                    var end = start + pageSize;
-                    $("#keyword_data_table").datagrid("loadData", dColumnData.slice(start, end));
-                    pager.pagination('refresh', {
-                        total: dColumnData.length,
-                        pageNumber: pageNo
-                    });
-                }
-            });
-        },
-        error: function () {
+        })
+        .error(function (data) {
+            console.log(data);
+            alert("服务器异常，请联系管理员!");
             myChart.hideLoading();
-            return false;
-        }
-    });
+        });
+
 };
 
 /**
@@ -232,5 +184,5 @@ function exportKeywordDataForChat() {
  * */
 function initIndexTime() {
     s.initRangeDateBeforeDays("endDate", 0);
-    s.initRangeDateBeforeDays("startDate", 15);
+    s.initRangeDateBeforeDays("startDate", 8);
 };
