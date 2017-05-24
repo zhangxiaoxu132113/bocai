@@ -198,7 +198,7 @@ public class TaskServiceImpl implements TaskService {
             return resultView;
         }
         Map<String, Object> queryMap = new HashMap<>();
-        TaskUser taskUser = new TaskUser();
+        TaskUserDto taskUser = new TaskUserDto();
         taskUser.setTaskId(model.getTaskId());
         queryMap.put("model", taskUser);
         List<TaskUserDto> taskUserList = taskUserMapper.getTaskUserList(queryMap);

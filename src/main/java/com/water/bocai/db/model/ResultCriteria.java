@@ -314,52 +314,52 @@ public class ResultCriteria {
             return (Criteria) this;
         }
 
-        public Criteria andRed1EqualTo(Integer value) {
+        public Criteria andRed1EqualTo(Float value) {
             addCriterion("red1 =", value, "red1");
             return (Criteria) this;
         }
 
-        public Criteria andRed1NotEqualTo(Integer value) {
+        public Criteria andRed1NotEqualTo(Float value) {
             addCriterion("red1 <>", value, "red1");
             return (Criteria) this;
         }
 
-        public Criteria andRed1GreaterThan(Integer value) {
+        public Criteria andRed1GreaterThan(Float value) {
             addCriterion("red1 >", value, "red1");
             return (Criteria) this;
         }
 
-        public Criteria andRed1GreaterThanOrEqualTo(Integer value) {
+        public Criteria andRed1GreaterThanOrEqualTo(Float value) {
             addCriterion("red1 >=", value, "red1");
             return (Criteria) this;
         }
 
-        public Criteria andRed1LessThan(Integer value) {
+        public Criteria andRed1LessThan(Float value) {
             addCriterion("red1 <", value, "red1");
             return (Criteria) this;
         }
 
-        public Criteria andRed1LessThanOrEqualTo(Integer value) {
+        public Criteria andRed1LessThanOrEqualTo(Float value) {
             addCriterion("red1 <=", value, "red1");
             return (Criteria) this;
         }
 
-        public Criteria andRed1In(List<Integer> values) {
+        public Criteria andRed1In(List<Float> values) {
             addCriterion("red1 in", values, "red1");
             return (Criteria) this;
         }
 
-        public Criteria andRed1NotIn(List<Integer> values) {
+        public Criteria andRed1NotIn(List<Float> values) {
             addCriterion("red1 not in", values, "red1");
             return (Criteria) this;
         }
 
-        public Criteria andRed1Between(Integer value1, Integer value2) {
+        public Criteria andRed1Between(Float value1, Float value2) {
             addCriterion("red1 between", value1, value2, "red1");
             return (Criteria) this;
         }
 
-        public Criteria andRed1NotBetween(Integer value1, Integer value2) {
+        public Criteria andRed1NotBetween(Float value1, Float value2) {
             addCriterion("red1 not between", value1, value2, "red1");
             return (Criteria) this;
         }
@@ -374,52 +374,52 @@ public class ResultCriteria {
             return (Criteria) this;
         }
 
-        public Criteria andRed2EqualTo(Integer value) {
+        public Criteria andRed2EqualTo(Float value) {
             addCriterion("red2 =", value, "red2");
             return (Criteria) this;
         }
 
-        public Criteria andRed2NotEqualTo(Integer value) {
+        public Criteria andRed2NotEqualTo(Float value) {
             addCriterion("red2 <>", value, "red2");
             return (Criteria) this;
         }
 
-        public Criteria andRed2GreaterThan(Integer value) {
+        public Criteria andRed2GreaterThan(Float value) {
             addCriterion("red2 >", value, "red2");
             return (Criteria) this;
         }
 
-        public Criteria andRed2GreaterThanOrEqualTo(Integer value) {
+        public Criteria andRed2GreaterThanOrEqualTo(Float value) {
             addCriterion("red2 >=", value, "red2");
             return (Criteria) this;
         }
 
-        public Criteria andRed2LessThan(Integer value) {
+        public Criteria andRed2LessThan(Float value) {
             addCriterion("red2 <", value, "red2");
             return (Criteria) this;
         }
 
-        public Criteria andRed2LessThanOrEqualTo(Integer value) {
+        public Criteria andRed2LessThanOrEqualTo(Float value) {
             addCriterion("red2 <=", value, "red2");
             return (Criteria) this;
         }
 
-        public Criteria andRed2In(List<Integer> values) {
+        public Criteria andRed2In(List<Float> values) {
             addCriterion("red2 in", values, "red2");
             return (Criteria) this;
         }
 
-        public Criteria andRed2NotIn(List<Integer> values) {
+        public Criteria andRed2NotIn(List<Float> values) {
             addCriterion("red2 not in", values, "red2");
             return (Criteria) this;
         }
 
-        public Criteria andRed2Between(Integer value1, Integer value2) {
+        public Criteria andRed2Between(Float value1, Float value2) {
             addCriterion("red2 between", value1, value2, "red2");
             return (Criteria) this;
         }
 
-        public Criteria andRed2NotBetween(Integer value1, Integer value2) {
+        public Criteria andRed2NotBetween(Float value1, Float value2) {
             addCriterion("red2 not between", value1, value2, "red2");
             return (Criteria) this;
         }
@@ -434,52 +434,52 @@ public class ResultCriteria {
             return (Criteria) this;
         }
 
-        public Criteria andRed3EqualTo(Integer value) {
+        public Criteria andRed3EqualTo(Float value) {
             addCriterion("red3 =", value, "red3");
             return (Criteria) this;
         }
 
-        public Criteria andRed3NotEqualTo(Integer value) {
+        public Criteria andRed3NotEqualTo(Float value) {
             addCriterion("red3 <>", value, "red3");
             return (Criteria) this;
         }
 
-        public Criteria andRed3GreaterThan(Integer value) {
+        public Criteria andRed3GreaterThan(Float value) {
             addCriterion("red3 >", value, "red3");
             return (Criteria) this;
         }
 
-        public Criteria andRed3GreaterThanOrEqualTo(Integer value) {
+        public Criteria andRed3GreaterThanOrEqualTo(Float value) {
             addCriterion("red3 >=", value, "red3");
             return (Criteria) this;
         }
 
-        public Criteria andRed3LessThan(Integer value) {
+        public Criteria andRed3LessThan(Float value) {
             addCriterion("red3 <", value, "red3");
             return (Criteria) this;
         }
 
-        public Criteria andRed3LessThanOrEqualTo(Integer value) {
+        public Criteria andRed3LessThanOrEqualTo(Float value) {
             addCriterion("red3 <=", value, "red3");
             return (Criteria) this;
         }
 
-        public Criteria andRed3In(List<Integer> values) {
+        public Criteria andRed3In(List<Float> values) {
             addCriterion("red3 in", values, "red3");
             return (Criteria) this;
         }
 
-        public Criteria andRed3NotIn(List<Integer> values) {
+        public Criteria andRed3NotIn(List<Float> values) {
             addCriterion("red3 not in", values, "red3");
             return (Criteria) this;
         }
 
-        public Criteria andRed3Between(Integer value1, Integer value2) {
+        public Criteria andRed3Between(Float value1, Float value2) {
             addCriterion("red3 between", value1, value2, "red3");
             return (Criteria) this;
         }
 
-        public Criteria andRed3NotBetween(Integer value1, Integer value2) {
+        public Criteria andRed3NotBetween(Float value1, Float value2) {
             addCriterion("red3 not between", value1, value2, "red3");
             return (Criteria) this;
         }
@@ -494,52 +494,52 @@ public class ResultCriteria {
             return (Criteria) this;
         }
 
-        public Criteria andRed4EqualTo(Integer value) {
+        public Criteria andRed4EqualTo(Float value) {
             addCriterion("red4 =", value, "red4");
             return (Criteria) this;
         }
 
-        public Criteria andRed4NotEqualTo(Integer value) {
+        public Criteria andRed4NotEqualTo(Float value) {
             addCriterion("red4 <>", value, "red4");
             return (Criteria) this;
         }
 
-        public Criteria andRed4GreaterThan(Integer value) {
+        public Criteria andRed4GreaterThan(Float value) {
             addCriterion("red4 >", value, "red4");
             return (Criteria) this;
         }
 
-        public Criteria andRed4GreaterThanOrEqualTo(Integer value) {
+        public Criteria andRed4GreaterThanOrEqualTo(Float value) {
             addCriterion("red4 >=", value, "red4");
             return (Criteria) this;
         }
 
-        public Criteria andRed4LessThan(Integer value) {
+        public Criteria andRed4LessThan(Float value) {
             addCriterion("red4 <", value, "red4");
             return (Criteria) this;
         }
 
-        public Criteria andRed4LessThanOrEqualTo(Integer value) {
+        public Criteria andRed4LessThanOrEqualTo(Float value) {
             addCriterion("red4 <=", value, "red4");
             return (Criteria) this;
         }
 
-        public Criteria andRed4In(List<Integer> values) {
+        public Criteria andRed4In(List<Float> values) {
             addCriterion("red4 in", values, "red4");
             return (Criteria) this;
         }
 
-        public Criteria andRed4NotIn(List<Integer> values) {
+        public Criteria andRed4NotIn(List<Float> values) {
             addCriterion("red4 not in", values, "red4");
             return (Criteria) this;
         }
 
-        public Criteria andRed4Between(Integer value1, Integer value2) {
+        public Criteria andRed4Between(Float value1, Float value2) {
             addCriterion("red4 between", value1, value2, "red4");
             return (Criteria) this;
         }
 
-        public Criteria andRed4NotBetween(Integer value1, Integer value2) {
+        public Criteria andRed4NotBetween(Float value1, Float value2) {
             addCriterion("red4 not between", value1, value2, "red4");
             return (Criteria) this;
         }
@@ -554,52 +554,52 @@ public class ResultCriteria {
             return (Criteria) this;
         }
 
-        public Criteria andRed5EqualTo(Integer value) {
+        public Criteria andRed5EqualTo(Float value) {
             addCriterion("red5 =", value, "red5");
             return (Criteria) this;
         }
 
-        public Criteria andRed5NotEqualTo(Integer value) {
+        public Criteria andRed5NotEqualTo(Float value) {
             addCriterion("red5 <>", value, "red5");
             return (Criteria) this;
         }
 
-        public Criteria andRed5GreaterThan(Integer value) {
+        public Criteria andRed5GreaterThan(Float value) {
             addCriterion("red5 >", value, "red5");
             return (Criteria) this;
         }
 
-        public Criteria andRed5GreaterThanOrEqualTo(Integer value) {
+        public Criteria andRed5GreaterThanOrEqualTo(Float value) {
             addCriterion("red5 >=", value, "red5");
             return (Criteria) this;
         }
 
-        public Criteria andRed5LessThan(Integer value) {
+        public Criteria andRed5LessThan(Float value) {
             addCriterion("red5 <", value, "red5");
             return (Criteria) this;
         }
 
-        public Criteria andRed5LessThanOrEqualTo(Integer value) {
+        public Criteria andRed5LessThanOrEqualTo(Float value) {
             addCriterion("red5 <=", value, "red5");
             return (Criteria) this;
         }
 
-        public Criteria andRed5In(List<Integer> values) {
+        public Criteria andRed5In(List<Float> values) {
             addCriterion("red5 in", values, "red5");
             return (Criteria) this;
         }
 
-        public Criteria andRed5NotIn(List<Integer> values) {
+        public Criteria andRed5NotIn(List<Float> values) {
             addCriterion("red5 not in", values, "red5");
             return (Criteria) this;
         }
 
-        public Criteria andRed5Between(Integer value1, Integer value2) {
+        public Criteria andRed5Between(Float value1, Float value2) {
             addCriterion("red5 between", value1, value2, "red5");
             return (Criteria) this;
         }
 
-        public Criteria andRed5NotBetween(Integer value1, Integer value2) {
+        public Criteria andRed5NotBetween(Float value1, Float value2) {
             addCriterion("red5 not between", value1, value2, "red5");
             return (Criteria) this;
         }
@@ -614,52 +614,52 @@ public class ResultCriteria {
             return (Criteria) this;
         }
 
-        public Criteria andRed6EqualTo(Integer value) {
+        public Criteria andRed6EqualTo(Float value) {
             addCriterion("red6 =", value, "red6");
             return (Criteria) this;
         }
 
-        public Criteria andRed6NotEqualTo(Integer value) {
+        public Criteria andRed6NotEqualTo(Float value) {
             addCriterion("red6 <>", value, "red6");
             return (Criteria) this;
         }
 
-        public Criteria andRed6GreaterThan(Integer value) {
+        public Criteria andRed6GreaterThan(Float value) {
             addCriterion("red6 >", value, "red6");
             return (Criteria) this;
         }
 
-        public Criteria andRed6GreaterThanOrEqualTo(Integer value) {
+        public Criteria andRed6GreaterThanOrEqualTo(Float value) {
             addCriterion("red6 >=", value, "red6");
             return (Criteria) this;
         }
 
-        public Criteria andRed6LessThan(Integer value) {
+        public Criteria andRed6LessThan(Float value) {
             addCriterion("red6 <", value, "red6");
             return (Criteria) this;
         }
 
-        public Criteria andRed6LessThanOrEqualTo(Integer value) {
+        public Criteria andRed6LessThanOrEqualTo(Float value) {
             addCriterion("red6 <=", value, "red6");
             return (Criteria) this;
         }
 
-        public Criteria andRed6In(List<Integer> values) {
+        public Criteria andRed6In(List<Float> values) {
             addCriterion("red6 in", values, "red6");
             return (Criteria) this;
         }
 
-        public Criteria andRed6NotIn(List<Integer> values) {
+        public Criteria andRed6NotIn(List<Float> values) {
             addCriterion("red6 not in", values, "red6");
             return (Criteria) this;
         }
 
-        public Criteria andRed6Between(Integer value1, Integer value2) {
+        public Criteria andRed6Between(Float value1, Float value2) {
             addCriterion("red6 between", value1, value2, "red6");
             return (Criteria) this;
         }
 
-        public Criteria andRed6NotBetween(Integer value1, Integer value2) {
+        public Criteria andRed6NotBetween(Float value1, Float value2) {
             addCriterion("red6 not between", value1, value2, "red6");
             return (Criteria) this;
         }

@@ -116,8 +116,7 @@ public class TaskController {
      * 计算并获取开奖结果
      */
     @RequestMapping(value = "/getLotteryResults", method = RequestMethod.POST)
-    public void getLotteryResults(HttpServletRequest request, HttpServletResponse response,
-                                  @RequestBody ResultDto model) {
+    public void getLotteryResults(HttpServletRequest request, HttpServletResponse response, ResultDto model) {
         WebUtils.sendResult(response, taskService.handleLotteryResult(model));
     }
 

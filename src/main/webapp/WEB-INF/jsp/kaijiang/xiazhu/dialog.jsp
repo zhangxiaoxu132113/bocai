@@ -75,49 +75,49 @@
                     <td><label>第1个：</label></td>
                     <td>
                         <input style="width: 160px" name="red1"
-                               class="easyui-textbox" type="text"/>
+                               class="easyui-textbox red1" type="text"/>
                     </td>
                 </tr>
                 <tr>
                     <td><label>第2个：</label></td>
                     <td>
                         <input style="width: 160px" name="red2"
-                               class="easyui-textbox" type="text"/>
+                               class="easyui-textbox red2" type="text"/>
                     </td>
                 </tr>
                 <tr>
                     <td><label>第3个：</label></td>
                     <td>
                         <input style="width: 160px" name="red3"
-                               class="easyui-textbox" type="text"/>
+                               class="easyui-textbox red3" type="text"/>
                     </td>
                 </tr>
                 <tr>
                     <td><label>第4个：</label></td>
                     <td>
                         <input style="width: 160px" name="red4"
-                               class="easyui-textbox" type="text"/>
+                               class="easyui-textbox red4" type="text"/>
                     </td>
                 </tr>
                 <tr>
                     <td><label>第5个：</label></td>
                     <td>
                         <input style="width: 160px" name="red5"
-                               class="easyui-textbox" type="text"/>
+                               class="easyui-textbox red5" type="text"/>
                     </td>
                 </tr>
                 <tr>
                     <td><label>第6个：</label></td>
                     <td>
                         <input style="width: 160px" name="red6"
-                               class="easyui-textbox" type="text"/>
+                               class="easyui-textbox red6" type="text"/>
                     </td>
                 </tr>
                 <tr>
                     <td><label>庄家包位：</label></td>
                     <td>
                         <input style="width: 160px" name="packageNum"
-                               class="easyui-textbox" type="text"/>
+                               class="easyui-textbox packageNum" type="text"/>
                     </td>
                 </tr>
             </table>
@@ -126,41 +126,45 @@
 </div>
 <div id="update_task_dlg_btn">
     <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-ok"
-       onclick="updateTask()" style="width: 90px">确认</a>
+       onclick="jishu_result()" style="width: 90px">确认</a>
     <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel"
        onclick="cancelStartTask()" style="width: 90px">取消</a>
 </div>
 
-<div id="task_execute_status_dlg" class="easyui-dialog"
-     style="width: 400px; height: 270px;" closed="true"
+<div id="result_info_dlg" class="easyui-dialog"
+     style="width: 400px; height: 350px;" closed="true"
      data-options="iconCls:'icon-edit',modal:true"
-     buttons="#task_execute_status_dlg_btn">
+     buttons="#result_info_dlg_btn">
     <div align="center">
         <table class="table-dlg">
             <tr>
-                <td>任务Id：</td>
-                <td>o1beml7shd9eqI-3_Ukac9W1cbEuK3O-</td>
+                <td>庄家：</td>
+                <td>包位 <span class="packageNum"></span></td>
             </tr>
             <tr>
-                <td>任务标题：</td>
-                <td>乳房DL词表任务监控</td>
+                <td>杀包位：</td>
+                <td><span class="inPackageNums"></span> 共 <span class="inCount"></span> 注，共进 <span class="moneyIn"></span> ￥</td>
             </tr>
             <tr>
-                <td>执行状态：</td>
-                <td>运行中</td>
+                <td>赔包位：</td>
+                <td><span class="outPackageNums"></span> 共 <span class="outCount"></span> 注，共出 <span class="moneyOut"></span> ￥</td>
             </tr>
             <tr>
-                <td>执行进度：</td>
-                <td>85%</td>
+                <td>平包位：</td>
+                <td><span class="tiePackageNUms"></span> 共 <span class="tieCount"></span> 注</td>
             </tr>
             <tr>
-                <td>操作：</td>
-                <td><span>取消</span></td>
+                <td>佣金：</td>
+                <td> <span class="agencyFee"></span> ￥</td>
+            </tr>
+            <tr>
+                <td>纯盈利：</td>
+                <td> <span class="profit"></span> ￥</td>
             </tr>
         </table>
     </div>
 </div>
-<div id="task_execute_status_dlg_btn" style="text-align: center">
+<div id="result_info_dlg_btn" style="text-align: center">
     <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel"
-       onclick="closeTaskExecuteStatusDlg()" style="width: 90px">关闭</a>
+       onclick="close_result_info_dlg()" style="width: 90px">关闭</a>
 </div>

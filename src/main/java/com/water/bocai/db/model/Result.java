@@ -9,17 +9,17 @@ public class Result implements Serializable {
 
     private Integer packageNum;
 
-    private Integer red1;
+    private Float red1;
 
-    private Integer red2;
+    private Float red2;
 
-    private Integer red3;
+    private Float red3;
 
-    private Integer red4;
+    private Float red4;
 
-    private Integer red5;
+    private Float red5;
 
-    private Integer red6;
+    private Float red6;
 
     private Integer sum;
 
@@ -59,51 +59,51 @@ public class Result implements Serializable {
         this.packageNum = packageNum;
     }
 
-    public Integer getRed1() {
+    public Float getRed1() {
         return red1;
     }
 
-    public void setRed1(Integer red1) {
+    public void setRed1(Float red1) {
         this.red1 = red1;
     }
 
-    public Integer getRed2() {
+    public Float getRed2() {
         return red2;
     }
 
-    public void setRed2(Integer red2) {
+    public void setRed2(Float red2) {
         this.red2 = red2;
     }
 
-    public Integer getRed3() {
+    public Float getRed3() {
         return red3;
     }
 
-    public void setRed3(Integer red3) {
+    public void setRed3(Float red3) {
         this.red3 = red3;
     }
 
-    public Integer getRed4() {
+    public Float getRed4() {
         return red4;
     }
 
-    public void setRed4(Integer red4) {
+    public void setRed4(Float red4) {
         this.red4 = red4;
     }
 
-    public Integer getRed5() {
+    public Float getRed5() {
         return red5;
     }
 
-    public void setRed5(Integer red5) {
+    public void setRed5(Float red5) {
         this.red5 = red5;
     }
 
-    public Integer getRed6() {
+    public Float getRed6() {
         return red6;
     }
 
-    public void setRed6(Integer red6) {
+    public void setRed6(Float red6) {
         this.red6 = red6;
     }
 

@@ -133,7 +133,8 @@ public class Constant {
         GENERAL_FORMATTER_FIELDS.add(ENABLED);
     }
 
-    public static String webroot = "E:\\\\repository\\\\keyword\\\\keyword\\\\src\\\\main\\\\webapp";
+//    public static String webroot = "E:\\\\repository\\\\keyword\\\\keyword\\\\src\\\\main\\\\webapp";
+    public static String webroot = "/data/jsp/data/upload";
 
     /**
      * 站点类型：1-内部站点，2-外部对比站点

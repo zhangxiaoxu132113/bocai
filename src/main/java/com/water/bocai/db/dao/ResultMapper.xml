@@ -5,12 +5,12 @@
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="task_id" property="taskId" jdbcType="VARCHAR" />
     <result column="package_num" property="packageNum" jdbcType="INTEGER" />
-    <result column="red1" property="red1" jdbcType="INTEGER" />
-    <result column="red2" property="red2" jdbcType="INTEGER" />
-    <result column="red3" property="red3" jdbcType="INTEGER" />
-    <result column="red4" property="red4" jdbcType="INTEGER" />
-    <result column="red5" property="red5" jdbcType="INTEGER" />
-    <result column="red6" property="red6" jdbcType="INTEGER" />
+    <result column="red1" property="red1" jdbcType="REAL" />
+    <result column="red2" property="red2" jdbcType="REAL" />
+    <result column="red3" property="red3" jdbcType="REAL" />
+    <result column="red4" property="red4" jdbcType="REAL" />
+    <result column="red5" property="red5" jdbcType="REAL" />
+    <result column="red6" property="red6" jdbcType="REAL" />
     <result column="sum" property="sum" jdbcType="INTEGER" />
     <result column="total" property="total" jdbcType="REAL" />
     <result column="money_out" property="moneyOut" jdbcType="REAL" />
@@ -117,8 +117,8 @@
       money_out, money_in, agency_fee, 
       profit)
     values (#{id,jdbcType=VARCHAR}, #{taskId,jdbcType=VARCHAR}, #{packageNum,jdbcType=INTEGER}, 
-      #{red1,jdbcType=INTEGER}, #{red2,jdbcType=INTEGER}, #{red3,jdbcType=INTEGER}, #{red4,jdbcType=INTEGER}, 
-      #{red5,jdbcType=INTEGER}, #{red6,jdbcType=INTEGER}, #{sum,jdbcType=INTEGER}, #{total,jdbcType=REAL}, 
+      #{red1,jdbcType=REAL}, #{red2,jdbcType=REAL}, #{red3,jdbcType=REAL}, #{red4,jdbcType=REAL}, 
+      #{red5,jdbcType=REAL}, #{red6,jdbcType=REAL}, #{sum,jdbcType=INTEGER}, #{total,jdbcType=REAL}, 
       #{moneyOut,jdbcType=REAL}, #{moneyIn,jdbcType=REAL}, #{agencyFee,jdbcType=REAL}, 
       #{profit,jdbcType=REAL})
   </insert>
@@ -182,22 +182,22 @@
         #{packageNum,jdbcType=INTEGER},
       </if>
       <if test="red1 != null" >
-        #{red1,jdbcType=INTEGER},
+        #{red1,jdbcType=REAL},
       </if>
       <if test="red2 != null" >
-        #{red2,jdbcType=INTEGER},
+        #{red2,jdbcType=REAL},
       </if>
       <if test="red3 != null" >
-        #{red3,jdbcType=INTEGER},
+        #{red3,jdbcType=REAL},
       </if>
       <if test="red4 != null" >
-        #{red4,jdbcType=INTEGER},
+        #{red4,jdbcType=REAL},
       </if>
       <if test="red5 != null" >
-        #{red5,jdbcType=INTEGER},
+        #{red5,jdbcType=REAL},
       </if>
       <if test="red6 != null" >
-        #{red6,jdbcType=INTEGER},
+        #{red6,jdbcType=REAL},
       </if>
       <if test="sum != null" >
         #{sum,jdbcType=INTEGER},
@@ -238,22 +238,22 @@
         package_num = #{record.packageNum,jdbcType=INTEGER},
       </if>
       <if test="record.red1 != null" >
-        red1 = #{record.red1,jdbcType=INTEGER},
+        red1 = #{record.red1,jdbcType=REAL},
       </if>
       <if test="record.red2 != null" >
-        red2 = #{record.red2,jdbcType=INTEGER},
+        red2 = #{record.red2,jdbcType=REAL},
       </if>
       <if test="record.red3 != null" >
-        red3 = #{record.red3,jdbcType=INTEGER},
+        red3 = #{record.red3,jdbcType=REAL},
       </if>
       <if test="record.red4 != null" >
-        red4 = #{record.red4,jdbcType=INTEGER},
+        red4 = #{record.red4,jdbcType=REAL},
       </if>
       <if test="record.red5 != null" >
-        red5 = #{record.red5,jdbcType=INTEGER},
+        red5 = #{record.red5,jdbcType=REAL},
       </if>
       <if test="record.red6 != null" >
-        red6 = #{record.red6,jdbcType=INTEGER},
+        red6 = #{record.red6,jdbcType=REAL},
       </if>
       <if test="record.sum != null" >
         sum = #{record.sum,jdbcType=INTEGER},
@@ -283,12 +283,12 @@
     set id = #{record.id,jdbcType=VARCHAR},
       task_id = #{record.taskId,jdbcType=VARCHAR},
       package_num = #{record.packageNum,jdbcType=INTEGER},
-      red1 = #{record.red1,jdbcType=INTEGER},
-      red2 = #{record.red2,jdbcType=INTEGER},
-      red3 = #{record.red3,jdbcType=INTEGER},
-      red4 = #{record.red4,jdbcType=INTEGER},
-      red5 = #{record.red5,jdbcType=INTEGER},
-      red6 = #{record.red6,jdbcType=INTEGER},
+      red1 = #{record.red1,jdbcType=REAL},
+      red2 = #{record.red2,jdbcType=REAL},
+      red3 = #{record.red3,jdbcType=REAL},
+      red4 = #{record.red4,jdbcType=REAL},
+      red5 = #{record.red5,jdbcType=REAL},
+      red6 = #{record.red6,jdbcType=REAL},
       sum = #{record.sum,jdbcType=INTEGER},
       total = #{record.total,jdbcType=REAL},
       money_out = #{record.moneyOut,jdbcType=REAL},
@@ -309,22 +309,22 @@
         package_num = #{packageNum,jdbcType=INTEGER},
       </if>
       <if test="red1 != null" >
-        red1 = #{red1,jdbcType=INTEGER},
+        red1 = #{red1,jdbcType=REAL},
       </if>
       <if test="red2 != null" >
-        red2 = #{red2,jdbcType=INTEGER},
+        red2 = #{red2,jdbcType=REAL},
       </if>
       <if test="red3 != null" >
-        red3 = #{red3,jdbcType=INTEGER},
+        red3 = #{red3,jdbcType=REAL},
       </if>
       <if test="red4 != null" >
-        red4 = #{red4,jdbcType=INTEGER},
+        red4 = #{red4,jdbcType=REAL},
       </if>
       <if test="red5 != null" >
-        red5 = #{red5,jdbcType=INTEGER},
+        red5 = #{red5,jdbcType=REAL},
       </if>
       <if test="red6 != null" >
-        red6 = #{red6,jdbcType=INTEGER},
+        red6 = #{red6,jdbcType=REAL},
       </if>
       <if test="sum != null" >
         sum = #{sum,jdbcType=INTEGER},
@@ -351,12 +351,12 @@
     update result
     set task_id = #{taskId,jdbcType=VARCHAR},
       package_num = #{packageNum,jdbcType=INTEGER},
-      red1 = #{red1,jdbcType=INTEGER},
-      red2 = #{red2,jdbcType=INTEGER},
-      red3 = #{red3,jdbcType=INTEGER},
-      red4 = #{red4,jdbcType=INTEGER},
-      red5 = #{red5,jdbcType=INTEGER},
-      red6 = #{red6,jdbcType=INTEGER},
+      red1 = #{red1,jdbcType=REAL},
+      red2 = #{red2,jdbcType=REAL},
+      red3 = #{red3,jdbcType=REAL},
+      red4 = #{red4,jdbcType=REAL},
+      red5 = #{red5,jdbcType=REAL},
+      red6 = #{red6,jdbcType=REAL},
       sum = #{sum,jdbcType=INTEGER},
       total = #{total,jdbcType=REAL},
       money_out = #{moneyOut,jdbcType=REAL},
@@ -383,8 +383,8 @@
     insert into result (id, task_id, package_num, red1, red2, red3, red4, red5, red6, sum, total, money_out, money_in, agency_fee, profit) values 
     <foreach collection="list" item="item" index="index" separator="," >
       (#{item.id,jdbcType=VARCHAR}, #{item.taskId,jdbcType=VARCHAR}, #{item.packageNum,jdbcType=INTEGER}, 
-        #{item.red1,jdbcType=INTEGER}, #{item.red2,jdbcType=INTEGER}, #{item.red3,jdbcType=INTEGER}, 
-        #{item.red4,jdbcType=INTEGER}, #{item.red5,jdbcType=INTEGER}, #{item.red6,jdbcType=INTEGER}, 
+        #{item.red1,jdbcType=REAL}, #{item.red2,jdbcType=REAL}, #{item.red3,jdbcType=REAL}, 
+        #{item.red4,jdbcType=REAL}, #{item.red5,jdbcType=REAL}, #{item.red6,jdbcType=REAL}, 
         #{item.sum,jdbcType=INTEGER}, #{item.total,jdbcType=REAL}, #{item.moneyOut,jdbcType=REAL}, 
         #{item.moneyIn,jdbcType=REAL}, #{item.agencyFee,jdbcType=REAL}, #{item.profit,jdbcType=REAL}
         )
