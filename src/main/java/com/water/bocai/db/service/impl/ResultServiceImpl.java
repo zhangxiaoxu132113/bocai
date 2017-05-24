@@ -1,5 +1,6 @@
 package com.water.bocai.db.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.water.bocai.db.dao.ResultMapper;
 import com.water.bocai.db.dao.TaskMapper;
 import com.water.bocai.db.model.Result;
@@ -45,7 +46,11 @@ public class ResultServiceImpl implements ResultService {
         MapView mapView = new MapView();
         List<StatisticsData> statisticsDataList = resultMapper.getHistoryStatisticsData(queryMap);
         int count = taskMapper.countTaskList(queryMap);
+        List<Map<String, Object>> xAxis = new ArrayList<>();
+        Map<String, Object> xAxisMap = new HashMap<>();
         List<String> dateArr = new ArrayList<>();
+
+
         List<Map<String, Object>> seriesDatas = new ArrayList<>();
         Map<String, Object> agencyFeeMap = new HashMap<>();
         Map<String, Object> profiltMap = new HashMap<>();
@@ -79,18 +84,23 @@ public class ResultServiceImpl implements ResultService {
 
         touzhuMap.put("name", "投注金额");
         touzhuMap.put("type", "line");
+        touzhuMap.put("itemStyle", JSONObject.parse("{normal: {areaStyle: {type: 'default'}}}"));
         touzhuMap.put("data", touzhuList);
         profiltMap.put("name", "纯收益");
         profiltMap.put("type", "line");
+        profiltMap.put("itemStyle", JSONObject.parse("{normal: {areaStyle: {type: 'default'}}}"));
         profiltMap.put("data", profiltList);
         moneyInMap.put("name", "杀包位");
         moneyInMap.put("type", "line");
+        moneyInMap.put("itemStyle", JSONObject.parse("{normal: {areaStyle: {type: 'default'}}}"));
         moneyInMap.put("data", moneyInList);
         moneyOutMap.put("name", "赔包位");
         moneyOutMap.put("type", "line");
+        moneyOutMap.put("itemStyle", JSONObject.parse("{normal: {areaStyle: {type: 'default'}}}"));
         moneyOutMap.put("data", moneyOutList);
         agencyFeeMap.put("name", "佣金");
         agencyFeeMap.put("type", "line");
+        agencyFeeMap.put("itemStyle",JSONObject.parse("{normal: {areaStyle: {type: 'default'}}}"));
         agencyFeeMap.put("data", agencyFeeList);
 
         legend_data.add("投注金额");
@@ -108,7 +118,11 @@ public class ResultServiceImpl implements ResultService {
         mapView.putParams("title_text", "报表分析");
         mapView.putParams("title_subtext", "分析");
         mapView.putParams("legend_data", legend_data);
-        mapView.putParams("xAxis", dateArr);
+        xAxisMap.put("data", dateArr);
+        xAxisMap.put("type", "category");
+        xAxisMap.put("boundaryGap", false);
+        xAxis.add(xAxisMap);
+        mapView.putParams("xAxis", xAxis);
 //        mapView.putParams("yAxis", dateArr);
         mapView.putParams("series", seriesDatas);
         mapView.setTotal(count);

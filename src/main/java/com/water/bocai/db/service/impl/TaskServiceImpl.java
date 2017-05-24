@@ -108,7 +108,7 @@ public class TaskServiceImpl implements TaskService {
                 taskUser.setUserId(list.get(0));
                 taskUser.setNum(Integer.valueOf((int) Float.valueOf(list.get(1)).longValue()));
                 taskUser.setSum(Float.valueOf(list.get(2)));
-                taskUser.setCreateOn(System.currentTimeMillis());
+                taskUser.setCreateOn(new Date());
                 taskUser.setUpdateTime(System.currentTimeMillis());
 
                 if (isExist) {

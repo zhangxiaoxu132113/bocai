@@ -10,7 +10,7 @@
     <result column="status" property="status" jdbcType="INTEGER" />
     <result column="bonus" property="bonus" jdbcType="REAL" />
     <result column="update_time" property="updateTime" jdbcType="BIGINT" />
-    <result column="create_on" property="createOn" jdbcType="BIGINT" />
+    <result column="create_on" property="createOn" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -109,7 +109,7 @@
       update_time, create_on)
     values (#{id,jdbcType=VARCHAR}, #{taskId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, 
       #{num,jdbcType=INTEGER}, #{sum,jdbcType=REAL}, #{status,jdbcType=INTEGER}, #{bonus,jdbcType=REAL}, 
-      #{updateTime,jdbcType=BIGINT}, #{createOn,jdbcType=BIGINT})
+      #{updateTime,jdbcType=BIGINT}, #{createOn,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.water.bocai.db.model.TaskUser" >
     insert into task_user
@@ -168,7 +168,7 @@
         #{updateTime,jdbcType=BIGINT},
       </if>
       <if test="createOn != null" >
-        #{createOn,jdbcType=BIGINT},
+        #{createOn,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -206,7 +206,7 @@
         update_time = #{record.updateTime,jdbcType=BIGINT},
       </if>
       <if test="record.createOn != null" >
-        create_on = #{record.createOn,jdbcType=BIGINT},
+        create_on = #{record.createOn,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="_parameter != null" >
@@ -223,7 +223,7 @@
       status = #{record.status,jdbcType=INTEGER},
       bonus = #{record.bonus,jdbcType=REAL},
       update_time = #{record.updateTime,jdbcType=BIGINT},
-      create_on = #{record.createOn,jdbcType=BIGINT}
+      create_on = #{record.createOn,jdbcType=TIMESTAMP}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -253,7 +253,7 @@
         update_time = #{updateTime,jdbcType=BIGINT},
       </if>
       <if test="createOn != null" >
-        create_on = #{createOn,jdbcType=BIGINT},
+        create_on = #{createOn,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
@@ -267,7 +267,7 @@
       status = #{status,jdbcType=INTEGER},
       bonus = #{bonus,jdbcType=REAL},
       update_time = #{updateTime,jdbcType=BIGINT},
-      create_on = #{createOn,jdbcType=BIGINT}
+      create_on = #{createOn,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=VARCHAR}
   </update>
   <select resultMap="BaseResultMap" parameterType="com.water.bocai.db.model.TaskUserCriteria" id="selectByExampleWithRowbounds" >
@@ -289,7 +289,7 @@
     <foreach collection="list" item="item" index="index" separator="," >
       (#{item.id,jdbcType=VARCHAR}, #{item.taskId,jdbcType=VARCHAR}, #{item.userId,jdbcType=VARCHAR}, 
         #{item.num,jdbcType=INTEGER}, #{item.sum,jdbcType=REAL}, #{item.status,jdbcType=INTEGER}, 
-        #{item.bonus,jdbcType=REAL}, #{item.updateTime,jdbcType=BIGINT}, #{item.createOn,jdbcType=BIGINT}
+        #{item.bonus,jdbcType=REAL}, #{item.updateTime,jdbcType=BIGINT}, #{item.createOn,jdbcType=TIMESTAMP}
         )
     </foreach>
   </insert>

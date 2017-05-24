@@ -56,14 +56,24 @@ function searchKeywordRecord() {
         legend: {
             data: []
         },
+        //toolbox: {
+        //    show: true,
+        //    feature: {
+        //        dataZoom: {},
+        //        dataView: {readOnly: false},
+        //        magicType: {type: ['line', 'bar']},
+        //        restore: {},
+        //        saveAsImage: {}
+        //    }
+        //}, v1
         toolbox: {
-            show: true,
-            feature: {
-                dataZoom: {},
-                dataView: {readOnly: false},
-                magicType: {type: ['line', 'bar']},
-                restore: {},
-                saveAsImage: {}
+            show : true,
+            feature : {
+                mark : {show: true},
+                dataView : {show: true, readOnly: false},
+                magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                restore : {show: true},
+                saveAsImage : {show: true}
             }
         },
         xAxis:  [
