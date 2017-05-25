@@ -268,9 +268,18 @@ function close_result_info_dlg() {
 }
 
 function openIncomeInfoTag() {
-    var url = "../user/incomeInfo.do";
+    var row = $('#table').datagrid('getSelected');
+    if (!row) {
+        s.showMessage('请选中需要操作的行');
+        return;
+    }
+    var url = "../user/incomeInfo.do?taskId=" + row.userId;
     var title = "用户收益情况";
     var icon = "icon-ok";
+    var jq = top.jQuery;
+    if (jq("#tabs").tabs('exists', title)) {
+        jq("#tabs").tabs("close", title);
+    }
     s.openTabs(title, url, icon);
 }
 function setTime(startDate, endDate) {

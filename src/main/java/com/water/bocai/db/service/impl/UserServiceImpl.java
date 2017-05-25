@@ -5,6 +5,7 @@ import com.water.bocai.db.model.User;
 import com.water.bocai.db.model.UserCriteria;
 import com.water.bocai.db.service.UserService;
 import com.water.bocai.utils.StringUtil;
+import com.water.bocai.utils.web.MapView;
 import com.water.bocai.utils.web.OperationTips;
 import com.water.bocai.utils.web.ResultView;
 import com.water.bocai.utils.web.dto.StatisticsUserData;
@@ -125,19 +126,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResultView getUserIncomeInfo(Map<String, Object> queryMap) {
+    public MapView getUserIncomeInfo(Map<String, Object> queryMap) {
         UserDto model = (UserDto) queryMap.get("model");
         if (model != null && StringUtils.isBlank(model.getId())) {
-            return new ResultView(OperationTips.TipsCode.TIPS_FAIL, OperationTips.TipsMsg.TIPS_FAIL);
+            return new MapView(OperationTips.TipsCode.TIPS_FAIL, OperationTips.TipsMsg.TIPS_FAIL);
         }
 
         List<StatisticsUserData> statisticsUserDatas = userMapper.getUserIncomeInfo(queryMap);
-        int total = userMapper.countUserIncmeInfoList(queryMap);
-        ResultView resultView = new ResultView();
+        Integer total = userMapper.countUserIncmeInfoList(queryMap);
+        MapView resultView = new MapView();
         resultView.setTotal(total);
         resultView.setRows(statisticsUserDatas);
         resultView.setMsg(OperationTips.TipsMsg.TIPS_SUCCESS);
         resultView.setCode(OperationTips.TipsCode.TIPS_SUCCESS);
-        return null;
+        return resultView;
     }
 }

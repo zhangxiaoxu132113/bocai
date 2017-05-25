@@ -1,15 +1,15 @@
 var vs_ = [{id: '-1', name: '全部'}];
 var columns = [
     //{field: 'id', title: 'id', align: 'center', width: '100', hidden: true},
-    {field: 'touZhuTotal', title: '投注金额', align: 'center', width: '100'},
-    {field: 'moneyInTotal', title: '共进', align: 'center', width: '150'},
-    {field: 'moneyOutTotal', title: '共处', align: 'center', width: '150'},
-    {field: 'profitTotal', title: '纯收益', align: 'center', width: '150'},
-    {field: 'time', title: '时间', align: 'center', width: '150'}
+    {field: 'time', title: '时间', align: 'center', width: '150'},
+    {field: 'totalMoeny', title: '共投注', align: 'center', width: '100'},
+    {field: 'avgMoney', title: '平均每包投注', align: 'center', width: '150'},
+    {field: 'totalProfit', title: '总收益', align: 'center', width: '150'}
+
 ];
+var userId;
 $(document).ready(function () {
-    var taskId = $('.userId').val();
-    console.log(taskId);
+    userId = $('.userId').val();
     initIndexTime();
     s.datagrid('keyword_data_table', columns, {
         url: '',
@@ -69,45 +69,44 @@ function searchKeywordRecord() {
         //    }
         //}, v1
         toolbox: {
-            show : true,
-            feature : {
-                mark : {show: true},
-                dataView : {show: true, readOnly: false},
-                magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
-                restore : {show: true},
-                saveAsImage : {show: true}
+            show: true,
+            feature: {
+                mark: {show: true},
+                dataView: {show: true, readOnly: false},
+                magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                restore: {show: true},
+                saveAsImage: {show: true}
             }
         },
-        xAxis:  [
+        xAxis: [
             {
                 boundaryGap: false,
                 data: []
             }
         ],
-        yAxis: {
-        },
+        yAxis: {},
         series: []
     });
 
     myChart.showLoading();// 显示遮罩层
 
     $.ajax({
-        url: "/task/getChartData",
+        url: "/user/getUserIncomeInfo",
         method: "POST",
         data: {
+            id: encodeURI(encodeURI(userId)),
             queryStartTime: startDate,
             queryEndTime: endDate
         },
         dataType: 'json'
     })
         .success(function (data) {
-            //console.log(data.code);
             var resultList = data.rows;
             if (data.code == 1) {
                 myChart.setOption({
                     title: {
                         text: data.title_text,
-                        subtext:  data.title_subtext
+                        subtext: data.title_subtext
                     },
                     legend: {
                         data: data.legend_data
@@ -128,7 +127,7 @@ function searchKeywordRecord() {
 
 
                 $('#keyword_data_table').datagrid({
-                    columns:[columns],
+                    columns: [columns],
                     toolbar: "#top",
                     dataType: 'json',
                     data: resultList.slice(0, 10),
@@ -157,7 +156,7 @@ function searchKeywordRecord() {
  * 导出数据到excel
  */
 function exportKeywordDataForChat() {
-    if(dColumnData == undefined){
+    if (dColumnData == undefined) {
         s.alert('暂无数据');
         return false;
     }

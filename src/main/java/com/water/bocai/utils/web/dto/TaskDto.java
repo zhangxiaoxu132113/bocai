@@ -12,26 +12,10 @@ public class TaskDto extends Task {
     private String statusName;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private String queryEndTime;
+    private String startDate;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private String queryStartTime;
-
-    public String getQueryStartTime() {
-        return queryStartTime;
-    }
-
-    public void setQueryStartTime(String queryStartTime) {
-        this.queryStartTime = queryStartTime;
-    }
-
-    public String getQueryEndTime() {
-        return queryEndTime;
-    }
-
-    public void setQueryEndTime(String queryEndTime) {
-        this.queryEndTime = queryEndTime;
-    }
+    private String endDate;
 
     public String getStatusName() {
         return statusName;
@@ -39,5 +23,21 @@ public class TaskDto extends Task {
 
     public void setStatusName(String statusName) {
         this.statusName = statusName;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 }

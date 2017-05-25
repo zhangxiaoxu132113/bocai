@@ -20,6 +20,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -126,19 +127,32 @@ public class TaskController {
     @RequestMapping(value = "/getChartData")
     public void getChartData(HttpServletRequest request, HttpServletResponse response, TaskDto model,
                              @RequestParam(defaultValue = "1") int currentPage,
-                             @RequestParam(defaultValue = "10") int pageSize) {
+                             @RequestParam(defaultValue = "10") int pageSize) throws ParseException {
         Map<String, Object> queryMap = new HashMap<>();
         int begin = (currentPage - 1) * pageSize;
         Page page = new Page(begin, pageSize, currentPage);
         queryMap.put("page", page);
         queryMap.put("model", model);
-        queryMap.put("endTime", model.getQueryEndTime());
-        queryMap.put("startTime", model.getQueryStartTime());
+        queryMap.put("endTime", model.getEndDate());
+        queryMap.put("startTime", model.getStartDate());
         WebUtils.sendJson(response, resultService.getHistoryStatisticsData(queryMap));
     }
 
     @RequestMapping("/deleteTaskUserRecord")
     public void deleteTaskUserRecord(HttpServletRequest request, HttpServletResponse response, String id) {
         WebUtils.sendResult(response, taskService.deleteTaskUserRecord(id));
+    }
+    @RequestMapping("/exportDataForChat")
+    public void exportDataForChat(HttpServletRequest request, HttpServletResponse response, TaskDto model,
+                                  @RequestParam(defaultValue = "1") int currentPage,
+                                  @RequestParam(defaultValue = "10") int pageSize) throws ParseException {
+        Map<String, Object> queryMap = new HashMap<>();
+        int begin = (currentPage - 1) * pageSize;
+        Page page = new Page(begin, pageSize, currentPage);
+        queryMap.put("page", page);
+        queryMap.put("model", model);
+        queryMap.put("endTime", model.getEndDate());
+        queryMap.put("startTime", model.getStartDate());
+        WebUtils.sendJson(response, resultService.exportDataForChat(queryMap));
     }
 }

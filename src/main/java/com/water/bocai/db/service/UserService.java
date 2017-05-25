@@ -1,6 +1,7 @@
 package com.water.bocai.db.service;
 
 import com.water.bocai.db.model.User;
+import com.water.bocai.utils.web.MapView;
 import com.water.bocai.utils.web.ResultView;
 import com.water.bocai.utils.web.dto.UserDto;
 
@@ -19,5 +20,5 @@ public interface UserService {
 
     Integer accountUserList();
 
-    ResultView getUserIncomeInfo(Map<String, Object> queryMap);
+    MapView getUserIncomeInfo(Map<String, Object> queryMap);
 }

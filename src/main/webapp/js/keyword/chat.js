@@ -1,11 +1,12 @@
 var vs_ = [{id: '-1', name: '全部'}];
 var columns = [
     //{field: 'id', title: 'id', align: 'center', width: '100', hidden: true},
+    {field: 'time', title: '时间', align: 'center', width: '150'},
     {field: 'touZhuTotal', title: '投注金额', align: 'center', width: '100'},
     {field: 'moneyInTotal', title: '共进', align: 'center', width: '150'},
-    {field: 'moneyOutTotal', title: '共处', align: 'center', width: '150'},
-    {field: 'profitTotal', title: '纯收益', align: 'center', width: '150'},
-    {field: 'time', title: '时间', align: 'center', width: '150'}
+    {field: 'moneyOutTotal', title: '共出', align: 'center', width: '150'},
+    {field: 'profitTotal', title: '纯收益', align: 'center', width: '150'}
+
 ];
 $(document).ready(function () {
     initIndexTime();
@@ -56,16 +57,6 @@ function searchKeywordRecord() {
         legend: {
             data: []
         },
-        //toolbox: {
-        //    show: true,
-        //    feature: {
-        //        dataZoom: {},
-        //        dataView: {readOnly: false},
-        //        magicType: {type: ['line', 'bar']},
-        //        restore: {},
-        //        saveAsImage: {}
-        //    }
-        //}, v1
         toolbox: {
             show : true,
             feature : {
@@ -93,14 +84,15 @@ function searchKeywordRecord() {
         url: "/task/getChartData",
         method: "POST",
         data: {
-            queryStartTime: startDate,
-            queryEndTime: endDate
+            startDate: startDate,
+            endDate: endDate
         },
         dataType: 'json'
     })
         .success(function (data) {
             //console.log(data.code);
             var resultList = data.rows;
+            var date = data.xAxis[0].date;
             if (data.code == 1) {
                 myChart.setOption({
                     title: {
@@ -111,7 +103,7 @@ function searchKeywordRecord() {
                         data: data.legend_data
                     },
                     xAxis: {
-                        data: data.xAxis
+                        data: date
                     },
                     yAxis: [
                         {
@@ -154,11 +146,7 @@ function searchKeywordRecord() {
 /**
  * 导出数据到excel
  */
-function exportKeywordDataForChat() {
-    if(dColumnData == undefined){
-        s.alert('暂无数据');
-        return false;
-    }
+function exportDataForChat() {
     $.messager.confirm('提示信息', '确认导出该筛选条件下的所有数据吗？', function (r) {
         if (r) {
             var filters = {};
@@ -170,11 +158,8 @@ function exportKeywordDataForChat() {
                 }
             }
 
-            filters['dColumns'] = decodeURIComponent(JSON.stringify(dColumns));
-            filters['dColumnData'] = decodeURIComponent(JSON.stringify(dColumnData));
-
             $("#keyword_data_table").datagrid("loading");// 显示遮罩层
-            $.post('../keyword/exportKeywordDataForChat.do', filters, function (data) {
+            $.post('../task/exportDataForChat.do', filters, function (data) {
                 $("#keyword_data_table").datagrid("loaded");// 关闭遮罩层
                 if (data.result && data.result == 1) {
                     // 开始下载

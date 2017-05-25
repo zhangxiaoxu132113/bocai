@@ -137,6 +137,18 @@ public class StringUtil {
         return word;
     }
 
+    /**
+     * 获取excel路径
+     *
+     * @param name
+     * @return
+     */
+    public static String getExcelFilePath(String des, String name) {
+        StringBuilder excelFilePath = new StringBuilder();
+        excelFilePath.append(des).append(name).append(Constant.FileType.TYPE_FILE_EXCEL_XLSX);
+        return excelFilePath.toString();
+    }
+
     public static void main(String[] args) {
 //        int total = 2100;
 //        int flag = 2000;

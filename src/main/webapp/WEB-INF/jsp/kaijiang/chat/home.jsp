@@ -41,7 +41,7 @@
                     <a class="easyui-linkbutton" iconCls="icon-search" onclick="searchKeywordRecord()">搜索</a>
                 </td>
                 <td>
-                    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="image-excel" onclick="exportKeywordDataForChat()">导出</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="image-excel" onclick="exportDataForChat()">导出</a>
                 </td>
             </tr>
         </table>

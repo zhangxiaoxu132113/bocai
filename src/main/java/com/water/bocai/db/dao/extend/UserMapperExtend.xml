@@ -27,7 +27,7 @@
     </select>
 
 
-    <select id="getTaskUserList" parameterType="java.util.Map" resultType="com.water.bocai.utils.web.dto.TaskUserDto">
+    <select id="getUserIncomeInfo" parameterType="java.util.Map" resultType="com.water.bocai.utils.web.dto.StatisticsUserData">
         SELECT
             DATE_FORMAT(create_on, '%Y-%m-%d') AS time,
             SUM(bonus) as 'totalProfit',
@@ -37,11 +37,11 @@
             task_user
         WHERE 1=1
         <if test="model != null">
-            AND user_id = #{model.userId}
+            AND user_id = '感冒'
         </if>
         <if test="startTime != null and endTime != null">
             <if test="startTime != '' and endTime != ''">
-                AND task.create_on BETWEEN #{startTime}
+                AND create_on BETWEEN #{startTime}
                 AND date_add(#{endTime}, INTERVAL 1 DAY)
             </if>
         </if>
@@ -49,26 +49,16 @@
         LIMIT #{page.beginIndex},#{page.pageSize}
     </select>
 
-    <select id="countTaskUserList" parameterType="java.util.Map" resultType="java.lang.Integer">
-        SELECT COUNT(1) FROM task_user
+    <select id="countUserIncmeInfoList" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT count(*) FROM task_user
         WHERE 1=1
         <if test="model != null">
-            <if test="model.taskId != ''">
-                AND task_id = #{model.taskId}
-            </if>
-            <if test="model.searchType != -1">
-                <choose>
-                    <when test="model.searchType == 0">
-                        <if test="model.searchValue != null and model.searchValue != ''">
-                            AND user_id ${model.userId}
-                        </if>
-                    </when>
-                    <when test="model.searchType == 1">
-                        <if test="model.searchValue != null and model.searchValue != ''">
-                            AND num=#{model.num}
-                        </if>
-                    </when>
-                </choose>
+            AND user_id = '感冒'
+        </if>
+        <if test="startTime != null and endTime != null">
+            <if test="startTime != '' and endTime != ''">
+                AND create_on BETWEEN #{startTime}
+                AND date_add(#{endTime}, INTERVAL 1 DAY)
             </if>
         </if>
     </select>

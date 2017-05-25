@@ -20,6 +20,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,9 +37,10 @@ public class UserController {
 
 
     @RequestMapping(value = "incomeInfo", method = RequestMethod.GET)
-    public ModelAndView amounts(String userId) {
+    public ModelAndView amounts(HttpServletRequest request, HttpServletResponse response) {
+        String taskId = request.getParameter("taskId");
         ModelAndView mav = new ModelAndView("kaijiang/user_chart/home");
-        mav.addObject("userId", userId);
+        mav.addObject("userId", taskId);
         return mav;
     }
 
@@ -118,7 +121,11 @@ public class UserController {
     public void getUserIncomeInfo(HttpServletRequest request, HttpServletResponse response,
                                   UserDto model,
                                   @RequestParam(defaultValue = "1") int currentPage,
-                                  @RequestParam(defaultValue = "10") int pageSize) {
+                                  @RequestParam(defaultValue = "10") int pageSize) throws UnsupportedEncodingException {
+        String new_id = URLDecoder.decode(request.getParameter("id"), "UTF-8");
+        new_id = URLDecoder.decode(new_id, "UTF-8");
+//        String id = request.getParameter("id");
+        model.setId(new_id);
         Map<String, Object> queryMap = new HashMap<>();
         int begin = (currentPage - 1) * pageSize;
         Page page = new Page(begin, pageSize, currentPage);
@@ -126,6 +133,6 @@ public class UserController {
         queryMap.put("model", model);
         queryMap.put("endTime", model.getQueryEndTime());
         queryMap.put("startTime", model.getQueryStartTime());
-        WebUtils.sendResult(response, userService.getUserIncomeInfo(queryMap));
+        WebUtils.sendJson(response, userService.getUserIncomeInfo(queryMap));
     }
 }
