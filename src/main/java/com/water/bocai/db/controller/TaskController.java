@@ -130,8 +130,6 @@ public class TaskController {
         Map<String, Object> queryMap = new HashMap<>();
         int begin = (currentPage - 1) * pageSize;
         Page page = new Page(begin, pageSize, currentPage);
-        String queryStartTime = request.getParameter("queryStartTime");
-        String queryEndTime = request.getParameter("queryEndTime");
         queryMap.put("page", page);
         queryMap.put("model", model);
         queryMap.put("endTime", model.getQueryEndTime());

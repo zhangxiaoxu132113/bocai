@@ -18,4 +18,6 @@ public interface UserService {
     User loginByAccountAndPwd(String account, String md5Pwd);
 
     Integer accountUserList();
+
+    ResultView getUserIncomeInfo(Map<String, Object> queryMap);
 }

@@ -14,7 +14,7 @@ var columns = [
     {
         field: 'operation', title: '操作', align: 'center', width: '100',
         formatter: function (value, rowData, rowIndex) {
-            var btn = '<a class="task-record-download" style="text-decoration: none" href="javascript:; onclick=exportTaskResult();">历史记录</a>';
+            var btn = '<a class="task-record-download" style="text-decoration: none" href="javascript:; onclick=openIncomeInfoTag();">历史记录</a>';
             return btn;
         }
     }
@@ -41,7 +41,7 @@ var columns_result = [
     {
         field: 'operation', title: '操作', align: 'center', width: '100',
         formatter: function (value, rowData, rowIndex) {
-            var btn = '<a class="task-record-download" style="text-decoration: none" href="javascript:; onclick=exportTaskResult();">历史记录</a>';
+            var btn = '<a class="task-record-download" style="text-decoration: none" href="javascript:; onclick=openIncomeInfoTag();">历史记录</a>';
             return btn;
         }
     }
@@ -267,6 +267,12 @@ function close_result_info_dlg() {
     s.closeDialog('result_info_dlg');
 }
 
+function openIncomeInfoTag() {
+    var url = "../user/incomeInfo.do";
+    var title = "用户收益情况";
+    var icon = "icon-ok";
+    s.openTabs(title, url, icon);
+}
 function setTime(startDate, endDate) {
     s.initRangeDateBeforeDays("add_task_endDate", endDate);
     s.initRangeDateBeforeDays("add_task_startDate", startDate);

@@ -7,6 +7,7 @@ import com.water.bocai.db.service.UserService;
 import com.water.bocai.utils.StringUtil;
 import com.water.bocai.utils.web.OperationTips;
 import com.water.bocai.utils.web.ResultView;
+import com.water.bocai.utils.web.dto.StatisticsUserData;
 import com.water.bocai.utils.web.dto.UserDto;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -120,6 +121,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Integer accountUserList() {
+        return null;
+    }
+
+    @Override
+    public ResultView getUserIncomeInfo(Map<String, Object> queryMap) {
+        UserDto model = (UserDto) queryMap.get("model");
+        if (model != null && StringUtils.isBlank(model.getId())) {
+            return new ResultView(OperationTips.TipsCode.TIPS_FAIL, OperationTips.TipsMsg.TIPS_FAIL);
+        }
+
+        List<StatisticsUserData> statisticsUserDatas = userMapper.getUserIncomeInfo(queryMap);
+        int total = userMapper.countUserIncmeInfoList(queryMap);
+        ResultView resultView = new ResultView();
+        resultView.setTotal(total);
+        resultView.setRows(statisticsUserDatas);
+        resultView.setMsg(OperationTips.TipsMsg.TIPS_SUCCESS);
+        resultView.setCode(OperationTips.TipsCode.TIPS_SUCCESS);
         return null;
     }
 }

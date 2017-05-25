@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +32,14 @@ public class UserController {
 
     @Resource
     private UserService userService;
+
+
+    @RequestMapping(value = "incomeInfo", method = RequestMethod.GET)
+    public ModelAndView amounts(String userId) {
+        ModelAndView mav = new ModelAndView("kaijiang/user_chart/home");
+        mav.addObject("userId", userId);
+        return mav;
+    }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public void login(HttpServletRequest request, HttpServletResponse response,
@@ -103,5 +112,20 @@ public class UserController {
     public void modifyUser(HttpServletRequest request, HttpServletResponse response,
                            @RequestBody(required = false) UserDto model) {
         WebUtils.sendResult(response, userService.modifyUser(model));
+    }
+
+    @RequestMapping(value = "/getUserIncomeInfo", method = RequestMethod.GET)
+    public void getUserIncomeInfo(HttpServletRequest request, HttpServletResponse response,
+                                  UserDto model,
+                                  @RequestParam(defaultValue = "1") int currentPage,
+                                  @RequestParam(defaultValue = "10") int pageSize) {
+        Map<String, Object> queryMap = new HashMap<>();
+        int begin = (currentPage - 1) * pageSize;
+        Page page = new Page(begin, pageSize, currentPage);
+        queryMap.put("page", page);
+        queryMap.put("model", model);
+        queryMap.put("endTime", model.getQueryEndTime());
+        queryMap.put("startTime", model.getQueryStartTime());
+        WebUtils.sendResult(response, userService.getUserIncomeInfo(queryMap));
     }
 }
