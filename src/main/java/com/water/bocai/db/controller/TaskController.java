@@ -1,5 +1,6 @@
 package com.water.bocai.db.controller;
 
+import com.water.bocai.db.model.TaskUser;
 import com.water.bocai.db.service.ResultService;
 import com.water.bocai.db.service.TaskService;
 import com.water.bocai.utils.StringUtil;
@@ -142,6 +143,18 @@ public class TaskController {
     public void deleteTaskUserRecord(HttpServletRequest request, HttpServletResponse response, String id) {
         WebUtils.sendResult(response, taskService.deleteTaskUserRecord(id));
     }
+
+    @RequestMapping("/cancalTask")
+    public void cancalTask(HttpServletRequest request, HttpServletResponse response, String taskId) {
+        WebUtils.sendResult(response, taskService.cancalTask(taskId));
+    }
+
+    @RequestMapping("/updateTaskUser")
+    public void updateTaskUser(HttpServletRequest request, HttpServletResponse response, TaskUserDto model) {
+        WebUtils.sendResult(response, taskService.updateTaskUser(model));
+    }
+
+
     @RequestMapping("/exportDataForChat")
     public void exportDataForChat(HttpServletRequest request, HttpServletResponse response, TaskDto model,
                                   @RequestParam(defaultValue = "1") int currentPage,
@@ -154,5 +167,12 @@ public class TaskController {
         queryMap.put("endTime", model.getEndDate());
         queryMap.put("startTime", model.getStartDate());
         WebUtils.sendJson(response, resultService.exportDataForChat(queryMap));
+    }
+
+    @RequestMapping("/getTaskResult")
+    public void getTaskResult(HttpServletRequest request, HttpServletResponse response, String taskId) {
+        Map<String, Object> queryMap = new HashMap<>();
+        queryMap.put("taskId", taskId);
+        WebUtils.sendResult(response, taskService.getTaskResult(queryMap));
     }
 }

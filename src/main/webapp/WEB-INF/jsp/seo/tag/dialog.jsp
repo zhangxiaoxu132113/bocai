@@ -34,8 +34,6 @@
         </div>
     </form>
 </div>
-
-
 <div id="add_task_dlg_btn">
     <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-ok"
        onclick="saveSeoTag()" style="width: 90px">保存</a>
@@ -43,10 +41,11 @@
        onclick="cancelSaveTask()" style="width: 90px">取消</a>
 </div>
 
+
 <div id="modify_task_dlg" class="easyui-dialog"
      style="width: 430px; height: 140px;" closed="true"
      data-options="iconCls:'icon-add',modal:true"
-     buttons="#update_task_dlg_btn">
+     buttons="#modify_task_dlg_btn">
     <form id="update_task_form" method="post">
         <div align="center">
             <table class="table-dlg table-dlg1">
@@ -62,9 +61,7 @@
         </div>
     </form>
 </div>
-
-
-<div id="update_task_dlg_btn">
+<div id="modify_task_dlg_btn">
     <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-ok"
        onclick="updateSeoTag()" style="width: 90px">确认</a>
     <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel"

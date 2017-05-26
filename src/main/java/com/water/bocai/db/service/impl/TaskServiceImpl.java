@@ -10,6 +10,7 @@ import com.water.bocai.db.model.TaskUser;
 import com.water.bocai.db.model.TaskUserCriteria;
 import com.water.bocai.db.service.ResultService;
 import com.water.bocai.db.service.TaskService;
+import com.water.bocai.db.service.TaskUserService;
 import com.water.bocai.utils.*;
 import com.water.bocai.utils.web.OperationTips;
 import com.water.bocai.utils.web.ResultView;
@@ -40,6 +41,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Resource
     private ResultService resultService;
+
+    @Resource
+    private TaskUserService taskUserService;
 
     public static final Set<String> GETURLTASKLIST_TIME_FORMATTER_FIELDS;
 
@@ -248,6 +252,85 @@ public class TaskServiceImpl implements TaskService {
         return new ResultView(OperationTips.TipsCode.TIPS_FAIL, OperationTips.TipsMsg.TIPS_FAIL);
     }
 
+    @Override
+    public ResultView cancalTask(String taskId) {
+        if (StringUtils.isBlank(taskId)) {
+            return new ResultView(OperationTips.TipsCode.TIPS_FAIL, OperationTips.TipsMsg.TIPS_FAIL);
+        }
+        ResultView resultView = new ResultView();
+        Map<String, Object> queryMap = new HashMap<>();
+        queryMap.put("taskId", taskId);
+        taskUserService.deleteByExample(queryMap);
+
+        resultView.setMsg(OperationTips.TipsMsg.TIPS_SUCCESS);
+        resultView.setCode(OperationTips.TipsCode.TIPS_SUCCESS);
+        return resultView;
+    }
+
+    @Override
+    public ResultView updateTaskUser(TaskUserDto model) {
+        if (model == null || StringUtils.isAnyBlank(model.getId())) {
+            return new ResultView(OperationTips.TipsCode.TIPS_FAIL, OperationTips.TipsMsg.TIPS_FAIL);
+        }
+        model.setUpdateTime(System.currentTimeMillis());
+        int effectRows = taskUserMapper.updateByPrimaryKeySelective(model);
+        if (effectRows > 0) {
+            return new ResultView(OperationTips.TipsCode.TIPS_SUCCESS, OperationTips.TipsMsg.TIPS_SUCCESS);
+        }
+        return new ResultView(OperationTips.TipsCode.TIPS_SUCCESS, OperationTips.TipsMsg.TIPS_SUCCESS);
+    }
+
+    @Override
+    public ResultView getTaskResult(Map<String, Object> queryMap) {
+        String taskId = (String) queryMap.get("taskId");
+        if (StringUtils.isBlank(taskId)) {
+            return new ResultView(OperationTips.TipsCode.TIPS_FAIL, OperationTips.TipsMsg.TIPS_FAIL);
+        }
+
+        Result result = resultService.getResultBySelective(queryMap);
+        List<TaskUser> taskUserList = taskUserService.getTaskUserBySelective(queryMap);
+        List<ResultDto> results = new ArrayList<>();
+        Integer bossNum = result.getPackageNum();
+        Float TotalXiazhuMoney = 0F;
+        String redPackage = "red%s";
+        for (int i = 1; i <= 6; i++) {
+            if (i != bossNum) {
+                ResultDto resultDto = new ResultDto();
+
+                Integer count = 0;//一共投注
+                Float moneyTotal = 0F;
+                String packageNumStr = String.format(redPackage, i);
+                Float packageValue = (Float) RefleatUtil.getValueByFieldName(packageNumStr, Result.class, result);
+                String niuStr = Constants.E_NIU.getName(StringUtil.getNiuNum(packageValue));
+                int result_flag = matchAndHandleResult(bossNum, StringUtil.getNiuNum(packageValue));
+                for (TaskUser taskUser : taskUserList) {
+                    TotalXiazhuMoney+=taskUser.getSum();
+                    int user_num = taskUser.getNum();
+                    if (user_num == i) {
+                        count++;
+                        if (result_flag != Constants.RESULT_STATUS.TIE.getIndex()) {
+                            moneyTotal += Math.abs(taskUser.getBonus());
+                        }
+                    }
+                }
+                resultDto.setNiuStr(niuStr);
+                resultDto.setPerCount(count);
+                resultDto.setStatus(result_flag);
+                resultDto.setName(packageNumStr);
+                resultDto.setPerValue(packageValue);
+                resultDto.setMoneyTotal(moneyTotal);
+                results.add(resultDto);
+            }
+        }
+
+        if (!results.isEmpty()) {
+            for (ResultDto resultDto : results) {
+
+            }
+        }
+        return null;
+    }
+
     /**
      * 获取每一个包位的进出情况
      */
@@ -333,23 +416,32 @@ public class TaskServiceImpl implements TaskService {
         int bossResult = Constants.E_ODDS.getPer(resultMap.get(String.format(formatter, bossPackageNum)));
         int userResult = Constants.E_ODDS.getPer(resultMap.get(String.format(formatter, taskUserDto.getNum())));
         float indemnity = 0F;
-        if (bossResult == userResult) {
-            if (bossResult > 0 && bossResult <= 5) {
-                indemnity = taskUserDto.getSum() * bossResult;
-                taskUserDto.setStatus(Constants.RESULT_STATUS.LOSE.getIndex());
-                taskUserDto.setBonus(-indemnity);
-            } else {
-                taskUserDto.setStatus(Constants.RESULT_STATUS.TIE.getIndex());
-                taskUserDto.setBonus(0f);
-            }
-        } else if (bossResult < userResult) {
-            indemnity = taskUserDto.getSum() * userResult;
-            taskUserDto.setStatus(Constants.RESULT_STATUS.WIN.getIndex());
-            taskUserDto.setBonus(indemnity);
-        } else {
+        int result_flag = matchAndHandleResult(bossResult, userResult);
+        if (result_flag == 0 ) {
+            taskUserDto.setStatus(Constants.RESULT_STATUS.TIE.getIndex());
+            taskUserDto.setBonus(0f);
+        } else if (result_flag == 1) {
             indemnity = taskUserDto.getSum() * bossResult;
             taskUserDto.setStatus(Constants.RESULT_STATUS.LOSE.getIndex());
             taskUserDto.setBonus(-indemnity);
+        } else {
+            indemnity = taskUserDto.getSum() * userResult;
+            taskUserDto.setStatus(Constants.RESULT_STATUS.WIN.getIndex());
+            taskUserDto.setBonus(indemnity);
+        }
+    }
+
+    private int matchAndHandleResult(int bossResult, int userResult) {
+        if (bossResult == userResult) {
+            if (bossResult > 0 && bossResult <= 5) {
+                return Constants.RESULT_STATUS.WIN.getIndex();
+            } else {
+                return Constants.RESULT_STATUS.TIE.getIndex();
+            }
+        } else if (bossResult < userResult) {
+            return Constants.RESULT_STATUS.LOSE.getIndex();
+        } else {
+            return Constants.RESULT_STATUS.WIN.getIndex();
         }
     }
 

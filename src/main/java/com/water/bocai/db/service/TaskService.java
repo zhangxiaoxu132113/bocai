@@ -22,4 +22,10 @@ public interface TaskService {
     ResultView getTaskList(Map<String, Object> queryMap);
 
     ResultView deleteTaskUserRecord(String taskUserId);
+
+    ResultView cancalTask(String taskId);
+
+    ResultView updateTaskUser(TaskUserDto model);
+
+    ResultView getTaskResult(Map<String, Object> queryMap);
 }

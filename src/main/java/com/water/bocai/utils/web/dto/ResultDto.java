@@ -8,12 +8,48 @@ import com.water.bocai.db.model.Result;
 public class ResultDto extends Result {
     private String name;
     private Integer status;
+    private String niuStr;
     private int inCount;
     private int outCount;
     private int tieCount;
+    private int perCount;
+    private Float perValue;
+    private Float moneyTotal;
     private Integer[] inPackageNums;
     private Integer[] outPackageNums;
     private Integer[] tiePackageNUms;
+
+    public Float getMoneyTotal() {
+        return moneyTotal;
+    }
+
+    public void setMoneyTotal(Float moneyTotal) {
+        this.moneyTotal = moneyTotal;
+    }
+
+    public String getNiuStr() {
+        return niuStr;
+    }
+
+    public void setNiuStr(String niuStr) {
+        this.niuStr = niuStr;
+    }
+
+    public Float getPerValue() {
+        return perValue;
+    }
+
+    public void setPerValue(Float perValue) {
+        this.perValue = perValue;
+    }
+
+    public int getPerCount() {
+        return perCount;
+    }
+
+    public void setPerCount(int perCount) {
+        this.perCount = perCount;
+    }
 
     public int getInCount() {
         return inCount;

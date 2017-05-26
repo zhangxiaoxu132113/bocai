@@ -10,6 +10,7 @@ var columns = [
     {field: 'userId', title: '玩家', align: 'center', width: '200'},
     {field: 'num', title: '包位', align: 'center', width: '100'},
     {field: 'sum', title: '下注', align: 'center', width: '100'},
+    {field: 'updateTime', title: '更新时间', align: 'center', width: '150'},
     {field: 'createOn', title: '创建时间', align: 'center', width: '150'},
     {
         field: 'operation', title: '操作', align: 'center', width: '100',
@@ -37,6 +38,7 @@ var columns_result = [
             return btn;
         }
     },
+    {field: 'updateTime', title: '创建时间', align: 'center', width: '150'},
     {field: 'createOn', title: '创建时间', align: 'center', width: '150'},
     {
         field: 'operation', title: '操作', align: 'center', width: '100',
@@ -47,6 +49,23 @@ var columns_result = [
     }
 ];
 
+var columns = [
+    {field: 'num', title: '包位', align: 'center', width: '100'},
+    {field: 'num', title: '金额', align: 'center', width: '100'},
+    {field: 'num', title: '牛几', align: 'center', width: '100'},
+    {field: 'sum', title: '共投', align: 'center', width: '100'},
+    {field: 'sum', title: '结果', align: 'center', width: '100'},
+    {field: 'sum', title: '盈利', align: 'center', width: '100'},
+    {field: 'updateTime', title: '更新时间', align: 'center', width: '150'},
+    {field: 'createOn', title: '创建时间', align: 'center', width: '150'},
+    {
+        field: 'operation', title: '操作', align: 'center', width: '100',
+        formatter: function (value, rowData, rowIndex) {
+            var btn = '<a class="task-record-download" style="text-decoration: none" href="javascript:; onclick=openIncomeInfoTag();">查看详细</a>';
+            return btn;
+        }
+    }
+];
 var task = {};
 
 $(document).ready(function () {
@@ -167,7 +186,6 @@ function cancelStartTask() {
     s.closeDialog('update_task_dlg');
 }
 
-// 删除词表
 function deleteTask() {
     var row = $('#table').datagrid('getSelected');
     if (!row) {
@@ -176,6 +194,33 @@ function deleteTask() {
     }
 
     s.postConfirm('table', '确认删除该记录吗？', '../task/deleteTaskUserRecord.do', {id: row.id});
+}
+
+function modifyTask() {
+    var row = $('#table').datagrid('getSelected');
+    if (!row) {
+        s.showMessage('请选中需要操作的行');
+        return;
+    }
+
+    s.popAdd('modify_task_dlg', {title: '修改下注信息'});
+    console.log(row);
+    $('#modify_id').val(row.id);
+    $('#modify_num').val(row.num);
+    $('#modify_sum').val(row.sum);
+    $('#modify_player_name').html(row.userId);
+
+}
+
+function updateTaskUser() {
+    //modify_task_dlg
+    s.postSubmit('table', 'modify_task_dlg', '../task/updateTaskUser.do', false, function() {
+        $('#table').datagrid('reload');
+    });
+}
+
+function cancelUpdateTask() {
+    s.closeDialog('modify_task_dlg');
 }
 
 function jishu_result() {
@@ -195,6 +240,8 @@ function jishu_result() {
         },
         success: function(data) {
             if (data.code == 1) {
+                $('.cancal_task_tr').css('display', 'none');
+
                 var result = data.rows;
                 var inPackageNumsStr = '';
                 var outPackageNumsStr = '';
@@ -251,6 +298,8 @@ function jishu_result() {
                         $('.task-record-download').linkbutton({text: '历史记录', iconCls: 'image-download'});
                     }
                 });
+            } else {
+                s.showMessage(data.msg);
             }
             s.closeDialog('update_task_dlg');
             console.log(data);
@@ -282,7 +331,45 @@ function openIncomeInfoTag() {
     }
     s.openTabs(title, url, icon);
 }
+
+function cancelTask() {
+    $.messager.confirm('提示信息', '确认取消这次发包吗？', function (r) {
+        if (r) {
+            $.ajax({
+                type: "GET",
+                url: "/task/cancalTask",
+                data: {taskId:task.id},
+                dataType: "json",
+                success: function(data){
+                    s.showMessage(data.msg);
+                   if (data.code == 1) {
+                       location.reload();
+                   }
+
+                }
+            });
+        }
+    });
+}
+
+function cancelUpdateTask() {
+
+}
+
 function setTime(startDate, endDate) {
     s.initRangeDateBeforeDays("add_task_endDate", endDate);
     s.initRangeDateBeforeDays("add_task_startDate", startDate);
+}
+
+
+
+function openResultDlg() {
+    var queryParams = {taskId: task.id};
+    s.datagrid('table', columns, {
+        url: '../task/getTaskResult.do?',
+        toolbar: "#top",
+        queryParams: queryParams
+    });
+    s.popAdd('result_dlg', {title: '开奖结果'});
+
 }

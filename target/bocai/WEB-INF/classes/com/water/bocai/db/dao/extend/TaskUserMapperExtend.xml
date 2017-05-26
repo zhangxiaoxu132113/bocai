@@ -26,7 +26,7 @@
                 AND sum BETWEEN #{model.moneyBegin} AND #{model.moneyEnd}
             </if>
         </if>
-        ORDER BY create_on
+        ORDER BY update_time DESC
         <if test="beginIndex != null and pageSize != null and pageSize > 0">
             LIMIT #{beginIndex},#{pageSize}
         </if>

@@ -41,9 +41,31 @@
                         <lable>状态</lable>
                     </td>
                     <td><span class="statusName"></span></td>
-                    <td><a class="easyui-linkbutton" iconCls="icon-edit" onclick="cancelTask()">取消发包</a></td>
-                    <td><a class="easyui-linkbutton" iconCls="icon-edit" onclick="addStartTaskDlg()">开始发包</a></td>
                 </tr>
+            </table>
+            <table>
+                <td>
+                    <a class="easyui-linkbutton" iconCls="icon-add" onclick="addTaskDlg()">批量导入</a>
+                </td>
+                <td>
+                    <a class="easyui-linkbutton" iconCls="icon-edit" onclick="modifyTask()">修改</a>
+                </td>
+                <td>
+                    <a class="easyui-linkbutton" iconCls="icon-edit" onclick="deleteTask()">删除</a>
+                </td>
+                <td class="cancal_task_tr">
+                    <a class="easyui-linkbutton" iconCls="icon-edit" onclick="cancelTask()">取消发包</a>
+                </td>
+                <td>
+                    <a class="easyui-linkbutton" iconCls="icon-edit" onclick="addStartTaskDlg()">开始发包</a>
+                </td>
+                <td>
+                    <a class="easyui-linkbutton" iconCls="icon-edit" onclick="exportSearchData()">筛选导出</a>
+                    <a class="easyui-linkbutton" iconCls="icon-edit" onclick="exportAllData()">导出全部</a>
+                </td>
+                <td>
+                    <a class="easyui-linkbutton" iconCls="icon-edit" onclick="openResultDlg()">开奖结果</a>
+                </td>
             </table>
             <table class="table-search" width="auto;" style="display: none">
                 <input class="hidden h_task_id" type="hidden" name="taskId"/>
@@ -69,12 +91,7 @@
                     <td width="80">
                         <a class="easyui-linkbutton" iconCls="icon-search" onclick="doSearch(0)">搜索</a>
                     </td>
-                    <td>
-                        <a class="easyui-linkbutton" iconCls="icon-add" onclick="addTaskDlg()">新增</a>
-                    </td>
-                    <td>
-                        <a class="easyui-linkbutton" iconCls="icon-edit" onclick="deleteTask()">删除</a>
-                    </td>
+
                 </tr>
             </table>
         </div>
