@@ -4,9 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.water.bocai.db.dao.ResultMapper;
 import com.water.bocai.db.dao.TaskMapper;
+import com.water.bocai.db.dao.TaskUserMapper;
 import com.water.bocai.db.model.Result;
 import com.water.bocai.db.model.ResultCriteria;
+import com.water.bocai.db.model.TaskUser;
 import com.water.bocai.db.service.ResultService;
+import com.water.bocai.db.service.TaskUserService;
 import com.water.bocai.utils.*;
 import com.water.bocai.utils.web.MapView;
 import com.water.bocai.utils.web.OperationTips;
@@ -28,6 +31,12 @@ public class ResultServiceImpl implements ResultService {
 
     @Resource
     private TaskMapper taskMapper;
+
+    @Resource
+    private TaskUserMapper taskUserMapper;
+
+    @Resource
+    private TaskUserService taskUserService;
 
     @Override
     public Result getResultBySelective(Map<String, Object> queryMap) {
@@ -166,6 +175,42 @@ public class ResultServiceImpl implements ResultService {
             queryMap.put("sheetName", "结果明细表");
             queryMap.put("dColumns", dColumns);
             queryMap.put("dColumnData", JSON.parseArray(JSON.toJSONString(statisticsDataList)));
+
+            boolean result = ExportUtils.exportDiynamicDataToLocalExcel(queryMap);
+//            if (result) {// 成功生成结果明细后再添加一个sheet用于记录结果统计
+//                return ExportUtils.exportBaiduUrlStatisticsToLocalExcel(filePath + path, baiduUrlStatisticsTask, resultList);
+//            }
+            File f07 = new File(filePath + path);
+            if (f07.exists()) {
+                data.put("result", "1");
+                data.put("path", path);
+            }
+        }
+
+        return data;
+    }
+
+    @Override
+    public Map<String, Object> exportAllData(String taskId) {
+        Map<String, Object> data = new HashMap<>();
+        Map<String, Object> queryMap = new HashMap<>();
+        data.put("result", 0);
+        queryMap.put("taskId", taskId);
+        List<TaskUser> taskUserList = taskUserService.getTaskUserBySelective(queryMap);
+        if (taskUserList != null && !taskUserList.isEmpty()) {
+            String filePath = Constant.webroot;
+            String fileName = "报表分析_"+ StringUtil.uuid();
+            String path = StringUtil.getExcelFilePath(Constant.STATISTICS_URL_EXPORT_PATH, fileName);
+            List<EasyUIColumn> dColumns = new ArrayList<>();// 动态列
+            dColumns.add(new EasyUIColumn("userId", "userId", "闲家"));
+            dColumns.add(new EasyUIColumn("num", "num", "包位"));
+            dColumns.add(new EasyUIColumn("sum", "sum", "投注金额"));
+            dColumns.add(new EasyUIColumn("bonus", "bonus", "盈利"));
+
+            queryMap.put("destFilePath", filePath + path);
+            queryMap.put("sheetName", "结果明细表");
+            queryMap.put("dColumns", dColumns);
+            queryMap.put("dColumnData", JSON.parseArray(JSON.toJSONString(taskUserList)));
 
             boolean result = ExportUtils.exportDiynamicDataToLocalExcel(queryMap);
 //            if (result) {// 成功生成结果明细后再添加一个sheet用于记录结果统计

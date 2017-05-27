@@ -175,4 +175,9 @@ public class TaskController {
         queryMap.put("taskId", taskId);
         WebUtils.sendResult(response, taskService.getTaskResult(queryMap));
     }
+
+    @RequestMapping("/exportAllData")
+    public void exportAllData(HttpServletRequest request, HttpServletResponse response, String taskId) {
+        WebUtils.sendJson(response, resultService.exportAllData(taskId));
+    }
 }

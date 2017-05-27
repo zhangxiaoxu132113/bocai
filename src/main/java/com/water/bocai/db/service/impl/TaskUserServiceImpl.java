@@ -30,6 +30,14 @@ public class TaskUserServiceImpl implements TaskUserService {
 
     @Override
     public List<TaskUser> getTaskUserBySelective(Map<String, Object> queryMap) {
-        return null;
+        TaskUserCriteria taskUserCriteria = new TaskUserCriteria();
+        TaskUserCriteria.Criteria criteria = taskUserCriteria.createCriteria();
+        if (queryMap != null) {
+            if (queryMap.containsKey("taskId")) {
+                criteria.andTaskIdEqualTo((String) queryMap.get("taskId"));
+            }
+        }
+        List<TaskUser> taskUserList = taskUserMapper.selectByExample(taskUserCriteria);
+        return taskUserList;
     }
 }

@@ -19,6 +19,8 @@ import com.water.bocai.utils.web.dto.TaskDto;
 import com.water.bocai.utils.web.dto.TaskUserDto;
 import com.water.bocai.utils.web.filter.TimeFieldsFormatter;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +31,7 @@ import java.util.*;
 
 @Service("taskService")
 public class TaskServiceImpl implements TaskService {
+    private Log logger = LogFactory.getLog(TaskServiceImpl.class);
 
     @Resource
     private TaskMapper taskMapper;
@@ -83,8 +86,11 @@ public class TaskServiceImpl implements TaskService {
     public ResultView saveTaskUser(TaskUserDto model, MultipartFile excelFile) throws IOException {
         ResultView resultView = new ResultView();
         String taskId = model.getTaskId();
-        if (StringUtils.isBlank(taskId) && excelFile == null && excelFile.getSize() <= 0) {
-            return new ResultView(OperationTips.TipsCode.TIPS_FAIL, OperationTips.TipsMsg.TIPS_FAIL);
+        if (StringUtils.isBlank(taskId)) {
+            return new ResultView(OperationTips.TipsCode.TIPS_FAIL, "taskId失效，请重新刷新页面！");
+        }
+        if (excelFile == null && excelFile.getSize() <= 0) {
+            return new ResultView(OperationTips.TipsCode.TIPS_FAIL, "文件内容长度不能为空！");
         }
         //解析excel文件
         String fileName = excelFile.getOriginalFilename();
@@ -102,28 +108,35 @@ public class TaskServiceImpl implements TaskService {
         queryMap.put("taskId", taskId);
         for (List<String> list : excelData) {
             if (list != null && !list.isEmpty()) {
-                boolean isExist = false;
+                String userId = list.get(0);
+                float sum = Float.valueOf(list.get(2));
+                int num = Integer.valueOf((int) Float.valueOf(list.get(1)).longValue());
                 queryMap.put("userId", list.get(0));
                 TaskUser taskUser = findTaskUser(queryMap);
-                if (taskUser != null) isExist = true;
-                taskUser = new TaskUser();
-                taskUser.setId(StringUtil.uuid());
-                taskUser.setTaskId(taskId);
-                taskUser.setUserId(list.get(0));
-                taskUser.setNum(Integer.valueOf((int) Float.valueOf(list.get(1)).longValue()));
-                taskUser.setSum(Float.valueOf(list.get(2)));
-                taskUser.setCreateOn(new Date());
-                taskUser.setUpdateTime(System.currentTimeMillis());
-
-                if (isExist) {
-                    taskUserMapper.updateByPrimaryKeySelective(taskUser);
-                    updateEffectRows++;
+                if (taskUser != null) {
+                    if (taskUser.getNum() == num && taskUser.getSum() == sum) {
+                        continue;
+                    } else {
+                        taskUser.setNum(num);
+                        taskUser.setSum(sum);
+                        taskUser.setUpdateTime(System.currentTimeMillis());
+                        taskUserMapper.updateByPrimaryKeySelective(taskUser);
+                        updateEffectRows++;
+                    }
                 } else {
+                    taskUser = new TaskUser();
+                    taskUser.setId(StringUtil.uuid());
+                    taskUser.setTaskId(taskId);
+                    taskUser.setUserId(userId);
+                    taskUser.setNum(num);
+                    taskUser.setSum(sum);
+                    taskUser.setCreateOn(new Date());
+                    taskUser.setUpdateTime(System.currentTimeMillis());
                     taskUserLlist.add(taskUser);
                 }
             }
         }
-        insertEffectRows = taskUserMapper.insertBatch(taskUserLlist);
+        if (!taskUserLlist.isEmpty()) insertEffectRows = taskUserMapper.insertBatch(taskUserLlist);
         resultView.setCode(OperationTips.TipsCode.TIPS_SUCCESS);
         resultView.setMsg("保存成功，本次共添加：" + insertEffectRows + "条记录,，更新" + updateEffectRows + "条记录");
         return resultView;
@@ -260,7 +273,12 @@ public class TaskServiceImpl implements TaskService {
         ResultView resultView = new ResultView();
         Map<String, Object> queryMap = new HashMap<>();
         queryMap.put("taskId", taskId);
-        taskUserService.deleteByExample(queryMap);
+        int effect1 = taskMapper.deleteByPrimaryKey(taskId);
+        int effect2 = taskUserService.deleteByExample(queryMap);
+        if (effect1 == -1 || effect2 == -1) {
+            logger.error("刪除失敗！");
+            return new ResultView(OperationTips.TipsCode.TIPS_FAIL, OperationTips.TipsMsg.TIPS_FAIL);
+        }
 
         resultView.setMsg(OperationTips.TipsMsg.TIPS_SUCCESS);
         resultView.setCode(OperationTips.TipsCode.TIPS_SUCCESS);
@@ -291,7 +309,7 @@ public class TaskServiceImpl implements TaskService {
         List<TaskUser> taskUserList = taskUserService.getTaskUserBySelective(queryMap);
         List<ResultDto> results = new ArrayList<>();
         Integer bossNum = result.getPackageNum();
-        Float TotalXiazhuMoney = 0F;
+        Float totalXiazhuMoney = 0F;
         String redPackage = "red%s";
         for (int i = 1; i <= 6; i++) {
             if (i != bossNum) {
@@ -304,7 +322,7 @@ public class TaskServiceImpl implements TaskService {
                 String niuStr = Constants.E_NIU.getName(StringUtil.getNiuNum(packageValue));
                 int result_flag = matchAndHandleResult(bossNum, StringUtil.getNiuNum(packageValue));
                 for (TaskUser taskUser : taskUserList) {
-                    TotalXiazhuMoney+=taskUser.getSum();
+                    totalXiazhuMoney += taskUser.getSum();
                     int user_num = taskUser.getNum();
                     if (user_num == i) {
                         count++;
@@ -319,6 +337,7 @@ public class TaskServiceImpl implements TaskService {
                 resultDto.setName(packageNumStr);
                 resultDto.setPerValue(packageValue);
                 resultDto.setMoneyTotal(moneyTotal);
+                resultDto.setTotalXiazhuMoney(totalXiazhuMoney);
                 results.add(resultDto);
             }
         }
@@ -417,7 +436,7 @@ public class TaskServiceImpl implements TaskService {
         int userResult = Constants.E_ODDS.getPer(resultMap.get(String.format(formatter, taskUserDto.getNum())));
         float indemnity = 0F;
         int result_flag = matchAndHandleResult(bossResult, userResult);
-        if (result_flag == 0 ) {
+        if (result_flag == 0) {
             taskUserDto.setStatus(Constants.RESULT_STATUS.TIE.getIndex());
             taskUserDto.setBonus(0f);
         } else if (result_flag == 1) {

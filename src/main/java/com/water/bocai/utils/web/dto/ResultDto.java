@@ -15,9 +15,18 @@ public class ResultDto extends Result {
     private int perCount;
     private Float perValue;
     private Float moneyTotal;
+    private Float totalXiazhuMoney;
     private Integer[] inPackageNums;
     private Integer[] outPackageNums;
     private Integer[] tiePackageNUms;
+
+    public Float getTotalXiazhuMoney() {
+        return totalXiazhuMoney;
+    }
+
+    public void setTotalXiazhuMoney(Float totalXiazhuMoney) {
+        this.totalXiazhuMoney = totalXiazhuMoney;
+    }
 
     public Float getMoneyTotal() {
         return moneyTotal;

@@ -11,7 +11,7 @@
     }
 
     #add_task_dlg {
-        height: 140px !important;
+        height: 75px !important;
     }
     #task_execute_status_dlg table.table-dlg tr > td:nth-child(1) {
         text-align: center;
@@ -34,8 +34,8 @@
                         <input id="add_dictionary_file" name="excelFile" class="easyui-filebox" style="width:160px;"/>
                         <br/>
                         <span class="add_excel_tip">
-                            导入格式为三列搜索词的excel<br>
-                            第一列为玩家，第二列为包位，第三列为压手金额
+                            导入格式为三列的excel,依次为<br>
+                            玩家昵称，包位，压手金额
                         </span>
                     </td>
                 </tr>

@@ -23,47 +23,45 @@
             });
         });
     </script>
+    <style>
+        .operator-table {
+            display: none;
+        }
+        .table-info tr td, .operator-table tr td {
+            padding: 5px;
+        }
+    </style>
 </head>
 
 <body>
 <div id="top" region="north" border="false" style="overflow: auto;">
     <form id="searchForm">
         <div class="search-div" style="overflow: auto; width: 1150px">
-            <table>
+            <table class="table-info">
                 <tr class="ready_start_task">
                     <td>
                         <a class="easyui-linkbutton" iconCls="icon-edit" onclick="readyTask()">准备发包</a>
                     </td>
                 </tr>
-                <tr class="runing_task_status" style="display: none">
-                    <td>第<span class="taskName"></span>期</td>
-                    <td>
-                        <lable>状态</lable>
-                    </td>
-                    <td><span class="statusName"></span></td>
+                <tr class="runing_task_status" style="display: none" style="font-size: 16px">
+                    <td>第<span class="taskName" style="margin: 0 0.25em"></span>期</td>
+                    <td><lable>状态</lable><span class="statusName"></span></td>
                 </tr>
             </table>
-            <table>
-                <td>
-                    <a class="easyui-linkbutton" iconCls="icon-add" onclick="addTaskDlg()">批量导入</a>
-                </td>
-                <td>
-                    <a class="easyui-linkbutton" iconCls="icon-edit" onclick="modifyTask()">修改</a>
-                </td>
-                <td>
-                    <a class="easyui-linkbutton" iconCls="icon-edit" onclick="deleteTask()">删除</a>
+            <table class="operator-table">
+                <td class="start_task_tr">
+                    <a class="easyui-linkbutton" iconCls="icon-edit" onclick="addStartTaskDlg()">开始发包</a>
                 </td>
                 <td class="cancal_task_tr">
                     <a class="easyui-linkbutton" iconCls="icon-edit" onclick="cancelTask()">取消发包</a>
                 </td>
                 <td>
-                    <a class="easyui-linkbutton" iconCls="icon-edit" onclick="addStartTaskDlg()">开始发包</a>
+                    <a class="easyui-linkbutton" iconCls="icon-edit" onclick="exportSearchData()">筛选导出</a>
                 </td>
                 <td>
-                    <a class="easyui-linkbutton" iconCls="icon-edit" onclick="exportSearchData()">筛选导出</a>
                     <a class="easyui-linkbutton" iconCls="icon-edit" onclick="exportAllData()">导出全部</a>
                 </td>
-                <td>
+                <td class="lottery_result_tr" style="display: none">
                     <a class="easyui-linkbutton" iconCls="icon-edit" onclick="openResultDlg()">开奖结果</a>
                 </td>
             </table>
@@ -91,7 +89,15 @@
                     <td width="80">
                         <a class="easyui-linkbutton" iconCls="icon-search" onclick="doSearch(0)">搜索</a>
                     </td>
-
+                    <td class="crud_btn">
+                        <a class="easyui-linkbutton" iconCls="icon-add" onclick="addTaskDlg()">批量导入</a>
+                    </td>
+                    <td class="crud_btn">
+                        <a class="easyui-linkbutton" iconCls="icon-edit" onclick="modifyTask()">修改</a>
+                    </td>
+                    <td class="crud_btn">
+                        <a class="easyui-linkbutton" iconCls="icon-edit" onclick="deleteTask()">删除</a>
+                    </td>
                 </tr>
             </table>
         </div>

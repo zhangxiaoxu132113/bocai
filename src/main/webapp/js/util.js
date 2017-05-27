@@ -298,7 +298,7 @@ var s = $.extend({}, s);
                         get(datagridId).datagrid('reload');
                         get(datagridId).treegrid('reload');
                     } else {
-                        callback.call();
+                        callback.call(this, result);
                     }
                 } else {
                     s.error(result.msg);
@@ -497,7 +497,7 @@ var s = $.extend({}, s);
     /**
      * 打开新的选项卡
      */
-    s.openTabs = function(title, url, icon) {
+    s.openTabs = function (title, url, icon) {
         var jq = top.jQuery;
         if (jq("#tabs").tabs('exists', title)) {
             jq("#tabs").tabs('select', title);

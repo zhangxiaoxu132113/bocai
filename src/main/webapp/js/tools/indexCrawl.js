@@ -49,15 +49,13 @@ var columns_result = [
     }
 ];
 
-var columns = [
+var result_detail_columns = [
     {field: 'num', title: '包位', align: 'center', width: '100'},
     {field: 'num', title: '金额', align: 'center', width: '100'},
     {field: 'num', title: '牛几', align: 'center', width: '100'},
     {field: 'sum', title: '共投', align: 'center', width: '100'},
     {field: 'sum', title: '结果', align: 'center', width: '100'},
     {field: 'sum', title: '盈利', align: 'center', width: '100'},
-    {field: 'updateTime', title: '更新时间', align: 'center', width: '150'},
-    {field: 'createOn', title: '创建时间', align: 'center', width: '150'},
     {
         field: 'operation', title: '操作', align: 'center', width: '100',
         formatter: function (value, rowData, rowIndex) {
@@ -104,6 +102,7 @@ function readyTask() {
         $('.taskName').html(data.rows.name);
         $('.statusName').html(data.rows.statusName);
         $('.table-search').css('display', 'block');
+        $('.operator-table').css('display', 'block');
         $('.runing_task_status').css('display', 'block');
         $('.h_task_id').val(data.rows.id);
         task = data.rows;
@@ -224,92 +223,165 @@ function cancelUpdateTask() {
 }
 
 function jishu_result() {
-    $.ajax({
-        type: 'POST',
-        url: '/task/getLotteryResults',
-        cache: false,
-        data: {
-            red1: $('.red1').val(),
-            red2: $('.red2').val(),
-            red3: $('.red3').val(),
-            red4: $('.red4').val(),
-            red5: $('.red5').val(),
-            red6: $('.red6').val(),
-            taskId: task.id,
-            packageNum: $('.packageNum').val()
-        },
-        success: function(data) {
-            if (data.code == 1) {
-                $('.cancal_task_tr').css('display', 'none');
+    s.postSubmit('table', 'update_task_dlg', '../task/getLotteryResults?taskId='+task.id, false, function(obj) {
+        console.log(obj);
+        if (obj.code == 1) {
+            $('.crud_btn').css('display', 'none');
+            $('.start_task_tr').css('display', 'none');
+            $('.cancal_task_tr').css('display', 'none');
+            $('.lottery_result_tr').css('display', 'block');
 
-                var result = data.rows;
-                var inPackageNumsStr = '';
-                var outPackageNumsStr = '';
-                var tiePackageNUmsStr = '';
-                if (result.inPackageNums.length > 0) {
-                    for (var i=0; i<result.inPackageNums.length; i++) {
-                        inPackageNumsStr +=
-                            "<span>" + result.inPackageNums[i] + "</span>,";
-                    }
-                } else {
-                    inPackageNumsStr = '无';
+            var result = obj.rows;
+            var inPackageNumsStr = '';
+            var outPackageNumsStr = '';
+            var tiePackageNUmsStr = '';
+            if (result.inPackageNums.length > 0) {
+                for (var i=0; i<result.inPackageNums.length; i++) {
+                    inPackageNumsStr +=
+                        "<span>" + result.inPackageNums[i] + "</span>,";
                 }
-
-                if (result.outPackageNums.length > 0) {
-                    for (var i=0; i<result.outPackageNums.length; i++) {
-                        outPackageNumsStr +=
-                            "<span>" + result.outPackageNums[i] + "</span>,";
-                    }
-                } else {
-                    outPackageNumsStr = '无';
-                }
-
-                if (result.tiePackageNUms.length > 0) {
-                    for (var i=0; i<result.tiePackageNUms.length; i++) {
-                        tiePackageNUmsStr +=
-                            "<span>" + result.tiePackageNUms[i] + "</span>,";
-                    }
-                } else {
-                    outPackageNumsStr = '无';
-                }
-                console.log(inPackageNumsStr);
-                console.log(outPackageNumsStr);
-                console.log(tiePackageNUmsStr);
-                $('.packageNum').html(result.packageNum);
-                $('.profit').html(result.profit);
-                $('.inCount').html(result.inCount);
-                $('.moneyIn').html(result.moneyIn);
-                $('.tieCount').html(result.tieCount);
-                $('.outCount').html(result.outCount);
-                $('.moneyOut').html(result.moneyOut);
-                $('.agencyFee').html(result.agencyFee);
-                $('.inPackageNums').html(inPackageNumsStr);
-                $('.outPackageNums').html(outPackageNumsStr);
-                $('.tiePackageNUms').html(tiePackageNUmsStr);
-                s.popAdd('result_info_dlg', {title: '开奖结果'});
-
-                var taskId = task.id;
-                var queryParams = {taskId: taskId};
-                s.datagrid('table', columns_result, {
-                    url: '../task/taskUserList.do?',
-                    toolbar: "#top",
-                    queryParams: queryParams,
-                    onLoadSuccess: function (data) {
-                        $('.task-record-download').linkbutton({text: '历史记录', iconCls: 'image-download'});
-                    }
-                });
             } else {
-                s.showMessage(data.msg);
+                inPackageNumsStr = '无';
             }
-            s.closeDialog('update_task_dlg');
-            console.log(data);
-        },
-        error: function () {
-            s.closeDialog('update_task_dlg');
-            return false;
-        },
-        dataType: 'json'
+
+            if (result.outPackageNums.length > 0) {
+                for (var i=0; i<result.outPackageNums.length; i++) {
+                    outPackageNumsStr +=
+                        "<span>" + result.outPackageNums[i] + "</span>,";
+                }
+            } else {
+                outPackageNumsStr = '无';
+            }
+
+            if (result.tiePackageNUms.length > 0) {
+                for (var i=0; i<result.tiePackageNUms.length; i++) {
+                    tiePackageNUmsStr +=
+                        "<span>" + result.tiePackageNUms[i] + "</span>,";
+                }
+            } else {
+                outPackageNumsStr = '无';
+            }
+            console.log(inPackageNumsStr);
+            console.log(outPackageNumsStr);
+            console.log(tiePackageNUmsStr);
+            $('.packageNum').html(result.packageNum);
+            $('.profit').html(result.profit);
+            $('.inCount').html(result.inCount);
+            $('.moneyIn').html(result.moneyIn);
+            $('.tieCount').html(result.tieCount);
+            $('.outCount').html(result.outCount);
+            $('.moneyOut').html(result.moneyOut);
+            $('.agencyFee').html(result.agencyFee);
+            $('.inPackageNums').html(inPackageNumsStr);
+            $('.outPackageNums').html(outPackageNumsStr);
+            $('.tiePackageNUms').html(tiePackageNUmsStr);
+            s.popAdd('result_info_dlg', {title: '开奖结果'});
+
+            var taskId = task.id;
+            var queryParams = {taskId: taskId};
+            s.datagrid('table', columns_result, {
+                url: '../task/taskUserList.do?',
+                toolbar: "#top",
+                queryParams: queryParams,
+                onLoadSuccess: function (data) {
+                    $('.task-record-download').linkbutton({text: '历史记录', iconCls: 'image-download'});
+                }
+            });
+        } else {
+            s.showMessage(obj.msg);
+        }
+        s.closeDialog('update_task_dlg');
     });
+    //$.ajax({
+    //    type: 'POST',
+    //    url: '/task/getLotteryResults',
+    //    cache: false,
+    //    data: {
+    //        red1: $('.red1').val(),
+    //        red2: $('.red2').val(),
+    //        red3: $('.red3').val(),
+    //        red4: $('.red4').val(),
+    //        red5: $('.red5').val(),
+    //        red6: $('.red6').val(),
+    //        taskId: task.id,
+    //        packageNum: $('.packageNum').val()
+    //    },
+    //    success: function(data) {
+    //        if (data.code == 1) {
+    //            $('.crud_btn').css('display', 'none');
+    //            $('.start_task_tr').css('display', 'none');
+    //            $('.cancal_task_tr').css('display', 'none');
+    //            $('.lottery_result_tr').css('display', 'block');
+    //
+    //
+    //            var result = data.rows;
+    //            var inPackageNumsStr = '';
+    //            var outPackageNumsStr = '';
+    //            var tiePackageNUmsStr = '';
+    //            if (result.inPackageNums.length > 0) {
+    //                for (var i=0; i<result.inPackageNums.length; i++) {
+    //                    inPackageNumsStr +=
+    //                        "<span>" + result.inPackageNums[i] + "</span>,";
+    //                }
+    //            } else {
+    //                inPackageNumsStr = '无';
+    //            }
+    //
+    //            if (result.outPackageNums.length > 0) {
+    //                for (var i=0; i<result.outPackageNums.length; i++) {
+    //                    outPackageNumsStr +=
+    //                        "<span>" + result.outPackageNums[i] + "</span>,";
+    //                }
+    //            } else {
+    //                outPackageNumsStr = '无';
+    //            }
+    //
+    //            if (result.tiePackageNUms.length > 0) {
+    //                for (var i=0; i<result.tiePackageNUms.length; i++) {
+    //                    tiePackageNUmsStr +=
+    //                        "<span>" + result.tiePackageNUms[i] + "</span>,";
+    //                }
+    //            } else {
+    //                outPackageNumsStr = '无';
+    //            }
+    //            console.log(inPackageNumsStr);
+    //            console.log(outPackageNumsStr);
+    //            console.log(tiePackageNUmsStr);
+    //            $('.packageNum').html(result.packageNum);
+    //            $('.profit').html(result.profit);
+    //            $('.inCount').html(result.inCount);
+    //            $('.moneyIn').html(result.moneyIn);
+    //            $('.tieCount').html(result.tieCount);
+    //            $('.outCount').html(result.outCount);
+    //            $('.moneyOut').html(result.moneyOut);
+    //            $('.agencyFee').html(result.agencyFee);
+    //            $('.inPackageNums').html(inPackageNumsStr);
+    //            $('.outPackageNums').html(outPackageNumsStr);
+    //            $('.tiePackageNUms').html(tiePackageNUmsStr);
+    //            s.popAdd('result_info_dlg', {title: '开奖结果'});
+    //
+    //            var taskId = task.id;
+    //            var queryParams = {taskId: taskId};
+    //            s.datagrid('table', columns_result, {
+    //                url: '../task/taskUserList.do?',
+    //                toolbar: "#top",
+    //                queryParams: queryParams,
+    //                onLoadSuccess: function (data) {
+    //                    $('.task-record-download').linkbutton({text: '历史记录', iconCls: 'image-download'});
+    //                }
+    //            });
+    //        } else {
+    //            s.showMessage(data.msg);
+    //        }
+    //        s.closeDialog('update_task_dlg');
+    //        console.log(data);
+    //    },
+    //    error: function () {
+    //        s.closeDialog('update_task_dlg');
+    //        return false;
+    //    },
+    //    dataType: 'json'
+    //});
 }
 
 function close_result_info_dlg() {
@@ -372,4 +444,31 @@ function openResultDlg() {
     });
     s.popAdd('result_dlg', {title: '开奖结果'});
 
+}
+
+function exportAllData() {
+    $.messager.confirm('提示信息', '确认导出所有数据吗？', function (r) {
+        if (r) {
+            var filters = {};
+            var array = $('#searchForm').serialize().split('&');
+            for (var i = 0; i < array.length; i++) {
+                var entry = array[i].split('=');
+                if (entry.length > 1) {
+                    filters[entry[0]] = decodeURIComponent(entry[1]);
+                }
+            }
+
+            $("#table").datagrid("loading");// 显示遮罩层
+            $.post('../task/exportAllData.do', filters, function (data) {
+                $("#table").datagrid("loaded");// 关闭遮罩层
+                if (data.result && data.result == 1) {
+                    // 开始下载
+                    window.open("../" + data.path, '_self');
+                    return;
+                }
+                // 没有找到excel
+                s.error("没有数据需要导出");
+            }, 'json');
+        }
+    });
 }
